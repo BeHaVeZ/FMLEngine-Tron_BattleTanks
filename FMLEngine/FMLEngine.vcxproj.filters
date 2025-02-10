@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Filter">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Header Filter\Game">
+      <UniqueIdentifier>{3d7e620c-1cbd-4e1f-a52b-1df06e4d1630}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Filter\Managers">
+      <UniqueIdentifier>{a6353047-0b21-4d98-b6fe-4c841c614bc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Filter\Command">
+      <UniqueIdentifier>{978b56cb-2edc-41be-bd57-02c7ca1b4b93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Filter\Scenes">
+      <UniqueIdentifier>{8df08f2d-570c-49c5-a166-5ef6c63ad5dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Filter\Components">
+      <UniqueIdentifier>{a8b7d55c-809c-4135-8f41-a99512873fda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Filter\Rendering">
+      <UniqueIdentifier>{c18c0cd7-5f88-4cb8-9ddb-f454d74bd22f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Header Filter\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Header Filter\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>Header Filter</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Header Filter\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Header Filter\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureComponent.cpp">
+      <Filter>Header Filter\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Header Filter\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Header Filter\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="TextComponent.cpp">
+      <Filter>Header Filter\Components</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Game.h">
+      <Filter>Header Filter\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigManager.h">
+      <Filter>Header Filter\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameStateManager.h">
+      <Filter>Header Filter\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Header Filter\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler.h">
+      <Filter>Header Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="Command.h">
+      <Filter>Header Filter\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Header Filter\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Filter\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>Header Filter\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComponent.h">
+      <Filter>Header Filter\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureComponent.h">
+      <Filter>Header Filter\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Header Filter</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Filter\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Header Filter\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="TextComponent.h">
+      <Filter>Header Filter\Components</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
