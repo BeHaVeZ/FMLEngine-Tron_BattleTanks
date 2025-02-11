@@ -167,6 +167,8 @@ xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(Outp
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FPSComponent.cpp" />
+    <ClCompile Include="TestingScene.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InputHandler.cpp" />
@@ -179,6 +181,8 @@ xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(Outp
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FPSComponent.h" />
+    <ClInclude Include="TestingScene.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ConfigManager.h" />

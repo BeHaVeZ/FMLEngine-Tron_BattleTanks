@@ -31,6 +31,9 @@
     <Filter Include="Header Filter\Rendering">
       <UniqueIdentifier>{c18c0cd7-5f88-4cb8-9ddb-f454d74bd22f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Filter\Components\AssignmentComponents">
+      <UniqueIdentifier>{16f92c94-24b6-4213-9984-30fb944a752c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -62,6 +65,12 @@
     </ClCompile>
     <ClCompile Include="TextComponent.cpp">
       <Filter>Header Filter\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TestingScene.cpp">
+      <Filter>Header Filter\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSComponent.cpp">
+      <Filter>Header Filter\Components\AssignmentComponents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +118,12 @@
     </ClInclude>
     <ClInclude Include="TextComponent.h">
       <Filter>Header Filter\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="TestingScene.h">
+      <Filter>Header Filter\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSComponent.h">
+      <Filter>Header Filter\Components\AssignmentComponents</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@
 #include "Component.h"
 #include "SDL.h"
 
-class GameObject {
+class GameObject final{
 public:
     GameObject(const std::string& tag = "");
 

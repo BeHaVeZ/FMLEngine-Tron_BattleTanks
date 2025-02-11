@@ -31,4 +31,6 @@ private:
 
     int windowWidth = 1024;
     int windowHeight = 768;
+
+    int refreshRate = 60;
 };
