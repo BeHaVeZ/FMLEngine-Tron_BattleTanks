@@ -8,8 +8,8 @@ public:
     virtual ~Component() = default;
 
     virtual void Initialize() {};
-    virtual void Update(float deltaTime) {};
-    virtual void Render(SDL_Renderer* renderer) {};
+    virtual void Update(float) {};
+    virtual void Render(SDL_Renderer*) {};
 
     void SetOwner(GameObject* owner) {
         this->gameObject = owner;

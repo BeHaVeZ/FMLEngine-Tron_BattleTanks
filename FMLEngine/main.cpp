@@ -3,7 +3,7 @@
 #include "Game.h"
 
 
-int main(int argc, char* args[]) {
+int main(int, char*[]) {
 	Game game;
 	if (!game.Initialize()) {
 		return -1;
