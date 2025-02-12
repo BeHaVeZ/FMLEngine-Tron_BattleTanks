@@ -110,8 +110,8 @@ xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(PlatformTarget)"
-rd /s /q "$(SolutionDir)FMLEngine</Command>
+      <Command>rd /s /q "$(SolutionDir)bin\$(Platform)\$(Configuration)"
+rd /s /q "$(SolutionDir)intermediates"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,8 +142,8 @@ xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(PlatformTarget)"
-rd /s /q "$(SolutionDir)FMLEngine</Command>
+      <Command>rd /s /q "$(SolutionDir)bin\$(Platform)\$(Configuration)"
+rd /s /q "$(SolutionDir)intermediates"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -170,8 +170,8 @@ xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(PlatformTarget)"
-rd /s /q "$(SolutionDir)FMLEngine</Command>
+      <Command>rd /s /q "$(SolutionDir)bin\$(Platform)\$(Configuration)"
+rd /s /q "$(SolutionDir)intermediates"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -202,8 +202,8 @@ xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(PlatformTarget)"
-rd /s /q "$(SolutionDir)FMLEngine</Command>
+      <Command>rd /s /q "$(SolutionDir)bin\$(Platform)\$(Configuration)"
+rd /s /q "$(SolutionDir)intermediates"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

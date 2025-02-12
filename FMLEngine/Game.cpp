@@ -40,7 +40,7 @@ bool Game::Initialize() {
 		refreshRate = current.refresh_rate;
 	}
 
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (!renderer) {
 		std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
 		return false;
