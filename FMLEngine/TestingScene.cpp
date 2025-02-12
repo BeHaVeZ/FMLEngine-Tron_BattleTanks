@@ -6,7 +6,7 @@
 #include "TextComponent.h"
 #include "FPSComponent.h"
 
-const std::string backgroundImagePath = "data/background.tga";
+const std::string backgroundImagePath = "data/artassets/tron_bg.png";
 
 bool TestingScene::Initialize(SDL_Renderer* renderer) {
 	InitializeBackground(renderer);
@@ -36,11 +36,11 @@ void TestingScene::InitializeTitle(SDL_Renderer* renderer)
 {
     auto title = std::make_unique<GameObject>("title");
 
-    SDL_Color color = { 255, 255, 255, 255 };
+    SDL_Color color = { 0, 255, 0, 255 };
 
     auto titleTextComponent = std::make_unique<TextComponent>(
         "TRON Battle Tanks",         
-        "data/tron-arcade.ttf",      
+        "data/fonts/tron-arcade.ttf",      
         24,                          
         color,                       
         renderer);                   
@@ -56,8 +56,8 @@ void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
 {
     auto fpsGameObject = std::make_unique<GameObject>("FPSCounter");
 
-    SDL_Color fpsColor = { 0, 255, 0, 255 };
-    auto fpsComponent = std::make_unique<FPSComponent>(renderer, "data/tron-arcade.ttf", 18, fpsColor);
+    SDL_Color fpsColor = { 255, 255, 255, 255 };
+    auto fpsComponent = std::make_unique<FPSComponent>(renderer, "data/fonts/tron-arcade.ttf", 18, fpsColor);
     fpsGameObject->GetComponent<TransformComponent>()->SetPosition(10, 10);
 
     fpsGameObject->AddComponent(std::move(fpsComponent));
