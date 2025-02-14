@@ -219,6 +219,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureComponent.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FPSComponent.h" />

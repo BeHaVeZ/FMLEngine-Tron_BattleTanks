@@ -72,6 +72,9 @@
     <ClCompile Include="FPSComponent.cpp">
       <Filter>Engine\Components\AssignmentComponents</Filter>
     </ClCompile>
+    <ClCompile Include="TransformComponent.cpp">
+      <Filter>Engine\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
