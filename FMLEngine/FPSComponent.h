@@ -6,8 +6,10 @@
 
 class FPSComponent : public Component {
 public:
-    FPSComponent(SDL_Renderer* renderer, const std::string& fontPath, int fontSize, SDL_Color color);
+    FPSComponent(SDL_Renderer* renderer);
     ~FPSComponent();
+
+    void Initialize() override;
 
     void Update(float deltaTime) override;
     void Render(SDL_Renderer* renderer) override;

@@ -45,9 +45,8 @@ void TestingScene::InitializeTitle(SDL_Renderer* renderer)
         color,                       
         renderer);                   
 
-    titleTextComponent->SetPosition(300, 300);
-
     title->AddComponent(std::move(titleTextComponent));
+	title->GetComponent<TransformComponent>()->SetPosition(300, 300);
 
     gameObjects.push_back(std::move(title));
 }
@@ -57,10 +56,22 @@ void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
     auto fpsGameObject = std::make_unique<GameObject>("FPSCounter");
 
     SDL_Color fpsColor = { 255, 255, 255, 255 };
-    auto fpsComponent = std::make_unique<FPSComponent>(renderer, "data/fonts/tron-arcade.ttf", 18, fpsColor);
+
+    auto titleTextComponent = std::make_unique<TextComponent>(
+        "FPS 0",
+        "data/fonts/tron-arcade.ttf",
+        22,
+        fpsColor,
+        renderer);
+    fpsGameObject->AddComponent(std::move(titleTextComponent));
+
+
+    auto fpsComponent = std::make_unique<FPSComponent>(renderer);
+    fpsGameObject->AddComponent(std::move(fpsComponent));
+	fpsGameObject->GetComponent<FPSComponent>()->Initialize();
+
     fpsGameObject->GetComponent<TransformComponent>()->SetPosition(10, 10);
 
-    fpsGameObject->AddComponent(std::move(fpsComponent));
     gameObjects.push_back(std::move(fpsGameObject));
 }
 

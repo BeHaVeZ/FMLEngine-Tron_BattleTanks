@@ -2,6 +2,7 @@
 #include <SDL_ttf.h>
 #include <string>
 #include "Component.h"
+#include "GameObject.h" 
 
 class TextComponent : public Component {
 public:
@@ -11,13 +12,10 @@ public:
     void SetText(const std::string& newText, SDL_Renderer* renderer);
     std::string GetText() const { return text; }
     void Render(SDL_Renderer* renderer) override;
-    void SetPosition(int x, int y);
-    SDL_Rect GetTextRect() const { return textRect; }
 
 private:
     std::string text;
     TTF_Font* font;
     SDL_Texture* texture;
     SDL_Color color;
-    SDL_Rect textRect;
 };

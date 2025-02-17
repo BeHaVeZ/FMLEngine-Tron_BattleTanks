@@ -1,4 +1,5 @@
 #include "TextComponent.h"
+#include "TransformComponent.h"
 #include <iostream>
 
 TextComponent::TextComponent(const std::string& text, const std::string& fontPath, int fontSize, SDL_Color color, SDL_Renderer* renderer)
@@ -33,17 +34,16 @@ void TextComponent::SetText(const std::string& newText, SDL_Renderer* renderer) 
     }
 
     texture = SDL_CreateTextureFromSurface(renderer, textSurface);
-    textRect = { 0, 0, textSurface->w, textSurface->h };
     SDL_FreeSurface(textSurface);
 }
 
 void TextComponent::Render(SDL_Renderer* renderer) {
-    if (texture) {
-        SDL_RenderCopy(renderer, texture, nullptr, &textRect);
+    if (texture && gameObject) {
+        TransformComponent* transform = gameObject->GetComponent<TransformComponent>();
+        if (transform) {
+            SDL_Rect renderQuad = { (int)transform->GetLocalX(), (int)transform->GetLocalY(), 0, 0 };
+            SDL_QueryTexture(texture, NULL, NULL, &renderQuad.w, &renderQuad.h);
+            SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
+        }
     }
-}
-
-void TextComponent::SetPosition(int x, int y) {
-    textRect.x = x;
-    textRect.y = y;
 }

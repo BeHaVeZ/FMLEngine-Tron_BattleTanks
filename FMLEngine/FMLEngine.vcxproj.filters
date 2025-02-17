@@ -34,6 +34,9 @@
     <Filter Include="Engine\Rendering">
       <UniqueIdentifier>{c18c0cd7-5f88-4cb8-9ddb-f454d74bd22f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Scenes\AssignmentScenes">
+      <UniqueIdentifier>{3f7b40d7-2fd6-4d5a-b485-7e5c5c8b3c9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,14 +69,14 @@
     <ClCompile Include="TextComponent.cpp">
       <Filter>Engine\Components</Filter>
     </ClCompile>
-    <ClCompile Include="TestingScene.cpp">
-      <Filter>Engine\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="FPSComponent.cpp">
       <Filter>Engine\Components\AssignmentComponents</Filter>
     </ClCompile>
     <ClCompile Include="TransformComponent.cpp">
       <Filter>Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="TestingScene.cpp">
+      <Filter>Engine\Scenes\AssignmentScenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,11 +125,11 @@
     <ClInclude Include="TextComponent.h">
       <Filter>Engine\Components</Filter>
     </ClInclude>
-    <ClInclude Include="TestingScene.h">
-      <Filter>Engine\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="FPSComponent.h">
       <Filter>Engine\Components\AssignmentComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="TestingScene.h">
+      <Filter>Engine\Scenes\AssignmentScenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
