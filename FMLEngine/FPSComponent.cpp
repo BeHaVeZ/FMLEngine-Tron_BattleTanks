@@ -48,7 +48,6 @@ void FPSComponent::Update(float deltaTime)
 }
 
 
-void FPSComponent::Render(SDL_Renderer* renderer) 
+void FPSComponent::Render(SDL_Renderer*) 
 {
-	textComponent->Render(renderer);
 }
