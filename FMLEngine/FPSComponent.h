@@ -10,9 +10,7 @@ public:
     ~FPSComponent();
 
     void Initialize() override;
-
     void Update(float deltaTime) override;
-    void Render(SDL_Renderer* renderer) override;
 
 private:
     TextComponent* textComponent;

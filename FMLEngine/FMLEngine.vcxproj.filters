@@ -37,6 +37,9 @@
     <Filter Include="Engine\Scenes\AssignmentScenes">
       <UniqueIdentifier>{3f7b40d7-2fd6-4d5a-b485-7e5c5c8b3c9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Interfaces">
+      <UniqueIdentifier>{6ed1bb93-6eb3-45df-be53-a46ce6b49043}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -130,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="TestingScene.h">
       <Filter>Engine\Scenes\AssignmentScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuInterface.h">
+      <Filter>Engine\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

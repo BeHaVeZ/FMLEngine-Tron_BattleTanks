@@ -223,6 +223,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FPSComponent.h" />
+    <ClInclude Include="MenuInterface.h" />
     <ClInclude Include="TestingScene.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />

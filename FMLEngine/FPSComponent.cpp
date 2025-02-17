@@ -7,9 +7,6 @@ FPSComponent::FPSComponent(SDL_Renderer* renderer)
 {
 }
 
-
-
-
 FPSComponent::~FPSComponent() 
 {
 }
@@ -45,9 +42,4 @@ void FPSComponent::Update(float deltaTime)
 		std::string fpsText = "FPS " + std::to_string(static_cast<int>(fpsCounter));
 		textComponent->SetText(fpsText, storedRenderer);
 	}
-}
-
-
-void FPSComponent::Render(SDL_Renderer*) 
-{
 }
