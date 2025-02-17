@@ -24,23 +24,30 @@ void TransformComponent::Update() {
     }
 }
 
-void TransformComponent::UpdateWorldPosition() {
-    if (gameObject and gameObject->GetParent()) {
+void TransformComponent::UpdateWorldPosition() 
+{
+    if (gameObject and gameObject->GetParent()) 
+    {
         auto parentTransform = gameObject->GetParent()->GetComponent<TransformComponent>();
-        if (parentTransform) {
+        if (parentTransform) 
+        {
             worldX = parentTransform->worldX + localX;
             worldY = parentTransform->worldY + localY;
         }
     }
-    else {
+    else 
+    {
         worldX = localX;
         worldY = localY;
     }
 
-    if (gameObject) {
-        for (auto& child : gameObject->GetChildren()) {
+    if (gameObject) 
+    {
+        for (auto& child : gameObject->GetChildren()) 
+        {
             auto childTransform = child->GetComponent<TransformComponent>();
-            if (childTransform) {
+            if (childTransform) 
+            {
                 childTransform->MarkDirty();
             }
         }

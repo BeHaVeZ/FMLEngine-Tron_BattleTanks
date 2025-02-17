@@ -81,6 +81,9 @@
     <ClCompile Include="TestingScene.cpp">
       <Filter>Engine\Scenes\AssignmentScenes</Filter>
     </ClCompile>
+    <ClCompile Include="RotationComponent.cpp">
+      <Filter>Engine\Components\AssignmentComponents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -136,6 +139,9 @@
     </ClInclude>
     <ClInclude Include="MenuInterface.h">
       <Filter>Engine\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="RotationComponent.h">
+      <Filter>Engine\Components\AssignmentComponents</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

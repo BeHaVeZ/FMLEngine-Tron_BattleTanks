@@ -10,8 +10,8 @@ const std::string backgroundImagePath = "data/artassets/tron_bg.png";
 
 bool TestingScene::Initialize(SDL_Renderer* renderer) {
 	InitializeBackground(renderer);
-    InitializeTitle(renderer);
-    InitializeFPSCounter(renderer);
+    //InitializeTitle(renderer);
+    //InitializeFPSCounter(renderer);
 
 	return true;
 }
@@ -75,6 +75,15 @@ void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
     gameObjects.push_back(std::move(fpsGameObject));
 }
 
+void TestingScene::InitializeFirstTank(SDL_Renderer*)
+{
+
+}
+
+void TestingScene::InitializeSecondTank(SDL_Renderer*)
+{
+
+}
 
 
 void TestingScene::HandleInput(SDL_Event& event) {
