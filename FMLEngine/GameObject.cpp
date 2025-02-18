@@ -32,15 +32,9 @@ bool GameObject::HasComponent() const
 
 void GameObject::AddChild(std::unique_ptr<GameObject> child)
 {
-	if (!child || child.get() == this || child->HasParent())
+	if (!child or child.get() == this or child->HasParent())
 	{
 		return;
-	}
-
-	auto transform = child->GetComponent<TransformComponent>();
-	if (transform)
-	{
-		transform->UpdateWorldPosition();
 	}
 
 	if (child->parent)
@@ -49,6 +43,12 @@ void GameObject::AddChild(std::unique_ptr<GameObject> child)
 	}
 
 	child->parent = this;
+
+	auto transform = child->GetComponent<TransformComponent>();
+	if (transform)
+	{
+		transform->UpdateWorldPosition();
+	}
 
 	children.push_back(std::move(child));
 }

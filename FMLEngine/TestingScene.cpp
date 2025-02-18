@@ -5,19 +5,24 @@
 #include "ConfigManager.h"
 #include "TextComponent.h"
 #include "FPSComponent.h"
+#include "RotationComponent.h"
+#include <iostream>
 
 const std::string backgroundImagePath = "data/artassets/tron_bg.png";
 
 bool TestingScene::Initialize(SDL_Renderer* renderer) {
-	InitializeBackground(renderer);
+	//InitializeBackground(renderer);
     //InitializeTitle(renderer);
-    //InitializeFPSCounter(renderer);
+    InitializeFPSCounter(renderer);
+
+	InitializeFirstTank(renderer);
+	InitializeSecondTank(renderer);
 
 	return true;
 }
 
 void TestingScene::InitializeBackground(SDL_Renderer* renderer) {
-    auto background = std::make_unique<GameObject>();
+    auto background = std::make_unique<GameObject>("Background");
     auto backgroundTexture = std::make_unique<TextureComponent>(backgroundImagePath, renderer);
     background->AddComponent(std::move(backgroundTexture));
 
@@ -75,14 +80,37 @@ void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
     gameObjects.push_back(std::move(fpsGameObject));
 }
 
-void TestingScene::InitializeFirstTank(SDL_Renderer*)
+void TestingScene::InitializeFirstTank(SDL_Renderer* renderer)
 {
+	auto tank = std::make_unique<GameObject>("Tank1");
 
+	auto tankTexture = std::make_unique<TextureComponent>("data/artassets/RedTank.png", renderer);
+	tank->AddComponent(std::move(tankTexture));
+
+	tank->GetComponent<TransformComponent>()->SetPosition(500, 500);
+
+	auto rotationComponent = std::make_unique<RotationComponent>(20.f, 200.f, 500.f, 300.f);
+	tank->AddComponent(std::move(rotationComponent));
+	tank->GetComponent<RotationComponent>()->Initialize();
+
+	gameObjects.push_back(std::move(tank));
 }
 
-void TestingScene::InitializeSecondTank(SDL_Renderer*)
+void TestingScene::InitializeSecondTank(SDL_Renderer* renderer)
 {
+    auto tank = std::make_unique<GameObject>("Tank2");
 
+    auto tankTexture = std::make_unique<TextureComponent>("data/artassets/BlueTank.png", renderer);
+    tank->AddComponent(std::move(tankTexture));
+    tank->GetComponent<TransformComponent>()->SetPosition(100, 100);
+
+
+    auto rotationComponent = std::make_unique<RotationComponent>(100.f, 500.f);
+    tank->AddComponent(std::move(rotationComponent));
+    tank->GetComponent<RotationComponent>()->Initialize();
+
+	FindGameObjectByTag("Tank1")->AddChild(std::move(tank));
+    gameObjects;
 }
 
 

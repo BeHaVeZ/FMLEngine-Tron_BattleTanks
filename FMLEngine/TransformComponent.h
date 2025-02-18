@@ -2,12 +2,12 @@
 #include "Component.h"
 #include "GameObject.h"
 
-class TransformComponent : public Component {
+class TransformComponent final : public Component {
 public:
     TransformComponent(float x = 0.0f, float y = 0.0f);
     void SetPosition(float newX, float newY);
     void SetSize(float newWidth, float newHeight);
-    void Update();
+    void Update(float deltaTime);
     void UpdateWorldPosition();
     void MarkDirty();
     bool IsSizeSet() const;

@@ -8,6 +8,7 @@ void TransformComponent::SetPosition(float newX, float newY) {
     if (newX != localX || newY != localY) {
         localX = newX;
         localY = newY;
+		UpdateWorldPosition();
         MarkDirty();
     }
 }
@@ -17,7 +18,7 @@ void TransformComponent::SetSize(float newWidth, float newHeight) {
     height = newHeight;
 }
 
-void TransformComponent::Update() {
+void TransformComponent::Update(float) {
     if (isDirty) {
         UpdateWorldPosition();
         isDirty = false;
@@ -26,7 +27,7 @@ void TransformComponent::Update() {
 
 void TransformComponent::UpdateWorldPosition() 
 {
-    if (gameObject and gameObject->GetParent()) 
+    if (gameObject->HasParent()) 
     {
         auto parentTransform = gameObject->GetParent()->GetComponent<TransformComponent>();
         if (parentTransform) 
@@ -39,18 +40,6 @@ void TransformComponent::UpdateWorldPosition()
     {
         worldX = localX;
         worldY = localY;
-    }
-
-    if (gameObject) 
-    {
-        for (auto& child : gameObject->GetChildren()) 
-        {
-            auto childTransform = child->GetComponent<TransformComponent>();
-            if (childTransform) 
-            {
-                childTransform->MarkDirty();
-            }
-        }
     }
 }
 
