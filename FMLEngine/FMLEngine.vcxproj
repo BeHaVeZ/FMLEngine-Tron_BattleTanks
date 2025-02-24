@@ -213,6 +213,8 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
   <ItemGroup>
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="RotationComponent.cpp" />
+    <ClCompile Include="ServiceLocator.cpp" />
+    <ClCompile Include="SoundSystem.cpp" />
     <ClCompile Include="TestingScene.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -230,6 +232,8 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="MenuInterface.h" />
     <ClInclude Include="RotationComponent.h" />
+    <ClInclude Include="ServiceLocator.h" />
+    <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="TestingScene.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />

@@ -15,6 +15,7 @@ public:
 	void InitializeFirstTank(SDL_Renderer* renderer);
 	void InitializeSecondTank(SDL_Renderer* renderer);
     
+    void InitializeSounds();
     
     void HandleInput(SDL_Event& event) override;
     

@@ -40,6 +40,9 @@
     <Filter Include="Engine\Interfaces">
       <UniqueIdentifier>{6ed1bb93-6eb3-45df-be53-a46ce6b49043}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Sound">
+      <UniqueIdentifier>{6ff5e46c-c868-4c3c-89a7-04c7f91d6156}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -83,6 +86,12 @@
     </ClCompile>
     <ClCompile Include="RotationComponent.cpp">
       <Filter>Engine\Components\AssignmentComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundSystem.cpp">
+      <Filter>Engine\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="ServiceLocator.cpp">
+      <Filter>Engine\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +151,12 @@
     </ClInclude>
     <ClInclude Include="RotationComponent.h">
       <Filter>Engine\Components\AssignmentComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="ServiceLocator.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundSystem.h">
+      <Filter>Engine\Sound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

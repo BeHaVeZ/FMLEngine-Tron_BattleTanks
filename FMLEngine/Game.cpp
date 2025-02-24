@@ -7,6 +7,8 @@
 #include <SDL_ttf.h>
 #include "GameStateManager.h"
 #include "ConfigManager.h"
+#include "SoundSystem.h"
+#include "ServiceLocator.h"
 
 Game::Game() : window(nullptr), renderer(nullptr), isRunning(false) {}
 
@@ -32,7 +34,7 @@ bool Game::Initialize() {
     }
 
 	SDL_DisplayMode current;
-	if (SDL_GetWindowDisplayMode(window, &current) != 0) {
+	if (SDL_GetWindowDisplayMode(window, &current) != 0) {	
 		std::cerr << "Could not get display mode for video display: " << SDL_GetError() << std::endl;
 		refreshRate = 60;
 	}
@@ -50,6 +52,12 @@ bool Game::Initialize() {
 		std::cerr << "SDL_ttf could not initialize! TTF_Error: " << TTF_GetError() << std::endl;
 		return false;
 	}
+
+
+	auto soundSystem = new SDL_SoundSystem();
+	ServiceLocator::RegisterSoundSystem(soundSystem);
+
+	ServiceLocator::GetSoundSystem().StartUp();
 
 	SceneManager::Instance().AddScene("Assignment", std::make_unique<TestingScene>());
 	SceneManager::Instance().ChangeScene("Assignment", renderer);
@@ -119,6 +127,8 @@ void Game::Cleanup() {
 		SDL_DestroyWindow(window);
 		window = nullptr;
 	}
+
+	ServiceLocator::GetSoundSystem().Shutdown();
 
 	IMG_Quit();
 	SDL_Quit();

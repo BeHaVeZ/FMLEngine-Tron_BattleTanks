@@ -6,6 +6,7 @@
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "RotationComponent.h"
+#include "ServiceLocator.h"
 #include <iostream>
 
 const std::string backgroundImagePath = "data/artassets/tron_bg.png";
@@ -17,6 +18,8 @@ bool TestingScene::Initialize(SDL_Renderer* renderer) {
 
 	InitializeFirstTank(renderer);
 	InitializeSecondTank(renderer);
+
+    InitializeSounds();
 
 	return true;
 }
@@ -111,6 +114,13 @@ void TestingScene::InitializeSecondTank(SDL_Renderer* renderer)
 
 	FindGameObjectByTag("Tank1")->AddChild(std::move(tank));
     gameObjects;
+}
+
+void TestingScene::InitializeSounds()
+{
+	ServiceLocator::GetSoundSystem().AddSound("Menu Music.mp3",1,true);
+
+	ServiceLocator::GetSoundSystem().PlaySound(1, 0.5f);
 }
 
 
