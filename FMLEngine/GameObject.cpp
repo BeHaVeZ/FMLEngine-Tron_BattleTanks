@@ -116,14 +116,6 @@ const std::string& GameObject::GetTag() const
 	return tag;
 }
 
-void GameObject::SetParent(GameObject* newParent)
-{
-	if (newParent != nullptr and parent == nullptr)
-	{
-		parent = newParent;
-	}
-}
-
 void GameObject::Unparent()
 {
 	if (parent != nullptr)

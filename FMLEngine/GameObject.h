@@ -38,7 +38,6 @@ public:
     //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ TAG AND PARENT HANDLING
     void SetTag(const std::string& newTag);
     const std::string& GetTag() const;
-	void SetParent(GameObject* newParent);
 	void Unparent();
     GameObject* GetParent() const;
     const std::vector<std::unique_ptr<GameObject>>& GetChildren() const;
