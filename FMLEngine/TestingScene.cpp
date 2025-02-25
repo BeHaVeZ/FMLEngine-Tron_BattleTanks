@@ -118,9 +118,8 @@ void TestingScene::InitializeSecondTank(SDL_Renderer* renderer)
 
 void TestingScene::InitializeSounds()
 {
-	ServiceLocator::GetSoundSystem().AddSound("Menu Music.mp3",1,true);
-
-	ServiceLocator::GetSoundSystem().PlaySound(1, 0.5f);
+	ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3",1,true);
+	ServiceLocator::GetSoundSystem().PlaySound(1, 1.f);
 }
 
 

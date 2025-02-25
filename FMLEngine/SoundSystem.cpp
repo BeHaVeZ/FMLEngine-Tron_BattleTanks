@@ -26,24 +26,35 @@ public:
 
 		m_Pending.push({ id, volume });
 		m_Cv.notify_all();
+		std::cout << "Called Playsound of sdl sound with ID [" << id << "] at [" << volume << "] volume\n";
 	}
 
 	void AddSound(const std::string& path, const SoundId id, bool doLoop = false)
 	{
 		if (m_IsShutdown) return;
 
-		m_Sounds.emplace(id, Sound{ "../data/sounds/" + path, nullptr, false, doLoop });
+		m_Sounds.emplace(id, Sound{ "data/sounds/" + path, nullptr, false, doLoop });
+		std::cout << "Added sound with ID [" << id << "] and path data/sounds/" << path << "]\n";
 	}
 
 	void StartUp()
 	{
 		if (!m_IsShutdown) return;
 
-		Mix_Init(MIX_INIT_OGG | MIX_INIT_MP3);
-		Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096);
-		m_UpdateThread = std::jthread(&SDL_SoundSystemImpl::Update, this);
+		if (Mix_Init(MIX_INIT_OGG | MIX_INIT_MP3) == 0) {
+			std::cerr << "Failed to initialize SDL_mixer: " << Mix_GetError() << std::endl;
+			return;
+		}
 
+		if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096) != 0) {
+			std::cerr << "Failed to open audio: " << Mix_GetError() << std::endl;
+			return;
+		}
+
+		m_UpdateThread = std::jthread(&SDL_SoundSystemImpl::Update, this);
 		m_IsShutdown = false;
+
+		std::cout << "SDL SoundSystem started up\n";
 	}
 
 	void Shutdown()
@@ -101,25 +112,31 @@ private:
 	{
 		while (true)
 		{
-			// Wait for pending queue to have something in it
 			std::unique_lock<std::mutex> lk(m_CvMutex);
-			m_Cv.wait(lk, [&] {return !m_Pending.empty() || m_IsShutdown; });
+			m_Cv.wait(lk, [&] { return !m_Pending.empty() || m_IsShutdown; });
 
 			if (m_IsShutdown) return;
 
-			// Load audio clip if not loaded and play it
 			auto& sound = m_Sounds[m_Pending.front().id];
-			if (!sound.isLoaded)
-			{
+			if (!sound.isLoaded) {
 				sound.pChunk = Mix_LoadWAV(sound.path.c_str());
+				if (!sound.pChunk) {
+					std::cerr << "Failed to load sound: " << Mix_GetError() << std::endl;
+					m_Pending.pop();
+					continue;
+				}
 				sound.isLoaded = true;
 			}
 
-			// Play sound
-			sound.pChunk->volume = static_cast<uint8_t>(m_Pending.front().volume);
-			Mix_PlayChannel((m_Pending.front().id + 1) % MIX_CHANNELS, sound.pChunk, -(int)sound.doLoop);
+			sound.pChunk->volume = static_cast<uint8_t>(m_Pending.front().volume * MIX_MAX_VOLUME);
+			int channel = Mix_PlayChannel(-1, sound.pChunk, sound.doLoop ? -1 : 0);
+			if (channel == -1) {
+				std::cerr << "Failed to play sound: " << Mix_GetError() << std::endl;
+			}
+			else {
+				std::cout << "Playing sound from update with ID [" << m_Pending.front().id << "] at [" << m_Pending.front().volume << "] volume\n";
+			}
 
-			// Pop from pending queue
 			m_Pending.pop();
 		}
 	};

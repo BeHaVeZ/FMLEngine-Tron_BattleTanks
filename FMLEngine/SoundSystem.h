@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <iostream>
 
 using SoundId = unsigned short;
 
@@ -20,7 +21,7 @@ class NullSoundSystem final : public SoundSystem
 public:
 	void PlaySound(const SoundId, const float) override {};
 	void AddSound(const std::string&, const SoundId, bool = false) override {};
-	void StartUp() override {};
+	void StartUp() override { std::cout << "Nullsystem has been initialized \n"; };
 	void Shutdown() override {};
 	bool IsShutdown() override { return false; };
 };
