@@ -4,7 +4,8 @@ class MenuInterface {
 public:
     virtual ~MenuInterface() = default;
 
-    virtual void MoveSelectionUp() = 0;
-    virtual void MoveSelectionDown() = 0;
-    virtual void SelectOption() = 0;
+    virtual void SelectTopItem() = 0;
+    virtual void SelectLeftItem() = 0;
+    virtual void SelectRightItem() = 0;
+    virtual void SelectBottomItem() = 0;
 };

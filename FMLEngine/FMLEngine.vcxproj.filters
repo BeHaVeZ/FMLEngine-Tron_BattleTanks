@@ -43,6 +43,12 @@
     <Filter Include="Engine\Sound">
       <UniqueIdentifier>{6ff5e46c-c868-4c3c-89a7-04c7f91d6156}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\MainMenuCommands">
+      <UniqueIdentifier>{e79db2a0-3c9f-4e60-b8d5-cb467e254f68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Scenes\TronScenes">
+      <UniqueIdentifier>{a1067124-431f-4340-a8b3-633023242212}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -92,6 +98,9 @@
     </ClCompile>
     <ClCompile Include="ServiceLocator.cpp">
       <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="MainMenuScene.cpp">
+      <Filter>Engine\Scenes\TronScenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +166,12 @@
     </ClInclude>
     <ClInclude Include="SoundSystem.h">
       <Filter>Engine\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuManager.h">
+      <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="MainMenuScene.h">
+      <Filter>Engine\Scenes\TronScenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
