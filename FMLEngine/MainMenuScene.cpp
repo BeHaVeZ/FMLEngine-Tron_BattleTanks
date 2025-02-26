@@ -15,7 +15,7 @@ bool MainMenuScene::Initialize(SDL_Renderer* renderer) {
     this->storedRenderer = renderer;
     selectedIndex = 0;
 
-    InitializeBackground(renderer);
+    //InitializeBackground(renderer);
     InitializeMenuOptions(renderer);
 	InitializeSelectionArrow(renderer);
 	InitializeSounds();

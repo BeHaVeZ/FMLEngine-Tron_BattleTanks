@@ -60,11 +60,10 @@ bool Game::Initialize() {
 
 	ServiceLocator::GetSoundSystem().StartUp();
 
-	//SceneManager::Instance().AddScene("Assignment", std::make_unique<TestingScene>());
-	//SceneManager::Instance().ChangeScene("Assignment", renderer);
-
+	SceneManager::Instance().AddScene("Assignment", std::make_unique<TestingScene>());
 	SceneManager::Instance().AddScene("MainMenu", std::make_unique<MainMenuScene>());
-	SceneManager::Instance().ChangeScene("MainMenu", renderer);
+
+	SceneManager::Instance().ChangeScene("Assignment", renderer);
 
 	GameStateManager::Instance().SetRunning(true);
 	return true;

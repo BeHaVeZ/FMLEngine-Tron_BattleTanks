@@ -29,8 +29,11 @@ void TextureComponent::Render(SDL_Renderer* renderer) {
             destRect.w = static_cast<int>(transform->IsSizeSet() ? transform->GetWidth() : defaultWidth);
             destRect.h = static_cast<int>(transform->IsSizeSet() ? transform->GetHeight() : defaultHeight);
 
-            SDL_RenderCopy(renderer, texture, nullptr, &destRect);
+
+            SDL_Point center = { destRect.w / 2, destRect.h / 2 };
+
+            SDL_RenderCopyEx(renderer, texture, NULL, &destRect,
+                transform->GetRotation(), &center, SDL_FLIP_NONE);
         }
     }
 }
-

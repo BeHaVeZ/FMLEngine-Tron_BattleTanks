@@ -43,7 +43,11 @@ void TextComponent::Render(SDL_Renderer* renderer) {
         if (transform) {
             SDL_Rect renderQuad = { (int)transform->GetLocalX(), (int)transform->GetLocalY(), 0, 0 };
             SDL_QueryTexture(texture, NULL, NULL, &renderQuad.w, &renderQuad.h);
-            SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
+
+            SDL_Point center = { renderQuad.w / 2, renderQuad.h / 2 };
+
+            SDL_RenderCopyEx(renderer, texture, NULL, &renderQuad,
+                transform->GetRotation(), &center, SDL_FLIP_NONE);
         }
     }
 }
