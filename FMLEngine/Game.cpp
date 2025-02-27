@@ -63,7 +63,7 @@ bool Game::Initialize() {
 	SceneManager::Instance().AddScene("Assignment", std::make_unique<TestingScene>());
 	SceneManager::Instance().AddScene("MainMenu", std::make_unique<MainMenuScene>());
 
-	SceneManager::Instance().ChangeScene("Assignment", renderer);
+	SceneManager::Instance().ChangeScene("MainMenu", renderer);
 
 	GameStateManager::Instance().SetRunning(true);
 	return true;

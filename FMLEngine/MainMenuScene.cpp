@@ -12,23 +12,23 @@
 #include "ServiceLocator.h"
 
 bool MainMenuScene::Initialize(SDL_Renderer* renderer) {
-    this->storedRenderer = renderer;
-    selectedIndex = 0;
+	this->storedRenderer = renderer;
+	selectedIndex = 0;
 
-    //InitializeBackground(renderer);
-    InitializeMenuOptions(renderer);
+	//InitializeBackground(renderer);
+	InitializeMenuOptions(renderer);
 	InitializeSelectionArrow(renderer);
 	InitializeSounds();
 
-    MenuManager::Instance().SetCurrentMenu(this);
+	MenuManager::Instance().SetCurrentMenu(this);
 
-    return true;
+	return true;
 }
 
 
 void MainMenuScene::HandleInput(SDL_Event& event)
 {
-    InputHandler::Instance().HandleInput(event);
+	InputHandler::Instance().HandleInput(event);
 }
 
 void MainMenuScene::Update(float)
@@ -36,91 +36,92 @@ void MainMenuScene::Update(float)
 }
 
 void MainMenuScene::Render(SDL_Renderer* renderer) {
-    SDL_RenderClear(renderer);
+	SDL_RenderClear(renderer);
 
-    for (auto& gameObject : gameObjects)
-    {
-        gameObject->Render(renderer);
-    }
+	for (auto& gameObject : gameObjects)
+	{
+		gameObject->Render(renderer);
+	}
 
-    for (auto& option : menuOptions) {
-        option->Render(renderer);
-    }
+	for (auto& option : menuOptions) {
+		option->Render(renderer);
+	}
 
-    SDL_RenderPresent(renderer);
+	SDL_RenderPresent(renderer);
 }
 
 void MainMenuScene::Cleanup() {
 }
 
 void MainMenuScene::InitializeBackground(SDL_Renderer* renderer) {
-    auto background = std::make_unique<GameObject>();
-    auto backgroundTexture = std::make_unique<TextureComponent>("data/artassets/tron_bg.png", renderer);
-    background->AddComponent(std::move(backgroundTexture));
+	auto background = std::make_unique<GameObject>();
+	auto backgroundTexture = std::make_unique<TextureComponent>("data/artassets/tron_bg.png", renderer);
+	background->AddComponent(std::move(backgroundTexture));
 
-    auto backgroundTransform = background->GetComponent<TransformComponent>();
-    if (backgroundTransform) {
-        backgroundTransform->SetPosition(0, 0);
-        backgroundTransform->SetSize(
-            static_cast<float>(ConfigManager::Instance().GetWindowWidth()),
-            static_cast<float>(ConfigManager::Instance().GetWindowHeight())
-        );
-    }
-    gameObjects.push_back(std::move(background));
+	auto backgroundTransform = background->GetComponent<TransformComponent>();
+	if (backgroundTransform) {
+		backgroundTransform->SetPosition({0,0});
+		backgroundTransform->SetSize(
+			static_cast<float>(ConfigManager::Instance().GetWindowWidth()),
+			static_cast<float>(ConfigManager::Instance().GetWindowHeight())
+		);
+	}
+	gameObjects.push_back(std::move(background));
 }
 
 void MainMenuScene::InitializeMenuOptions(SDL_Renderer* renderer) {
-    auto playOption = std::make_unique<GameObject>();
-    auto playText = std::make_unique<TextComponent>("Play", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 255, 255, 255, 255 }, renderer);
-    playOption->GetComponent<TransformComponent>()->SetPosition(450, 300);
-    playOption->AddComponent(std::move(playText));
+	auto playOption = std::make_unique<GameObject>();
+	auto playText = std::make_unique<TextComponent>("Play", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 255, 255, 255, 255 }, renderer);
+	playOption->GetComponent<TransformComponent>()->SetPosition({ 450, 300 });
+	playOption->AddComponent(std::move(playText));
 
-    menuOptions.push_back(playOption.get());
-    gameObjects.push_back(std::move(playOption));
+	menuOptions.push_back(playOption.get());
+	gameObjects.push_back(std::move(playOption));
 
-    auto quitOption = std::make_unique<GameObject>();
-    auto quitText = std::make_unique<TextComponent>("Quit", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 255, 255, 255, 255 }, renderer);
-    quitOption->GetComponent<TransformComponent>()->SetPosition(450, 500);
-    quitOption->AddComponent(std::move(quitText));
+	auto quitOption = std::make_unique<GameObject>();
+	auto quitText = std::make_unique<TextComponent>("Quit", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 255, 255, 255, 255 }, renderer);
+	quitOption->GetComponent<TransformComponent>()->SetPosition({ 450, 500 });
+	quitOption->AddComponent(std::move(quitText));
 
-    menuOptions.push_back(quitOption.get());
-    gameObjects.push_back(std::move(quitOption));
-
-
-    auto coopoption = std::make_unique<GameObject>();
-    auto coopText = std::make_unique<TextComponent>("Coop", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 0, 255, 0, 255 }, renderer);
-    coopoption->GetComponent<TransformComponent>()->SetPosition(270, 400);
-    coopoption->AddComponent(std::move(coopText));
-
-    menuOptions.push_back(coopoption.get());
-    gameObjects.push_back(std::move(coopoption));
+	menuOptions.push_back(quitOption.get());
+	gameObjects.push_back(std::move(quitOption));
 
 
-    auto versusOption = std::make_unique<GameObject>();
-    auto versusText = std::make_unique<TextComponent>("Versus", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 255, 0, 0, 255 }, renderer);
-    versusOption->GetComponent<TransformComponent>()->SetPosition(630, 400);
-    versusOption->AddComponent(std::move(versusText));
+	auto coopoption = std::make_unique<GameObject>();
+	auto coopText = std::make_unique<TextComponent>("Coop", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 0, 255, 0, 255 }, renderer);
+	coopoption->GetComponent<TransformComponent>()->SetPosition({ 270, 400 });
+	coopoption->AddComponent(std::move(coopText));
 
-    menuOptions.push_back(versusOption.get());
-    gameObjects.push_back(std::move(versusOption));
+	menuOptions.push_back(coopoption.get());
+	gameObjects.push_back(std::move(coopoption));
+
+
+	auto versusOption = std::make_unique<GameObject>();
+	auto versusText = std::make_unique<TextComponent>("Versus", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 255, 0, 0, 255 }, renderer);
+	versusOption->GetComponent<TransformComponent>()->SetPosition({ 630, 400 });
+	versusOption->AddComponent(std::move(versusText));
+
+	menuOptions.push_back(versusOption.get());
+	gameObjects.push_back(std::move(versusOption));
 }
 
 void MainMenuScene::InitializeSelectionArrow(SDL_Renderer* renderer) {
-    selectionArrow = std::make_unique<GameObject>("selectionArrow");
+	selectionArrow = std::make_unique<GameObject>("selectionArrow");
 
-    auto arrowText = std::make_unique<TextComponent>("->", "data/fonts/Game_Of_Squids.ttf", 32, SDL_Color{ 255, 255, 255, 255 }, renderer);
+	auto arrowText = std::make_unique<TextComponent>("->", "data/fonts/Game_Of_Squids.ttf", 32, SDL_Color{ 255, 255, 255, 255 }, renderer);
 
-    selectionArrow->GetComponent<TransformComponent>()->SetPosition(100, 100);
+	selectionArrow->GetComponent<TransformComponent>()->SetPosition({ 100, 100 });
+	selectionArrow->GetComponent<TransformComponent>()->SetRotation(270);
 
-    selectionArrow->AddComponent(std::move(arrowText));
+	selectionArrow->AddComponent(std::move(arrowText));
 
-    gameObjects.push_back(std::move(selectionArrow));
+	gameObjects.push_back(std::move(selectionArrow));
 }
 
 void MainMenuScene::InitializeSounds()
 {
-    ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
-    ServiceLocator::GetSoundSystem().PlaySound(1, 1.f);
+	ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
+	ServiceLocator::GetSoundSystem().PlaySound(1, 1.f);
 }
 
 void MainMenuScene::SelectTopItem()

@@ -38,10 +38,10 @@ void TextComponent::SetText(const std::string& newText, SDL_Renderer* renderer) 
 }
 
 void TextComponent::Render(SDL_Renderer* renderer) {
-    if (texture && gameObject) {
+    if (texture and gameObject) {
         TransformComponent* transform = gameObject->GetComponent<TransformComponent>();
         if (transform) {
-            SDL_Rect renderQuad = { (int)transform->GetLocalX(), (int)transform->GetLocalY(), 0, 0 };
+            SDL_Rect renderQuad = { (int)transform->GetLocalPosition().x, (int)transform->GetLocalPosition().y, 0, 0 };
             SDL_QueryTexture(texture, NULL, NULL, &renderQuad.w, &renderQuad.h);
 
             SDL_Point center = { renderQuad.w / 2, renderQuad.h / 2 };

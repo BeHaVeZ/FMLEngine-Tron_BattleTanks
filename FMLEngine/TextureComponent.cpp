@@ -23,8 +23,8 @@ void TextureComponent::Render(SDL_Renderer* renderer) {
     if (texture) {
         auto transform = gameObject->GetComponent<TransformComponent>();
         if (transform) {
-            destRect.x = static_cast<int>(transform->GetWorldX());
-            destRect.y = static_cast<int>(transform->GetWorldY());
+            destRect.x = static_cast<int>(transform->GetWorldPosition().x);
+            destRect.y = static_cast<int>(transform->GetWorldPosition().y);
 
             destRect.w = static_cast<int>(transform->IsSizeSet() ? transform->GetWidth() : defaultWidth);
             destRect.h = static_cast<int>(transform->IsSizeSet() ? transform->GetHeight() : defaultHeight);

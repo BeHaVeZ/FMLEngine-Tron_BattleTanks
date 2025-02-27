@@ -18,6 +18,6 @@ void RotationComponent::Update(float deltaTime) {
     float newY = centerY + radius * sin(angle);
 
     if (gameObject && gameObject->GetComponent<TransformComponent>()) {
-        gameObject->GetComponent<TransformComponent>()->SetPosition(newX, newY);
+        gameObject->GetComponent<TransformComponent>()->SetPosition({ newX, newY });
     }
 }

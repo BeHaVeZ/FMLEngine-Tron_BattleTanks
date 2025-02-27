@@ -31,7 +31,7 @@ void TestingScene::InitializeBackground(SDL_Renderer* renderer) {
 
     auto backgroundTransform = background->GetComponent<TransformComponent>();
     if (backgroundTransform) {
-        backgroundTransform->SetPosition(0, 0);
+        backgroundTransform->SetPosition({ 0, 0 });
         backgroundTransform->SetSize(
             static_cast<float>(ConfigManager::Instance().GetWindowWidth()),
             static_cast<float>(ConfigManager::Instance().GetWindowHeight())
@@ -54,7 +54,7 @@ void TestingScene::InitializeTitle(SDL_Renderer* renderer)
         renderer);                   
 
     title->AddComponent(std::move(titleTextComponent));
-	title->GetComponent<TransformComponent>()->SetPosition(300, 300);
+    title->GetComponent<TransformComponent>()->SetPosition({ 300, 300 });
 
     gameObjects.push_back(std::move(title));
 }
@@ -78,7 +78,7 @@ void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
     fpsGameObject->AddComponent(std::move(fpsComponent));
 	fpsGameObject->GetComponent<FPSComponent>()->Initialize();
 
-    fpsGameObject->GetComponent<TransformComponent>()->SetPosition(10, 10);
+    fpsGameObject->GetComponent<TransformComponent>()->SetPosition({ 10, 10 });
 
     gameObjects.push_back(std::move(fpsGameObject));
 }
@@ -90,7 +90,7 @@ void TestingScene::InitializeFirstTank(SDL_Renderer* renderer)
 	auto tankTexture = std::make_unique<TextureComponent>("data/artassets/RedTank.png", renderer);
 	tank->AddComponent(std::move(tankTexture));
 
-	tank->GetComponent<TransformComponent>()->SetPosition(500, 500);
+    tank->GetComponent<TransformComponent>()->SetPosition({ 500, 500 });
 
 	auto rotationComponent = std::make_unique<RotationComponent>(20.f, 200.f, 500.f, 300.f);
 	tank->AddComponent(std::move(rotationComponent));
@@ -105,7 +105,7 @@ void TestingScene::InitializeSecondTank(SDL_Renderer* renderer)
 
     auto tankTexture = std::make_unique<TextureComponent>("data/artassets/BlueTank.png", renderer);
     tank->AddComponent(std::move(tankTexture));
-    tank->GetComponent<TransformComponent>()->SetPosition(100, 100);
+    tank->GetComponent<TransformComponent>()->SetPosition({ 100, 100 });
 
 
     auto rotationComponent = std::make_unique<RotationComponent>(100.f, 500.f);

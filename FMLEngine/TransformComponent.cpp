@@ -1,14 +1,13 @@
 #include "TransformComponent.h"
 //#include <cmath>
 
-TransformComponent::TransformComponent(float x, float y, float rotation)
-    : localX(x), localY(y), rotation(rotation), width(0), height(0), worldX(x), worldY(y), worldRotation(rotation), isDirty(true) {
+TransformComponent::TransformComponent(glm::vec2 position, float rotation)
+    : localPosition(position), rotation(rotation), width(0), height(0), worldPosition(position), worldRotation(rotation), isDirty(true) {
 }
 
-void TransformComponent::SetPosition(float newX, float newY) {
-    if (newX != localX || newY != localY) {
-        localX = newX;
-        localY = newY;
+void TransformComponent::SetPosition(glm::vec2 newPosition) {
+    if (newPosition != localPosition) {
+        localPosition = newPosition;
         MarkDirty();
     }
 }
@@ -40,14 +39,13 @@ void TransformComponent::UpdateWorldPosition() {
     if (gameObject->HasParent()) {
         auto parentTransform = gameObject->GetParent()->GetComponent<TransformComponent>();
         if (parentTransform) {
-            worldX = parentTransform->worldX + localX * cosf(parentTransform->rotation * (float)M_PI / 180) - localY * sinf(parentTransform->rotation * (float)M_PI / 180);
-            worldY = parentTransform->worldY + localX * sinf(parentTransform->rotation * (float)M_PI / 180) + localY * cosf(parentTransform->rotation * (float)M_PI / 180);
+            worldPosition.x = parentTransform->worldPosition.x + localPosition.x * cosf(parentTransform->rotation * (float)M_PI / 180) - localPosition.y * sinf(parentTransform->rotation * (float)M_PI / 180);
+            worldPosition.y = parentTransform->worldPosition.y + localPosition.x * sinf(parentTransform->rotation * (float)M_PI / 180) + localPosition.y * cosf(parentTransform->rotation * (float)M_PI / 180);
             worldRotation = parentTransform->worldRotation + rotation;
         }
     }
     else {
-        worldX = localX;
-        worldY = localY;
+        worldPosition = localPosition;
         worldRotation = rotation;
     }
 }
