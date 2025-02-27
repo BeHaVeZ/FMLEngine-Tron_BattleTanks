@@ -1,5 +1,4 @@
 #include "TransformComponent.h"
-//#include <cmath>
 
 TransformComponent::TransformComponent(glm::vec2 position, float rotation)
     : localPosition(position), rotation(rotation), width(0), height(0), worldPosition(position), worldRotation(rotation), isDirty(true) {

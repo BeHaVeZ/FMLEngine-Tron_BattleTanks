@@ -14,6 +14,7 @@ public:
     void InitializeFPSCounter(SDL_Renderer* renderer);
 	void InitializeFirstTank(SDL_Renderer* renderer);
 	void InitializeSecondTank(SDL_Renderer* renderer);
+    void InitializeInput() {};
     
     void InitializeSounds();
     

@@ -1,16 +1,15 @@
 #pragma once
 #include "Scene.h"
-#include "MenuInterface.h"
-#include "MenuManager.h"
 #include <memory>
 #include <vector>
 
-class MainMenuScene : public Scene, public MenuInterface {
+class MainMenuScene : public Scene {
 public:
     MainMenuScene() : storedRenderer(nullptr), selectedIndex(0) {}
 
     bool Initialize(SDL_Renderer* renderer) override;
     void HandleInput(SDL_Event& event) override;
+    void InitializeInput() override;
     void Update(float deltaTime) override;
     void Render(SDL_Renderer* renderer) override;
     void Cleanup() override;
@@ -21,10 +20,6 @@ public:
 
     void InitializeSounds();
 
-    void SelectTopItem() override;
-    void SelectBottomItem() override;
-    void SelectLeftItem() override;
-    void SelectRightItem() override;
 
 private:
     std::vector<GameObject*> menuOptions;

@@ -49,6 +49,9 @@
     <Filter Include="Engine\Scenes\TronScenes">
       <UniqueIdentifier>{a1067124-431f-4340-a8b3-633023242212}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Command\TronCommands">
+      <UniqueIdentifier>{825e6ff6-762f-4de1-9269-9b9a9ec1b976}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -155,9 +158,6 @@
     <ClInclude Include="TestingScene.h">
       <Filter>Engine\Scenes\AssignmentScenes</Filter>
     </ClInclude>
-    <ClInclude Include="MenuInterface.h">
-      <Filter>Engine\Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="RotationComponent.h">
       <Filter>Engine\Components\AssignmentComponents</Filter>
     </ClInclude>
@@ -167,11 +167,11 @@
     <ClInclude Include="SoundSystem.h">
       <Filter>Engine\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="MenuManager.h">
-      <Filter>Engine\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="MainMenuScene.h">
       <Filter>Engine\Scenes\TronScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateCommand.h">
+      <Filter>Engine\Command\TronCommands</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,11 +5,11 @@
 #include "InputHandler.h"
 #include "GameStateManager.h"
 #include "SceneManager.h"
-#include "MenuManager.h"
 #include <memory>
 #include <iostream>
 #include "ConfigManager.h"
 #include "ServiceLocator.h"
+#include "RotateCommand.h"
 
 bool MainMenuScene::Initialize(SDL_Renderer* renderer) {
 	this->storedRenderer = renderer;
@@ -18,9 +18,8 @@ bool MainMenuScene::Initialize(SDL_Renderer* renderer) {
 	//InitializeBackground(renderer);
 	InitializeMenuOptions(renderer);
 	InitializeSelectionArrow(renderer);
+	InitializeInput();
 	InitializeSounds();
-
-	MenuManager::Instance().SetCurrentMenu(this);
 
 	return true;
 }
@@ -29,6 +28,14 @@ bool MainMenuScene::Initialize(SDL_Renderer* renderer) {
 void MainMenuScene::HandleInput(SDL_Event& event)
 {
 	InputHandler::Instance().HandleInput(event);
+}
+
+void MainMenuScene::InitializeInput()
+{
+	InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 270.0f)); 
+	InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 90.0f));  
+	InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 180.0f)); 
+	InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 0.0f));   
 }
 
 void MainMenuScene::Update(float)
@@ -71,7 +78,7 @@ void MainMenuScene::InitializeBackground(SDL_Renderer* renderer) {
 
 void MainMenuScene::InitializeMenuOptions(SDL_Renderer* renderer) {
 	auto playOption = std::make_unique<GameObject>();
-	auto playText = std::make_unique<TextComponent>("Play", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 255, 255, 255, 255 }, renderer);
+	auto playText = std::make_unique<TextComponent>("Play", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 0, 0, 255, 255 }, renderer);
 	playOption->GetComponent<TransformComponent>()->SetPosition({ 450, 300 });
 	playOption->AddComponent(std::move(playText));
 
@@ -79,7 +86,7 @@ void MainMenuScene::InitializeMenuOptions(SDL_Renderer* renderer) {
 	gameObjects.push_back(std::move(playOption));
 
 	auto quitOption = std::make_unique<GameObject>();
-	auto quitText = std::make_unique<TextComponent>("Quit", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 255, 255, 255, 255 }, renderer);
+	auto quitText = std::make_unique<TextComponent>("Quit", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 0, 0, 255, 255 }, renderer);
 	quitOption->GetComponent<TransformComponent>()->SetPosition({ 450, 500 });
 	quitOption->AddComponent(std::move(quitText));
 
@@ -106,11 +113,11 @@ void MainMenuScene::InitializeMenuOptions(SDL_Renderer* renderer) {
 }
 
 void MainMenuScene::InitializeSelectionArrow(SDL_Renderer* renderer) {
-	selectionArrow = std::make_unique<GameObject>("selectionArrow");
+	selectionArrow = std::make_unique<GameObject>("SelectionArrow");
 
 	auto arrowText = std::make_unique<TextComponent>("->", "data/fonts/Game_Of_Squids.ttf", 32, SDL_Color{ 255, 255, 255, 255 }, renderer);
 
-	selectionArrow->GetComponent<TransformComponent>()->SetPosition({ 100, 100 });
+	selectionArrow->GetComponent<TransformComponent>()->SetPosition({ 480, 400 });
 	selectionArrow->GetComponent<TransformComponent>()->SetRotation(270);
 
 	selectionArrow->AddComponent(std::move(arrowText));
@@ -122,20 +129,4 @@ void MainMenuScene::InitializeSounds()
 {
 	ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
 	ServiceLocator::GetSoundSystem().PlaySound(1, 1.f);
-}
-
-void MainMenuScene::SelectTopItem()
-{
-}
-
-void MainMenuScene::SelectBottomItem()
-{
-}
-
-void MainMenuScene::SelectLeftItem()
-{
-}
-
-void MainMenuScene::SelectRightItem()
-{
 }

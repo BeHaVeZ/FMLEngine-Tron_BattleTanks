@@ -232,8 +232,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
   <ItemGroup>
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="MainMenuScene.h" />
-    <ClInclude Include="MenuInterface.h" />
-    <ClInclude Include="MenuManager.h" />
+    <ClInclude Include="RotateCommand.h" />
     <ClInclude Include="RotationComponent.h" />
     <ClInclude Include="ServiceLocator.h" />
     <ClInclude Include="SoundSystem.h" />
