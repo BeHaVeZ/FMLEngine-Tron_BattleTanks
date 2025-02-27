@@ -93,7 +93,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;$(SolutionDir)vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -124,7 +124,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;$(SolutionDir)vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -155,7 +155,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;$(SolutionDir)vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
@@ -186,7 +186,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;$(SolutionDir)vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
