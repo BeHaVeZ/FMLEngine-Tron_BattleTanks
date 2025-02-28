@@ -5,7 +5,7 @@ void SceneManager::AddScene(const std::string& name, std::unique_ptr<Scene> scen
     scenes[name] = std::move(scene);
 }
 
-void SceneManager::ChangeScene(const std::string& sceneName, SDL_Renderer* renderer) {
+void SceneManager::ChangeScene(const std::string& sceneName) {
     auto it = scenes.find(sceneName);
     if (it != scenes.end()) {
         InputHandler::Instance().ClearBindings();
@@ -15,7 +15,7 @@ void SceneManager::ChangeScene(const std::string& sceneName, SDL_Renderer* rende
         }
 
         currentScene = it->second.get();
-        currentScene->Initialize(renderer);
+        currentScene->Initialize(localRenderer);
     }
 }
 
@@ -45,8 +45,25 @@ void SceneManager::Update(float deltaTime) {
     }
 }
 
-void SceneManager::Render(SDL_Renderer* renderer) {
+void SceneManager::Render() {
     if (currentScene) {
-        currentScene->Render(renderer);
+        currentScene->Render(localRenderer);
     }
+}
+
+void SceneManager::SetRenderer(SDL_Renderer* newRenderer)
+{
+    if (newRenderer)
+    {
+        localRenderer = newRenderer;
+    }
+}
+
+SDL_Renderer* SceneManager::GetRenderer() const
+{
+    if (localRenderer)
+    {
+        return localRenderer;
+    }
+    return nullptr;
 }

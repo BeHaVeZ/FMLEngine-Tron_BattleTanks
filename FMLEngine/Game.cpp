@@ -10,6 +10,8 @@
 #include "SoundSystem.h"
 #include "ServiceLocator.h"
 #include "MainMenuScene.h"
+#include "CoopScene.h"
+#include "VersusScene.h"
 
 Game::Game() : window(nullptr), renderer(nullptr), isRunning(false) {}
 
@@ -54,16 +56,19 @@ bool Game::Initialize() {
 		return false;
 	}
 
+	SceneManager::Instance().SetRenderer(renderer);
 
 	auto soundSystem = new SDL_SoundSystem();
 	ServiceLocator::RegisterSoundSystem(soundSystem);
 
 	ServiceLocator::GetSoundSystem().StartUp();
 
-	SceneManager::Instance().AddScene("Assignment", std::make_unique<TestingScene>());
 	SceneManager::Instance().AddScene("MainMenu", std::make_unique<MainMenuScene>());
+	SceneManager::Instance().AddScene("Solo", std::make_unique<TestingScene>());
+	SceneManager::Instance().AddScene("CoopScene", std::make_unique<CoopScene>());
+	SceneManager::Instance().AddScene("VersusScene", std::make_unique<VersusScene>());
 
-	SceneManager::Instance().ChangeScene("MainMenu", renderer);
+	SceneManager::Instance().ChangeScene("MainMenu");
 
 	GameStateManager::Instance().SetRunning(true);
 	return true;
@@ -114,7 +119,7 @@ void Game::Update(float deltaTime) {
 
 void Game::Render() {
 	SDL_RenderClear(renderer);
-	SceneManager::Instance().Render(renderer);
+	SceneManager::Instance().Render();
 	SDL_RenderPresent(renderer);
 }
 

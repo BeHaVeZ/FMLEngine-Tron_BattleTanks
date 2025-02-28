@@ -10,12 +10,13 @@
 #include "ConfigManager.h"
 #include "ServiceLocator.h"
 #include "RotateCommand.h"
+#include "SelectMenuOptionCommand.h"
 
 bool MainMenuScene::Initialize(SDL_Renderer* renderer) {
 	this->storedRenderer = renderer;
 	selectedIndex = 0;
 
-	//InitializeBackground(renderer);
+	InitializeBackground(renderer);
 	InitializeMenuOptions(renderer);
 	InitializeSelectionArrow(renderer);
 	InitializeInput();
@@ -36,6 +37,8 @@ void MainMenuScene::InitializeInput()
 	InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 90.0f));  
 	InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 180.0f)); 
 	InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 0.0f));   
+
+	InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<SelectMenuOptionCommand>(FindGameObjectByTag("SelectionArrow")));   
 }
 
 void MainMenuScene::Update(float)
@@ -57,7 +60,8 @@ void MainMenuScene::Render(SDL_Renderer* renderer) {
 	SDL_RenderPresent(renderer);
 }
 
-void MainMenuScene::Cleanup() {
+void MainMenuScene::Cleanup() 
+{
 }
 
 void MainMenuScene::InitializeBackground(SDL_Renderer* renderer) {
