@@ -16,6 +16,7 @@ public:
 	virtual bool IsShutdown() = 0;
 	virtual void MuteSound() = 0;
 	virtual void UnmuteSound() = 0;
+	virtual void ClearSounds() = 0;
 
 	bool isMuted = false;
 };
@@ -30,6 +31,7 @@ public:
 	bool IsShutdown() override { return false; };
 	virtual void MuteSound() override {};
 	virtual void UnmuteSound() override {};
+	virtual void ClearSounds() override {};
 };
 
 class SDL_SoundSystem final : public SoundSystem
@@ -45,6 +47,7 @@ public:
 	bool IsShutdown() override;
 	virtual void MuteSound() override;
 	virtual void UnmuteSound() override;
+	virtual void ClearSounds() override;
 
 private:
 	class SDL_SoundSystemImpl;
@@ -63,6 +66,7 @@ public:
 	bool IsShutdown() override;
 	virtual void MuteSound() override {};
 	virtual void UnmuteSound() override {};
+	virtual void ClearSounds() override {}
 
 private:
 	std::unique_ptr<SoundSystem> m_pSS;

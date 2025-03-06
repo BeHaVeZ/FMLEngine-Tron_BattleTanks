@@ -83,6 +83,12 @@ public:
 		return m_IsShutdown;
 	}
 
+	void ClearSounds() 
+	{
+		Mix_HaltChannel(-1);  
+		m_Sounds.clear();
+	}
+
 private:
 	struct PlayMessage
 	{
@@ -174,17 +180,23 @@ bool SDL_SoundSystem::IsShutdown()
 }
 void SDL_SoundSystem::MuteSound()
 {
-	if (!isMuted) {
+	if (!isMuted) 
+	{
 		Mix_Volume(-1, 0); 
 		isMuted = true;
 	}
 }
 void SDL_SoundSystem::UnmuteSound()
 {
-	if (isMuted) {
+	if (isMuted) 
+	{
 		Mix_Volume(-1, MIX_MAX_VOLUME); 
 		isMuted = false;
 	}
+}
+void SDL_SoundSystem::ClearSounds()
+{
+	m_pImpl->ClearSounds();
 }
 #pragma endregion
 

@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "InputHandler.h"
+#include "ServiceLocator.h"
 
 void SceneManager::AddScene(const std::string& name, std::unique_ptr<Scene> scene) {
     scenes[name] = std::move(scene);
@@ -9,6 +10,7 @@ void SceneManager::ChangeScene(const std::string& sceneName) {
     auto it = scenes.find(sceneName);
     if (it != scenes.end()) {
         InputHandler::Instance().ClearBindings();
+        ServiceLocator::GetSoundSystem().ClearSounds();
 
         if (currentScene) {
             currentScene->Cleanup();

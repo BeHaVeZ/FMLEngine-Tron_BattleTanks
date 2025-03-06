@@ -111,7 +111,6 @@ void TestingScene::InitializeSecondTank(SDL_Renderer* renderer)
     tank->GetComponent<RotationComponent>()->Initialize();
 
 	FindGameObjectByTag("Tank1")->AddChild(std::move(tank));
-    gameObjects;
 }
 
 void TestingScene::InitializeInput() {
@@ -126,7 +125,7 @@ void TestingScene::InitializeInput() {
 
 void TestingScene::InitializeSounds()
 {
-	ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3",1,true);
+	ServiceLocator::GetSoundSystem().AddSound("Game_Music.mp3",1,true);
 	ServiceLocator::GetSoundSystem().PlaySound(1, 1.f);
 }
 
