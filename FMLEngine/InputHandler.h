@@ -11,14 +11,24 @@ public:
         return instance;
     }
 
-    void BindCommand(SDL_Keycode key, std::unique_ptr<Command> command);
+    enum class KeyAction {
+        KeyDown,
+        KeyUp
+    };
+
+    void BindCommand(SDL_Keycode key, std::unique_ptr<Command> command, KeyAction action = KeyAction::KeyDown);
+
     void ClearBindings();
     void HandleInput(SDL_Event& event);
+    bool IsKeyPressed(SDL_Keycode key) const;
+
 
     InputHandler(const InputHandler&) = delete;
     InputHandler& operator=(const InputHandler&) = delete;
 
 private:
     InputHandler() = default;
-    std::map<SDL_Keycode, std::unique_ptr<Command>> keyCommandMap;
+    std::map<SDL_Keycode, bool> keyStates;
+    std::map<SDL_Keycode, std::unique_ptr<Command>> keyDownCommands;
+    std::map<SDL_Keycode, std::unique_ptr<Command>> keyUpCommands;
 };

@@ -8,17 +8,19 @@
 #include "RotationComponent.h"
 #include "ServiceLocator.h"
 #include <iostream>
+#include "MoveCommand.h"
 
-const std::string backgroundImagePath = "data/artassets/tron_bg.png";
+const std::string backgroundImagePath = "data/levels/level00.png";
 
 bool TestingScene::Initialize(SDL_Renderer* renderer) {
-	//InitializeBackground(renderer);
+	InitializeBackground(renderer);
     //InitializeTitle(renderer);
     InitializeFPSCounter(renderer);
 
 	InitializeFirstTank(renderer);
-	InitializeSecondTank(renderer);
+	//InitializeSecondTank(renderer);
 
+    InitializeInput();
     InitializeSounds();
 
 	return true;
@@ -68,7 +70,7 @@ void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
     auto titleTextComponent = std::make_unique<TextComponent>(
         "FPS 0",
         "data/fonts/tron-arcade.ttf",
-        22,
+        10,
         fpsColor,
         renderer);
     fpsGameObject->AddComponent(std::move(titleTextComponent));
@@ -92,10 +94,6 @@ void TestingScene::InitializeFirstTank(SDL_Renderer* renderer)
 
     tank->GetComponent<TransformComponent>()->SetPosition({ 500, 500 });
 
-	auto rotationComponent = std::make_unique<RotationComponent>(20.f, 200.f, 500.f, 300.f);
-	tank->AddComponent(std::move(rotationComponent));
-	tank->GetComponent<RotationComponent>()->Initialize();
-
 	gameObjects.push_back(std::move(tank));
 }
 
@@ -114,6 +112,16 @@ void TestingScene::InitializeSecondTank(SDL_Renderer* renderer)
 
 	FindGameObjectByTag("Tank1")->AddChild(std::move(tank));
     gameObjects;
+}
+
+void TestingScene::InitializeInput() {
+    auto tank1 = FindGameObjectByTag("Tank1");
+    if (tank1) {
+        InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<MoveCommand>(tank1, glm::vec2(0, -1), 10.0f));
+        InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<MoveCommand>(tank1, glm::vec2(0, 1), 10.0f));
+        InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<MoveCommand>(tank1, glm::vec2(-1, 0), 10.0f));
+        InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<MoveCommand>(tank1, glm::vec2(1, 0), 10.0f));
+    }
 }
 
 void TestingScene::InitializeSounds()

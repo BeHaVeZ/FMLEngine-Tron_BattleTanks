@@ -31,15 +31,22 @@ void MainMenuScene::HandleInput(SDL_Event& event)
 	InputHandler::Instance().HandleInput(event);
 }
 
-void MainMenuScene::InitializeInput()
-{
-	InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 270.0f)); 
-	InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 90.0f));  
-	InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 180.0f)); 
-	InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<RotateCommand>(FindGameObjectByTag("SelectionArrow"), 0.0f));   
+void MainMenuScene::InitializeInput() {
+	// Bind rotation commands to continuous updates
+	auto arrow = FindGameObjectByTag("SelectionArrow");
+	if (arrow) {
+		// Assuming RotateCommand and MoveCommand have been adapted to handle continuous input
+		InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<RotateCommand>(arrow, 270.0f));
+		InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<RotateCommand>(arrow, 90.0f));
+		InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<RotateCommand>(arrow, 180.0f));
+		InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<RotateCommand>(arrow, 0.0f));
 
-	InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<SelectMenuOptionCommand>(FindGameObjectByTag("SelectionArrow")));   
+		// Bind action commands for single key press events
+		// These could trigger only once per key press, suitable for selections or actions in a menu
+		InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<SelectMenuOptionCommand>(arrow));
+	}
 }
+
 
 void MainMenuScene::Update(float)
 {

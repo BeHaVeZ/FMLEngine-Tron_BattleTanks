@@ -2,6 +2,7 @@
 #include "Command.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
+#include <iostream>
 
 class RotateCommand : public Command {
 public:

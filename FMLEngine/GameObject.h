@@ -11,7 +11,6 @@ public:
     GameObject(const std::string& tag = "");
     ~GameObject() = default;
 
-	//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ COMPONENT MANAGEMENT
     template <typename T>
     T* GetComponent() const {
         for (auto& component : components) {
@@ -25,17 +24,14 @@ public:
     bool RemoveComponent(const Component* component);
     bool HasComponent() const;
 
-	//-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ CHILD MANAGEMENT
     void AddChild(std::unique_ptr<GameObject> child);
     bool RemoveChild(GameObject* child);
     GameObject* FindChildByTag(const std::string& tag) const;
     void Reparent(GameObject* newParent);
 
-    //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ UPDATE AND RENDER
     void Update(float deltaTime);
     void Render(SDL_Renderer* renderer);
 
-    //-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ TAG AND PARENT HANDLING
     void SetTag(const std::string& newTag);
     const std::string& GetTag() const;
 	void Unparent();

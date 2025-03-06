@@ -105,6 +105,12 @@
     <ClCompile Include="MainMenuScene.cpp">
       <Filter>Engine\Scenes\TronScenes</Filter>
     </ClCompile>
+    <ClCompile Include="VersusScene.cpp">
+      <Filter>Engine\Scenes\TronScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="CoopScene.cpp">
+      <Filter>Engine\Scenes\TronScenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -171,6 +177,18 @@
       <Filter>Engine\Scenes\TronScenes</Filter>
     </ClInclude>
     <ClInclude Include="RotateCommand.h">
+      <Filter>Engine\Command\TronCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="VersusScene.h">
+      <Filter>Engine\Scenes\TronScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="CoopScene.h">
+      <Filter>Engine\Scenes\TronScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectMenuOptionCommand.h">
+      <Filter>Engine\MainMenuCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveCommand.h">
       <Filter>Engine\Command\TronCommands</Filter>
     </ClInclude>
   </ItemGroup>
