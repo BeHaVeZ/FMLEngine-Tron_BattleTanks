@@ -12,6 +12,7 @@
 #include "MainMenuScene.h"
 #include "CoopScene.h"
 #include "VersusScene.h"
+#include "Timer.h"
 
 Game::Game() : window(nullptr), renderer(nullptr), isRunning(false) {}
 
@@ -74,30 +75,26 @@ bool Game::Initialize() {
 	return true;
 }
 
-void Game::Run() {
-	const int frameDelay = 1000 / refreshRate;
+void Game::Run() 
+{
+    const int frameDelay = 1000 / refreshRate;
 
-	Uint32 lastFrameTime = SDL_GetTicks();
-	Uint32 frameStart;
-	int frameTime;
+	Timer::Instance().Start();
+    while (GameStateManager::Instance().IsRunning()) {
+        Timer::Instance().Update(); 
 
-	while (GameStateManager::Instance().IsRunning())
-	{
-		frameStart = SDL_GetTicks();
+        float deltaTime = Timer::Instance().GetDeltaTime(); 
 
-		float deltaTime = (frameStart - lastFrameTime) / 1000.0f;
-		lastFrameTime = frameStart;
+        ProcessInput();
+        Update(deltaTime);
+        Render();
 
-		ProcessInput();
-		Update(deltaTime);
-		Render();
+        int frameTime = SDL_GetTicks() - Timer::Instance().GetLastTick();
 
-		frameTime = SDL_GetTicks() - frameStart;
-
-		if (frameDelay > frameTime) {
-			SDL_Delay(frameDelay - frameTime);
-		}
-	}
+        if (frameDelay > frameTime) {
+            SDL_Delay(frameDelay - frameTime);
+        }
+    }
 }
 
 void Game::ProcessInput() {

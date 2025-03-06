@@ -228,6 +228,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureComponent.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
     <ClCompile Include="VersusScene.cpp" />
   </ItemGroup>
@@ -256,6 +257,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureComponent.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="VersusScene.h" />
   </ItemGroup>
