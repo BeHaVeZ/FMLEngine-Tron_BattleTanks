@@ -172,6 +172,20 @@ bool SDL_SoundSystem::IsShutdown()
 {
 	return m_pImpl->IsShutdown();
 }
+void SDL_SoundSystem::MuteSound()
+{
+	if (!isMuted) {
+		Mix_Volume(-1, 0); 
+		isMuted = true;
+	}
+}
+void SDL_SoundSystem::UnmuteSound()
+{
+	if (isMuted) {
+		Mix_Volume(-1, MIX_MAX_VOLUME); 
+		isMuted = false;
+	}
+}
 #pragma endregion
 
 #pragma region Logging_SoundSystem

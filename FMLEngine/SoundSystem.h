@@ -14,6 +14,10 @@ public:
 	virtual void StartUp() = 0;
 	virtual void Shutdown() = 0;
 	virtual bool IsShutdown() = 0;
+	virtual void MuteSound() = 0;
+	virtual void UnmuteSound() = 0;
+
+	bool isMuted = false;
 };
 
 class NullSoundSystem final : public SoundSystem
@@ -24,6 +28,8 @@ public:
 	void StartUp() override { std::cout << "Nullsystem has been initialized \n"; };
 	void Shutdown() override {};
 	bool IsShutdown() override { return false; };
+	virtual void MuteSound() override {};
+	virtual void UnmuteSound() override {};
 };
 
 class SDL_SoundSystem final : public SoundSystem
@@ -37,6 +43,8 @@ public:
 	void StartUp() override;
 	void Shutdown() override;
 	bool IsShutdown() override;
+	virtual void MuteSound() override;
+	virtual void UnmuteSound() override;
 
 private:
 	class SDL_SoundSystemImpl;
@@ -53,6 +61,8 @@ public:
 	void StartUp() override;
 	void Shutdown() override;
 	bool IsShutdown() override;
+	virtual void MuteSound() override {};
+	virtual void UnmuteSound() override {};
 
 private:
 	std::unique_ptr<SoundSystem> m_pSS;

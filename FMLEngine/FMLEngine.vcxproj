@@ -237,6 +237,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="MainMenuScene.h" />
     <ClInclude Include="MoveCommand.h" />
+    <ClInclude Include="MuteSoundCommand.h" />
     <ClInclude Include="RotateCommand.h" />
     <ClInclude Include="RotationComponent.h" />
     <ClInclude Include="SelectMenuOptionCommand.h" />
