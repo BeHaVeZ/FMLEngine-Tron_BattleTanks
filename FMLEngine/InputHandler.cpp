@@ -2,7 +2,8 @@
 #include <Windows.h>
 #include "Xinput.h"
 
-void InputHandler::BindCommand(SDL_Keycode key, std::unique_ptr<Command> command, KeyAction action) {
+void InputHandler::BindCommand(SDL_Keycode key, std::unique_ptr<Command> command, KeyAction action) 
+{
     if (action == KeyAction::KeyDown) {
         keyDownCommands[key] = std::move(command);
     }
@@ -12,20 +13,36 @@ void InputHandler::BindCommand(SDL_Keycode key, std::unique_ptr<Command> command
 }
 
 
-void InputHandler::ClearBindings() {
+void InputHandler::Update() 
+{
+    for (const auto& [key, command] : keyDownCommands) {
+        if (IsKeyPressed(key) and command) {
+            command->Execute();
+        }
+    }
+}
+
+void InputHandler::ClearBindings() 
+{
     keyDownCommands.clear();
     keyUpCommands.clear();
 }
 
-void InputHandler::HandleInput(SDL_Event& event) {
-    if (event.type == SDL_KEYDOWN) {
-        keyStates[event.key.keysym.sym] = true;
-        auto it = keyDownCommands.find(event.key.keysym.sym);
-        if (it != keyDownCommands.end() && it->second) {
-            it->second->Execute();
+void InputHandler::HandleInput(SDL_Event& event) 
+{
+    if (event.type == SDL_KEYDOWN) 
+    {
+        if (!event.key.repeat)
+        {
+            keyStates[event.key.keysym.sym] = true;
+            auto it = keyDownCommands.find(event.key.keysym.sym);
+            if (it != keyDownCommands.end() && it->second) {
+                it->second->Execute();
+            }
         }
     }
-    else if (event.type == SDL_KEYUP) {
+    else if (event.type == SDL_KEYUP) 
+    {
         keyStates[event.key.keysym.sym] = false;
         auto it = keyUpCommands.find(event.key.keysym.sym);
         if (it != keyUpCommands.end() && it->second) {

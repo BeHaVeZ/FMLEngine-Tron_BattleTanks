@@ -13,7 +13,8 @@
 #include "SelectMenuOptionCommand.h"
 #include "MuteSoundCommand.h"
 
-bool MainMenuScene::Initialize(SDL_Renderer* renderer) {
+bool MainMenuScene::Initialize(SDL_Renderer* renderer) 
+{
 	this->storedRenderer = renderer;
 	selectedIndex = 0;
 
@@ -50,7 +51,8 @@ void MainMenuScene::Update(float)
 {
 }
 
-void MainMenuScene::Render(SDL_Renderer* renderer) {
+void MainMenuScene::Render(SDL_Renderer* renderer) 
+{
 	SDL_RenderClear(renderer);
 
 	for (auto& gameObject : gameObjects)
@@ -69,7 +71,8 @@ void MainMenuScene::Cleanup()
 {
 }
 
-void MainMenuScene::InitializeBackground(SDL_Renderer* renderer) {
+void MainMenuScene::InitializeBackground(SDL_Renderer* renderer) 
+{
 	auto background = std::make_unique<GameObject>();
 	auto backgroundTexture = std::make_unique<TextureComponent>("data/artassets/tron_bg.png", renderer);
 	background->AddComponent(std::move(backgroundTexture));
@@ -85,7 +88,8 @@ void MainMenuScene::InitializeBackground(SDL_Renderer* renderer) {
 	gameObjects.push_back(std::move(background));
 }
 
-void MainMenuScene::InitializeMenuOptions(SDL_Renderer* renderer) {
+void MainMenuScene::InitializeMenuOptions(SDL_Renderer* renderer) 
+{
 	auto playOption = std::make_unique<GameObject>();
 	auto playText = std::make_unique<TextComponent>("Play", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 0, 0, 255, 255 }, renderer);
 	playOption->GetComponent<TransformComponent>()->SetPosition({ 450, 300 });
@@ -121,7 +125,8 @@ void MainMenuScene::InitializeMenuOptions(SDL_Renderer* renderer) {
 	gameObjects.push_back(std::move(versusOption));
 }
 
-void MainMenuScene::InitializeSelectionArrow(SDL_Renderer* renderer) {
+void MainMenuScene::InitializeSelectionArrow(SDL_Renderer* renderer) 
+{
 	selectionArrow = std::make_unique<GameObject>("SelectionArrow");
 
 	auto arrowText = std::make_unique<TextComponent>("->", "data/fonts/Game_Of_Squids.ttf", 32, SDL_Color{ 255, 255, 255, 255 }, renderer);

@@ -13,6 +13,7 @@
 #include "CoopScene.h"
 #include "VersusScene.h"
 #include "Timer.h"
+#include "InputHandler.h"
 
 Game::Game() : window(nullptr), renderer(nullptr), isRunning(false) {}
 
@@ -31,14 +32,14 @@ bool Game::Initialize() {
 		return false;
 	}
 
-    window = SDL_CreateWindow("Tron Battle Tanks - Alexander Terentyev", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ConfigManager::Instance().GetWindowWidth(), ConfigManager::Instance().GetWindowHeight(), SDL_WINDOW_SHOWN);
-    if (!window) {
-        std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
-        return false;
-    }
+	window = SDL_CreateWindow("Tron Battle Tanks - Alexander Terentyev", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ConfigManager::Instance().GetWindowWidth(), ConfigManager::Instance().GetWindowHeight(), SDL_WINDOW_SHOWN);
+	if (!window) {
+		std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+		return false;
+	}
 
 	SDL_DisplayMode current;
-	if (SDL_GetWindowDisplayMode(window, &current) != 0) {	
+	if (SDL_GetWindowDisplayMode(window, &current) != 0) {
 		std::cerr << "Could not get display mode for video display: " << SDL_GetError() << std::endl;
 		refreshRate = 60;
 	}
@@ -75,26 +76,26 @@ bool Game::Initialize() {
 	return true;
 }
 
-void Game::Run() 
+void Game::Run()
 {
-    const int frameDelay = 1000 / refreshRate;
+	const int frameDelay = 1000 / refreshRate;
 
 	Timer::Instance().Start();
-    while (GameStateManager::Instance().IsRunning()) {
-        Timer::Instance().Update(); 
+	while (GameStateManager::Instance().IsRunning()) {
+		Timer::Instance().Update();
 
-        float deltaTime = Timer::Instance().GetDeltaTime(); 
+		float deltaTime = Timer::Instance().GetDeltaTime();
 
-        ProcessInput();
-        Update(deltaTime);
-        Render();
+		ProcessInput();
+		Update(deltaTime);
+		Render();
 
-        int frameTime = SDL_GetTicks() - Timer::Instance().GetLastTick();
+		int frameTime = SDL_GetTicks() - Timer::Instance().GetLastTick();
 
-        if (frameDelay > frameTime) {
-            SDL_Delay(frameDelay - frameTime);
-        }
-    }
+		if (frameDelay > frameTime) {
+			SDL_Delay(frameDelay - frameTime);
+		}
+	}
 }
 
 void Game::ProcessInput() {
@@ -110,7 +111,9 @@ void Game::ProcessInput() {
 	}
 }
 
-void Game::Update(float deltaTime) {
+void Game::Update(float deltaTime) 
+{
+	InputHandler::Instance().Update();
 	SceneManager::Instance().Update(deltaTime);
 }
 

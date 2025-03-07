@@ -6,18 +6,21 @@
 
 class InputHandler {
 public:
-    static InputHandler& Instance() {
+    static InputHandler& Instance() 
+    {
         static InputHandler instance;
         return instance;
     }
 
-    enum class KeyAction {
+    enum class KeyAction 
+    {
         KeyDown,
         KeyUp
     };
 
     void BindCommand(SDL_Keycode key, std::unique_ptr<Command> command, KeyAction action = KeyAction::KeyDown);
 
+    void Update();
     void ClearBindings();
     void HandleInput(SDL_Event& event);
     bool IsKeyPressed(SDL_Keycode key) const;

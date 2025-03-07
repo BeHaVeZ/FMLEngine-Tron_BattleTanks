@@ -14,7 +14,6 @@ const std::string backgroundImagePath = "data/levels/level00.png";
 
 bool TestingScene::Initialize(SDL_Renderer* renderer) {
 	InitializeBackground(renderer);
-    //InitializeTitle(renderer);
     InitializeFPSCounter(renderer);
 
 	InitializeFirstTank(renderer);
@@ -116,10 +115,10 @@ void TestingScene::InitializeSecondTank(SDL_Renderer* renderer)
 void TestingScene::InitializeInput() {
     auto tank1 = FindGameObjectByTag("Tank1");
     if (tank1) {
-        InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<MoveCommand>(tank1, glm::vec2(0, -1), 200.f));
-        InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<MoveCommand>(tank1, glm::vec2(0, 1), 200.f));
-        InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<MoveCommand>(tank1, glm::vec2(-1, 0), 200.f));
-        InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<MoveCommand>(tank1, glm::vec2(1, 0), 200.f));
+        InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<MoveCommand>(tank1, glm::vec2(0, -1), 100.f));
+        InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<MoveCommand>(tank1, glm::vec2(0, 1), 100.f));
+        InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<MoveCommand>(tank1, glm::vec2(-1, 0), 100.f));
+        InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<MoveCommand>(tank1, glm::vec2(1, 0), 100.f));
     }
 }
 
