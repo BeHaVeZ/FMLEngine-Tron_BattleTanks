@@ -27,11 +27,13 @@ void InputHandler::BindGamepadCommand(int controllerId, int button, std::unique_
 
 void InputHandler::Update()
 {
-	for (const auto& [key, command] : keyDownCommands) 
-	{
-		if (IsKeyPressed(key) and command) 
-		{
-			command->Execute();
+	if (!movementKeys.empty()) {
+		auto lastKey = movementKeys.back(); 
+		if (keyStates[lastKey]) {  
+			auto it = keyDownCommands.find(lastKey);
+			if (it != keyDownCommands.end()) {
+				it->second->Execute();
+			}
 		}
 	}
 	UpdateGamepadStates();
@@ -61,24 +63,22 @@ void InputHandler::ClearBindings() {
 
 void InputHandler::HandleInput(SDL_Event& event)
 {
-	if (event.type == SDL_KEYDOWN)
-	{
-		if (!event.key.repeat)
-		{
-			keyStates[event.key.keysym.sym] = true;
-			auto it = keyDownCommands.find(event.key.keysym.sym);
-			if (it != keyDownCommands.end() && it->second) 
-			{
-				it->second->Execute();
-			}
+	if (event.type == SDL_KEYDOWN && !event.key.repeat) {
+		if (movementKeys.size() == 2) {
+			movementKeys.remove(event.key.keysym.sym); 
+		}
+		movementKeys.push_back(event.key.keysym.sym);
+		keyStates[event.key.keysym.sym] = true;
+		auto it = keyDownCommands.find(event.key.keysym.sym);
+		if (it != keyDownCommands.end()) {
+			it->second->Execute();
 		}
 	}
-	else if (event.type == SDL_KEYUP)
-	{
+	else if (event.type == SDL_KEYUP) {
 		keyStates[event.key.keysym.sym] = false;
+		movementKeys.remove(event.key.keysym.sym);
 		auto it = keyUpCommands.find(event.key.keysym.sym);
-		if (it != keyUpCommands.end() && it->second) 
-		{
+		if (it != keyUpCommands.end()) {
 			it->second->Execute();
 		}
 	}

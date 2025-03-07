@@ -4,6 +4,7 @@
 #include <memory>
 #include "Command.h"
 #include <Windows.h>
+#include <list>
 #include "Xinput.h"
 
 class InputHandler 
@@ -39,6 +40,7 @@ private:
     std::map<SDL_Keycode, bool> keyStates;
     std::map<SDL_Keycode, std::unique_ptr<Command>> keyDownCommands;
     std::map<SDL_Keycode, std::unique_ptr<Command>> keyUpCommands;
+    std::list<SDL_Keycode> movementKeys;
 
 
 
