@@ -43,6 +43,12 @@ void MainMenuScene::InitializeInput() {
 
 		InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<SelectMenuOptionCommand>(arrow));
 		InputHandler::Instance().BindCommand(SDLK_m, std::make_unique<MuteSoundCommand>());
+
+		InputHandler::Instance().BindGamepadCommand(0,XINPUT_GAMEPAD_A, std::make_unique<SelectMenuOptionCommand>(arrow),InputHandler::KeyAction::KeyDown);
+		InputHandler::Instance().BindGamepadCommand(0,XINPUT_GAMEPAD_DPAD_UP, std::make_unique<RotateCommand>(arrow, 270.0f));
+		InputHandler::Instance().BindGamepadCommand(0,XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<RotateCommand>(arrow, 90.0f));
+		InputHandler::Instance().BindGamepadCommand(0,XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<RotateCommand>(arrow, 180.0f));
+		InputHandler::Instance().BindGamepadCommand(0,XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<RotateCommand>(arrow, 0.0f));
 	}
 }
 

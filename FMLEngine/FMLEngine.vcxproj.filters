@@ -48,6 +48,9 @@
     <Filter Include="Engine\Command\TronCommands">
       <UniqueIdentifier>{825e6ff6-762f-4de1-9269-9b9a9ec1b976}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Input">
+      <UniqueIdentifier>{9888b5d7-a894-42cb-9efa-b750f4d3f2cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -58,9 +61,6 @@
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="InputHandler.cpp">
-      <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>Engine\Scenes</Filter>
@@ -110,6 +110,9 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Engine\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="InputHandler.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -123,9 +126,6 @@
     </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>Engine\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="InputHandler.h">
-      <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Command.h">
       <Filter>Engine\Command</Filter>
@@ -192,6 +192,12 @@
     </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Engine\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="MuteSoundCommand.h">
+      <Filter>Engine\Command\TronCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="InputHandler.h">
+      <Filter>Engine\Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
