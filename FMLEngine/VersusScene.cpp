@@ -6,9 +6,10 @@
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "ServiceLocator.h"
+#include "MoveCommand.h"
 #include <iostream>
 
-const std::string backgroundImagePath = "data/artassets/tron_bg.png";
+const std::string backgroundImagePath = "data/levels/level00.png";
 
 bool VersusScene::Initialize(SDL_Renderer* renderer) 
 {
@@ -19,6 +20,7 @@ bool VersusScene::Initialize(SDL_Renderer* renderer)
     InitializeFirstTank(renderer);
     InitializeSecondTank(renderer);
 
+    InitializeInput();
     InitializeSounds();
 
     return true;
@@ -104,8 +106,29 @@ void VersusScene::InitializeSecondTank(SDL_Renderer* renderer)
     tank->AddComponent(std::move(tankTexture));
     tank->GetComponent<TransformComponent>()->SetPosition({ 100, 100 });
 
-    FindGameObjectByTag("Tank1")->AddChild(std::move(tank));
-    gameObjects;
+    gameObjects.push_back(std::move(tank));
+}
+
+void VersusScene::InitializeInput()
+{
+    auto tank = FindGameObjectByTag("Tank1");
+    if (tank)
+    {
+        InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<MoveCommand>(tank, glm::vec2(0, -1), 100.f));
+        InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<MoveCommand>(tank, glm::vec2(0, 1), 100.f));
+        InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<MoveCommand>(tank, glm::vec2(-1, 0), 100.f));
+        InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 100.f));
+    }
+
+    tank = FindGameObjectByTag("Tank2");
+    if (tank)
+    {
+        int controllerId = 0;
+        InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<MoveCommand>(tank, glm::vec2(0, -1), 200.f));
+        InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<MoveCommand>(tank, glm::vec2(0, 1), 200.f));
+        InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<MoveCommand>(tank, glm::vec2(-1, 0), 200.f));
+        InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 200.f));
+    }
 }
 
 void VersusScene::InitializeSounds()
