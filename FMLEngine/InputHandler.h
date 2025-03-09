@@ -29,7 +29,6 @@ public:
     void UpdateGamepadStates();
     void ClearBindings();
     void HandleInput(SDL_Event& event);
-    bool IsKeyPressed(SDL_Keycode key) const;
 
 
     InputHandler(const InputHandler&) = delete;
@@ -40,8 +39,6 @@ private:
     std::map<SDL_Keycode, bool> keyStates;
     std::map<SDL_Keycode, std::unique_ptr<Command>> keyDownCommands;
     std::map<SDL_Keycode, std::unique_ptr<Command>> keyUpCommands;
-    std::list<SDL_Keycode> movementKeys;
-
 
 
     XINPUT_STATE gamepadStates[XUSER_MAX_COUNT];

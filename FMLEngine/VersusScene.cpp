@@ -128,6 +128,10 @@ void VersusScene::InitializeInput()
         InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<MoveCommand>(tank, glm::vec2(0, 1), 200.f));
         InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<MoveCommand>(tank, glm::vec2(-1, 0), 200.f));
         InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 200.f));
+        InputHandler::Instance().BindCommand(SDLK_UP, std::make_unique<MoveCommand>(tank, glm::vec2(0, -1), 100.f));
+        InputHandler::Instance().BindCommand(SDLK_DOWN, std::make_unique<MoveCommand>(tank, glm::vec2(0, 1), 100.f));
+        InputHandler::Instance().BindCommand(SDLK_LEFT, std::make_unique<MoveCommand>(tank, glm::vec2(-1, 0), 100.f));
+        InputHandler::Instance().BindCommand(SDLK_RIGHT, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 100.f));
     }
 }
 

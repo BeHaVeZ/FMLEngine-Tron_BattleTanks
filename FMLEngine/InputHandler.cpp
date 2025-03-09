@@ -27,11 +27,11 @@ void InputHandler::BindGamepadCommand(int controllerId, int button, std::unique_
 
 void InputHandler::Update()
 {
-	if (!movementKeys.empty()) {
-		auto lastKey = movementKeys.back(); 
-		if (keyStates[lastKey]) {  
-			auto it = keyDownCommands.find(lastKey);
-			if (it != keyDownCommands.end()) {
+	for (auto& [key, isPressed] : keyStates) {
+		if (isPressed) 
+		{
+			auto it = keyDownCommands.find(key);
+			if (it != keyDownCommands.end() && it->second) {
 				it->second->Execute();
 			}
 		}
@@ -41,17 +41,18 @@ void InputHandler::Update()
 
 void InputHandler::UpdateGamepadStates()
 {
-	for (DWORD i = 0; i < XUSER_MAX_COUNT; ++i) 
+	for (DWORD i = 0; i < XUSER_MAX_COUNT; ++i)
 	{
 		UpdateSingleGamepadState(i);
 	}
 }
 
-void InputHandler::ClearBindings() {
+void InputHandler::ClearBindings() 
+{
 	keyDownCommands.clear();
 	keyUpCommands.clear();
 
-	for (auto& [controllerId, commands] : gamepadCommands) 
+	for (auto& [controllerId, commands] : gamepadCommands)
 	{
 		commands.downCommands.clear();
 		commands.upCommands.clear();
@@ -63,31 +64,23 @@ void InputHandler::ClearBindings() {
 
 void InputHandler::HandleInput(SDL_Event& event)
 {
-	if (event.type == SDL_KEYDOWN && !event.key.repeat) {
-		if (movementKeys.size() == 2) {
-			movementKeys.remove(event.key.keysym.sym); 
-		}
-		movementKeys.push_back(event.key.keysym.sym);
-		keyStates[event.key.keysym.sym] = true;
-		auto it = keyDownCommands.find(event.key.keysym.sym);
-		if (it != keyDownCommands.end()) {
-			it->second->Execute();
+	if (event.type == SDL_KEYDOWN) {
+		if (!event.key.repeat) 
+		{
+			keyStates[event.key.keysym.sym] = true; 
+			auto it = keyDownCommands.find(event.key.keysym.sym);
+			if (it != keyDownCommands.end() && it->second) {
+				it->second->Execute(); 
+			}
 		}
 	}
 	else if (event.type == SDL_KEYUP) {
 		keyStates[event.key.keysym.sym] = false;
-		movementKeys.remove(event.key.keysym.sym);
 		auto it = keyUpCommands.find(event.key.keysym.sym);
-		if (it != keyUpCommands.end()) {
+		if (it != keyUpCommands.end() && it->second) {
 			it->second->Execute();
 		}
 	}
-}
-
-bool InputHandler::IsKeyPressed(SDL_Keycode key) const
-{
-	auto it = keyStates.find(key);
-	return it != keyStates.end() ? it->second : false;
 }
 
 void InputHandler::UpdateSingleGamepadState(DWORD dwUserIndex) {
@@ -95,32 +88,25 @@ void InputHandler::UpdateSingleGamepadState(DWORD dwUserIndex) {
 	ZeroMemory(&newState, sizeof(XINPUT_STATE));
 	if (XInputGetState(dwUserIndex, &newState) == ERROR_SUCCESS) {
 		auto& commands = gamepadCommands[dwUserIndex];
-		bool continueProcessing = true;
 
-		for (const auto& [button, command] : commands.downCommands) 
-		{
+		for (const auto& [button, command] : commands.downCommands) {
 			bool isPressed = (newState.Gamepad.wButtons & button) != 0;
-			if (isPressed) {
+
+			if (isPressed) 
+			{
 				command->Execute();
-				if (commands.downCommands.empty() || commands.upCommands.empty()) {
-					continueProcessing = false;
-					break;
-				}
 			}
 		}
 
-		if (!continueProcessing) return;
 		for (const auto& [button, command] : commands.upCommands) {
 			bool wasPressed = (gamepadStates[dwUserIndex].Gamepad.wButtons & button) != 0;
 			bool isPressed = (newState.Gamepad.wButtons & button) != 0;
-			if (wasPressed && !isPressed) {
+
+			if (wasPressed && !isPressed) 
+			{
 				command->Execute();
-				if (commands.downCommands.empty() || commands.upCommands.empty()) {
-					break;
-				}
 			}
 		}
-
 		gamepadStates[dwUserIndex] = newState;
 	}
 }

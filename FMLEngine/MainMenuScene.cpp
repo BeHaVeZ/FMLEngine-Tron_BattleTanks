@@ -13,7 +13,7 @@
 #include "SelectMenuOptionCommand.h"
 #include "MuteSoundCommand.h"
 
-bool MainMenuScene::Initialize(SDL_Renderer* renderer) 
+bool MainMenuScene::Initialize(SDL_Renderer* renderer)
 {
 	this->storedRenderer = renderer;
 	selectedIndex = 0;
@@ -34,6 +34,9 @@ void MainMenuScene::HandleInput(SDL_Event& event)
 }
 
 void MainMenuScene::InitializeInput() {
+	InputHandler::Instance().BindCommand(SDLK_m, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
+	InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
+
 	auto arrow = FindGameObjectByTag("SelectionArrow");
 	if (arrow) {
 		InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<RotateCommand>(arrow, 270.0f));
@@ -42,13 +45,12 @@ void MainMenuScene::InitializeInput() {
 		InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<RotateCommand>(arrow, 0.0f));
 
 		InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<SelectMenuOptionCommand>(arrow));
-		InputHandler::Instance().BindCommand(SDLK_m, std::make_unique<MuteSoundCommand>());
 
-		InputHandler::Instance().BindGamepadCommand(0,XINPUT_GAMEPAD_A, std::make_unique<SelectMenuOptionCommand>(arrow),InputHandler::KeyAction::KeyDown);
-		InputHandler::Instance().BindGamepadCommand(0,XINPUT_GAMEPAD_DPAD_UP, std::make_unique<RotateCommand>(arrow, 270.0f));
-		InputHandler::Instance().BindGamepadCommand(0,XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<RotateCommand>(arrow, 90.0f));
-		InputHandler::Instance().BindGamepadCommand(0,XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<RotateCommand>(arrow, 180.0f));
-		InputHandler::Instance().BindGamepadCommand(0,XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<RotateCommand>(arrow, 0.0f));
+		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_A, std::make_unique<SelectMenuOptionCommand>(arrow),InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<RotateCommand>(arrow, 270.0f));
+		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<RotateCommand>(arrow, 90.0f));
+		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<RotateCommand>(arrow, 180.0f));
+		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<RotateCommand>(arrow, 0.0f));
 	}
 }
 
@@ -57,7 +59,7 @@ void MainMenuScene::Update(float)
 {
 }
 
-void MainMenuScene::Render(SDL_Renderer* renderer) 
+void MainMenuScene::Render(SDL_Renderer* renderer)
 {
 	SDL_RenderClear(renderer);
 
@@ -73,11 +75,11 @@ void MainMenuScene::Render(SDL_Renderer* renderer)
 	SDL_RenderPresent(renderer);
 }
 
-void MainMenuScene::Cleanup() 
+void MainMenuScene::Cleanup()
 {
 }
 
-void MainMenuScene::InitializeBackground(SDL_Renderer* renderer) 
+void MainMenuScene::InitializeBackground(SDL_Renderer* renderer)
 {
 	auto background = std::make_unique<GameObject>();
 	auto backgroundTexture = std::make_unique<TextureComponent>("data/artassets/tron_bg.png", renderer);
@@ -85,7 +87,7 @@ void MainMenuScene::InitializeBackground(SDL_Renderer* renderer)
 
 	auto backgroundTransform = background->GetComponent<TransformComponent>();
 	if (backgroundTransform) {
-		backgroundTransform->SetPosition({0,0});
+		backgroundTransform->SetPosition({ 0,0 });
 		backgroundTransform->SetSize(
 			static_cast<float>(ConfigManager::Instance().GetWindowWidth()),
 			static_cast<float>(ConfigManager::Instance().GetWindowHeight())
@@ -94,7 +96,7 @@ void MainMenuScene::InitializeBackground(SDL_Renderer* renderer)
 	gameObjects.push_back(std::move(background));
 }
 
-void MainMenuScene::InitializeMenuOptions(SDL_Renderer* renderer) 
+void MainMenuScene::InitializeMenuOptions(SDL_Renderer* renderer)
 {
 	auto playOption = std::make_unique<GameObject>();
 	auto playText = std::make_unique<TextComponent>("Play", "data/fonts/tron-arcade.ttf", 32, SDL_Color{ 0, 0, 255, 255 }, renderer);
@@ -131,7 +133,7 @@ void MainMenuScene::InitializeMenuOptions(SDL_Renderer* renderer)
 	gameObjects.push_back(std::move(versusOption));
 }
 
-void MainMenuScene::InitializeSelectionArrow(SDL_Renderer* renderer) 
+void MainMenuScene::InitializeSelectionArrow(SDL_Renderer* renderer)
 {
 	selectionArrow = std::make_unique<GameObject>("SelectionArrow");
 
