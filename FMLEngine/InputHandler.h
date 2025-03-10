@@ -3,21 +3,16 @@
 #include <map>
 #include <memory>
 #include "Command.h"
-#include <Windows.h>
-#include <list>
+#include "Windows.h"
 #include "Xinput.h"
 
-class InputHandler 
-{
-public:
-    static InputHandler& Instance() 
-    {
-        static InputHandler instance;
-        return instance;
-    }
+class XInputGamepadHandlerImpl;
 
-    enum class KeyAction 
-    {
+class InputHandler {
+public:
+    static InputHandler& Instance();
+
+    enum class KeyAction {
         KeyDown,
         KeyUp
     };
@@ -26,30 +21,18 @@ public:
     void BindGamepadCommand(int controllerId, int button, std::unique_ptr<Command> command, KeyAction action = KeyAction::KeyDown);
 
     void Update();
-    void UpdateGamepadStates();
     void ClearBindings();
     void HandleInput(SDL_Event& event);
-
 
     InputHandler(const InputHandler&) = delete;
     InputHandler& operator=(const InputHandler&) = delete;
 
-    bool commandsCleared = false;
-
 private:
     InputHandler() = default;
+    ~InputHandler() = default;
     std::map<SDL_Keycode, bool> keyStates;
     std::map<SDL_Keycode, std::unique_ptr<Command>> keyDownCommands;
     std::map<SDL_Keycode, std::unique_ptr<Command>> keyUpCommands;
 
-
-    XINPUT_STATE gamepadStates[XUSER_MAX_COUNT];
-    bool gamepadButtonStates[XUSER_MAX_COUNT][XINPUT_KEYSTROKE_KEYDOWN];
-    void UpdateSingleGamepadState(DWORD dwUserIndex);
-    struct GamepadCommands 
-    {
-        std::map<int, std::unique_ptr<Command>> downCommands;
-        std::map<int, std::unique_ptr<Command>> upCommands;
-    };
-    std::map<int, GamepadCommands> gamepadCommands;
+    std::unique_ptr<XInputGamepadHandlerImpl> gamepadHandler{ std::make_unique<XInputGamepadHandlerImpl>() };
 };
