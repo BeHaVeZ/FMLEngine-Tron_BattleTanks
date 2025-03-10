@@ -27,6 +27,7 @@ void InputHandler::BindGamepadCommand(int controllerId, int button, std::unique_
 
 void InputHandler::Update()
 {
+	commandsCleared = false;
 	for (auto& [key, isPressed] : keyStates) {
 		if (isPressed) 
 		{
@@ -49,6 +50,7 @@ void InputHandler::UpdateGamepadStates()
 
 void InputHandler::ClearBindings() 
 {
+	commandsCleared = true;
 	keyDownCommands.clear();
 	keyUpCommands.clear();
 
@@ -83,7 +85,8 @@ void InputHandler::HandleInput(SDL_Event& event)
 	}
 }
 
-void InputHandler::UpdateSingleGamepadState(DWORD dwUserIndex) {
+void InputHandler::UpdateSingleGamepadState(DWORD dwUserIndex) 
+{
 	XINPUT_STATE newState;
 	ZeroMemory(&newState, sizeof(XINPUT_STATE));
 	if (XInputGetState(dwUserIndex, &newState) == ERROR_SUCCESS) {
@@ -95,6 +98,10 @@ void InputHandler::UpdateSingleGamepadState(DWORD dwUserIndex) {
 			if (isPressed) 
 			{
 				command->Execute();
+				if (commandsCleared)
+				{
+					break;
+				}
 			}
 		}
 
@@ -105,6 +112,10 @@ void InputHandler::UpdateSingleGamepadState(DWORD dwUserIndex) {
 			if (wasPressed && !isPressed) 
 			{
 				command->Execute();
+				if (commandsCleared)
+				{
+					break;
+				}
 			}
 		}
 		gamepadStates[dwUserIndex] = newState;

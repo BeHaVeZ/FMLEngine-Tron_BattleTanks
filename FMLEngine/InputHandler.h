@@ -34,6 +34,8 @@ public:
     InputHandler(const InputHandler&) = delete;
     InputHandler& operator=(const InputHandler&) = delete;
 
+    bool commandsCleared = false;
+
 private:
     InputHandler() = default;
     std::map<SDL_Keycode, bool> keyStates;
