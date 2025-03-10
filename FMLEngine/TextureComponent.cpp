@@ -33,7 +33,7 @@ void TextureComponent::Render(SDL_Renderer* renderer) {
             SDL_Point center = { destRect.w / 2, destRect.h / 2 };
 
             SDL_RenderCopyEx(renderer, texture, NULL, &destRect,
-                transform->GetRotation(), &center, SDL_FLIP_NONE);
+                transform->GetWorldRotation(), &center, SDL_FLIP_NONE);
         }
     }
 }

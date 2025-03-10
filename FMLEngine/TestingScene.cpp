@@ -95,22 +95,14 @@ void TestingScene::InitializeFirstTank(SDL_Renderer* renderer)
     tank->GetComponent<TransformComponent>()->SetPosition({ 500, 500 });
 
 	gameObjects.push_back(std::move(tank));
-}
 
-void TestingScene::InitializeSecondTank(SDL_Renderer* renderer)
-{
-    auto tank = std::make_unique<GameObject>("Tank2");
+    auto tankTurret = std::make_unique<GameObject>("Turret1");
+    auto turretTexture = std::make_unique<TextureComponent>("data/artassets/Blue_Barrel.png", renderer);
+    tankTurret->AddComponent(std::move(turretTexture));
+    tankTurret->GetComponent<TransformComponent>()->SetPosition({ 0,-5 });
+    tankTurret->GetComponent<TransformComponent>()->SetRotation(15);
 
-    auto tankTexture = std::make_unique<TextureComponent>("data/artassets/BlueTank.png", renderer);
-    tank->AddComponent(std::move(tankTexture));
-    tank->GetComponent<TransformComponent>()->SetPosition({ 100, 100 });
-
-
-    auto rotationComponent = std::make_unique<RotationComponent>(100.f, 500.f);
-    tank->AddComponent(std::move(rotationComponent));
-    tank->GetComponent<RotationComponent>()->Initialize();
-
-	FindGameObjectByTag("Tank1")->AddChild(std::move(tank));
+    FindGameObjectByTag("Tank1")->AddChild(std::move(tankTurret));
 }
 
 void TestingScene::InitializeInput() {

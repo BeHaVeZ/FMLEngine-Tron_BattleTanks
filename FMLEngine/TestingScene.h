@@ -13,7 +13,6 @@ public:
     void InitializeTitle(SDL_Renderer* renderer);
     void InitializeFPSCounter(SDL_Renderer* renderer);
 	void InitializeFirstTank(SDL_Renderer* renderer);
-	void InitializeSecondTank(SDL_Renderer* renderer);
     
     void InitializeInput() override;
     void InitializeSounds();

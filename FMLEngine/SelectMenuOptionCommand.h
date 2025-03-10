@@ -12,7 +12,7 @@ public:
     void Execute() override {
         if (gameObject) {
             auto transform = gameObject->GetComponent<TransformComponent>();
-            switch ((int)transform->GetRotation())
+            switch ((int)transform->GetLocalRotation())
             {
             case 0:
                 SceneManager::Instance().ChangeScene("VersusScene");
