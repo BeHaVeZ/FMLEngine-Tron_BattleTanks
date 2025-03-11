@@ -1,3 +1,4 @@
+#include "PrefabRegistry.h"
 #include "TestingScene.h"
 #include "TextureComponent.h"
 #include "TransformComponent.h"
@@ -17,8 +18,7 @@ bool TestingScene::Initialize(SDL_Renderer* renderer) {
 	InitializeBackground(renderer);
     InitializeFPSCounter(renderer);
 
-	InitializeFirstTank(renderer);
-	//InitializeSecondTank(renderer);
+	InitializeFirstTank();
 
     InitializeInput();
     InitializeSounds();
@@ -85,28 +85,16 @@ void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
     gameObjects.push_back(std::move(fpsGameObject));
 }
 
-void TestingScene::InitializeFirstTank(SDL_Renderer* renderer)
+void TestingScene::InitializeFirstTank() 
 {
-	auto tank = std::make_unique<GameObject>("Tank1");
-
-	auto tankTexture = std::make_unique<TextureComponent>("data/artassets/RedTank.png", renderer);
-	tank->AddComponent(std::move(tankTexture));
-
-    tank->GetComponent<TransformComponent>()->SetPosition({ 500, 500 });
-
-	gameObjects.push_back(std::move(tank));
-
-    auto tankTurret = std::make_unique<GameObject>("Turret1");
-    auto turretTexture = std::make_unique<TextureComponent>("data/artassets/Blue_Barrel.png", renderer);
-    tankTurret->AddComponent(std::move(turretTexture));
-    tankTurret->GetComponent<TransformComponent>()->SetPosition({ 0,-5 });
-    tankTurret->GetComponent<TransformComponent>()->SetRotation(15);
-
-    FindGameObjectByTag("Tank1")->AddChild(std::move(tankTurret));
+    auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({200,200},"Player1");
+    gameObjects.push_back(std::move(tank));
 }
 
-void TestingScene::InitializeInput() {
-    auto tank1 = FindGameObjectByTag("Tank1");
+
+void TestingScene::InitializeInput() 
+{
+    auto tank1 = FindGameObjectByTag("Player1");
     if (tank1) 
     {
         InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<MoveCommand>(tank1, glm::vec2(0, -1), 100.f));

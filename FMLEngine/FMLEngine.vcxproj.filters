@@ -116,6 +116,9 @@
     <ClCompile Include="XInputGamepadHandlerImpl.cpp">
       <Filter>Engine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="PrefabRegistry.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -204,6 +207,9 @@
     </ClInclude>
     <ClInclude Include="XInputGamepadHandlerImpl.h">
       <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="PrefabRegistry.h">
+      <Filter>Engine\Managers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

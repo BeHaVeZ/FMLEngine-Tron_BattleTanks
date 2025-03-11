@@ -8,17 +8,17 @@
 #include "ServiceLocator.h"
 #include "MoveCommand.h"
 #include <iostream>
+#include "PrefabRegistry.h"
 
 const std::string backgroundImagePath = "data/levels/level00.png";
 
 bool VersusScene::Initialize(SDL_Renderer* renderer) 
 {
     InitializeBackground(renderer);
-    //InitializeTitle(renderer);
     InitializeFPSCounter(renderer);
 
-    InitializeFirstTank(renderer);
-    InitializeSecondTank(renderer);
+    InitializeFirstTank();
+    InitializeSecondTank();
 
     InitializeInput();
     InitializeSounds();
@@ -86,32 +86,21 @@ void VersusScene::InitializeFPSCounter(SDL_Renderer* renderer)
     gameObjects.push_back(std::move(fpsGameObject));
 }
 
-void VersusScene::InitializeFirstTank(SDL_Renderer* renderer)
+void VersusScene::InitializeFirstTank()
 {
-    auto tank = std::make_unique<GameObject>("Tank1");
-
-    auto tankTexture = std::make_unique<TextureComponent>("data/artassets/RedTank.png", renderer);
-    tank->AddComponent(std::move(tankTexture));
-
-    tank->GetComponent<TransformComponent>()->SetPosition({ 500, 500 });
-
+    auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 500,500 }, "Player1");
     gameObjects.push_back(std::move(tank));
 }
 
-void VersusScene::InitializeSecondTank(SDL_Renderer* renderer)
+void VersusScene::InitializeSecondTank()
 {
-    auto tank = std::make_unique<GameObject>("Tank2");
-
-    auto tankTexture = std::make_unique<TextureComponent>("data/artassets/BlueTank.png", renderer);
-    tank->AddComponent(std::move(tankTexture));
-    tank->GetComponent<TransformComponent>()->SetPosition({ 100, 100 });
-
+    auto tank = PrefabRegistry::Instance().CreateYellowTankPrefab({ 100,100 }, "Player2");
     gameObjects.push_back(std::move(tank));
 }
 
 void VersusScene::InitializeInput()
 {
-    auto tank = FindGameObjectByTag("Tank1");
+    auto tank = FindGameObjectByTag("Player1");
     if (tank)
     {
         InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<MoveCommand>(tank, glm::vec2(0, -1), 100.f));
@@ -120,7 +109,7 @@ void VersusScene::InitializeInput()
         InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 100.f));
     }
 
-    tank = FindGameObjectByTag("Tank2");
+    tank = FindGameObjectByTag("Player2");
     if (tank)
     {
         int controllerId = 0;
@@ -137,7 +126,7 @@ void VersusScene::InitializeInput()
 
 void VersusScene::InitializeSounds()
 {
-    ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
+    ServiceLocator::GetSoundSystem().AddSound("AyoWhat.wav", 1, true);
     ServiceLocator::GetSoundSystem().PlaySound(1, 1.f);
 }
 

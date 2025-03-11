@@ -8,6 +8,7 @@
 #include "ServiceLocator.h"
 #include "MoveCommand.h"
 #include <iostream>
+#include "PrefabRegistry.h"
 
 const std::string backgroundImagePath = "data/levels/level00.png";
 
@@ -16,8 +17,8 @@ bool CoopScene::Initialize(SDL_Renderer* renderer) {
 	//InitializeTitle(renderer);
 	InitializeFPSCounter(renderer);
 
-	InitializeFirstTank(renderer);
-	InitializeSecondTank(renderer);
+	InitializeFirstTank();
+	InitializeSecondTank();
 
 	InitializeInput();
 	InitializeSounds();
@@ -84,32 +85,21 @@ void CoopScene::InitializeFPSCounter(SDL_Renderer* renderer)
 	gameObjects.push_back(std::move(fpsGameObject));
 }
 
-void CoopScene::InitializeFirstTank(SDL_Renderer* renderer)
+void CoopScene::InitializeFirstTank()
 {
-	auto tank = std::make_unique<GameObject>("Tank1");
-
-	auto tankTexture = std::make_unique<TextureComponent>("data/artassets/RedTank.png", renderer);
-	tank->AddComponent(std::move(tankTexture));
-
-	tank->GetComponent<TransformComponent>()->SetPosition({ 500, 500 });
-
+	auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({500,500},"Player1");
 	gameObjects.push_back(std::move(tank));
 }
 
-void CoopScene::InitializeSecondTank(SDL_Renderer* renderer)
+void CoopScene::InitializeSecondTank()
 {
-	auto tank = std::make_unique<GameObject>("Tank2");
-
-	auto tankTexture = std::make_unique<TextureComponent>("data/artassets/BlueTank.png", renderer);
-	tank->AddComponent(std::move(tankTexture));
-	tank->GetComponent<TransformComponent>()->SetPosition({ 100, 100 });
-
+	auto tank = PrefabRegistry::Instance().CreateYellowTankPrefab({ 100,100 }, "Player2");
 	gameObjects.push_back(std::move(tank));
 }
 
 void CoopScene::InitializeInput()
 {
-	auto tank = FindGameObjectByTag("Tank1");
+	auto tank = FindGameObjectByTag("Player1");
 	if (tank)
 	{
 		InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<MoveCommand>(tank, glm::vec2(0, -1), 100.f));
@@ -118,7 +108,7 @@ void CoopScene::InitializeInput()
 		InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 100.f));
 	}
 
-	tank = FindGameObjectByTag("Tank2");
+	tank = FindGameObjectByTag("Player2");
 	if (tank)
 	{
 		int controllerId = 0;

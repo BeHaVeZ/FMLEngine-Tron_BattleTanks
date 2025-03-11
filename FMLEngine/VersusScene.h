@@ -12,8 +12,8 @@ public:
     void InitializeBackground(SDL_Renderer* renderer);
     void InitializeTitle(SDL_Renderer* renderer);
     void InitializeFPSCounter(SDL_Renderer* renderer);
-    void InitializeFirstTank(SDL_Renderer* renderer);
-    void InitializeSecondTank(SDL_Renderer* renderer);
+    void InitializeFirstTank();
+    void InitializeSecondTank();
     void InitializeInput() override;
 
     void InitializeSounds();
