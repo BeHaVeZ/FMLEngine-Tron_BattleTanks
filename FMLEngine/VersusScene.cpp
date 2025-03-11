@@ -127,7 +127,7 @@ void VersusScene::InitializeInput()
 void VersusScene::InitializeSounds()
 {
     ServiceLocator::GetSoundSystem().AddSound("AyoWhat.wav", 1, true);
-    ServiceLocator::GetSoundSystem().PlaySound(1, 1.f);
+    ServiceLocator::GetSoundSystem().PlaySound(1, .5f);
 }
 
 

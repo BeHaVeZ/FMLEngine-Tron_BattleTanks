@@ -24,15 +24,19 @@ void TransformComponent::SetRotation(float newRotation)
 	}
 }
 
-void TransformComponent::Update(float) {
-	if (isDirty) {
+void TransformComponent::Update(float) 
+{
+	if (isDirty) 
+	{
 		UpdateWorldPosition();
 		isDirty = false;
 	}
 }
 
-void TransformComponent::UpdateWorldPosition() {
-	if (gameObject->HasParent()) {
+void TransformComponent::UpdateWorldPosition() 
+{
+	if (gameObject->HasParent()) 
+	{
 		auto parentTransform = gameObject->GetParent()->GetComponent<TransformComponent>();
 		if (parentTransform) {
 			worldPosition.x = parentTransform->worldPosition.x + localPosition.x * cosf(parentTransform->localRotation * (float)M_PI / 180) - localPosition.y * sinf(parentTransform->localRotation * (float)M_PI / 180);
@@ -40,7 +44,8 @@ void TransformComponent::UpdateWorldPosition() {
 			worldRotation = parentTransform->worldRotation + localRotation;
 		}
 	}
-	else {
+	else 
+	{
 		worldPosition = localPosition;
 		worldRotation = localRotation;
 	}

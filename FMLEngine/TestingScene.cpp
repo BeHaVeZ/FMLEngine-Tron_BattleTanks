@@ -11,6 +11,7 @@
 #include <iostream>
 #include "MuteSoundCommand.h"
 #include "MoveCommand.h"
+#include "RotateTurretCommand.h"
 
 const std::string backgroundImagePath = "data/levels/level00.png";
 
@@ -102,6 +103,9 @@ void TestingScene::InitializeInput()
         InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<MoveCommand>(tank1, glm::vec2(-1, 0), 100.f));
         InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<MoveCommand>(tank1, glm::vec2(1, 0), 100.f));
 
+        InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"),1.f));
+        InputHandler::Instance().BindCommand(SDLK_q, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"),-1.f));
+
         int controllerId = 0;
         InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<MoveCommand>(tank1, glm::vec2(0, -1), 200.f));
         InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<MoveCommand>(tank1, glm::vec2(0, 1), 200.f));
@@ -113,8 +117,8 @@ void TestingScene::InitializeInput()
 
 void TestingScene::InitializeSounds()
 {
-	ServiceLocator::GetSoundSystem().AddSound("Game_Music.mp3",1,true);
-	ServiceLocator::GetSoundSystem().PlaySound(1, 1.f);
+	ServiceLocator::GetSoundSystem().AddSound("AyoWhatV3.wav",1,true);
+	ServiceLocator::GetSoundSystem().PlaySound(1, .3f);
 }
 
 

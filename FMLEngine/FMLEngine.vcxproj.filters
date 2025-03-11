@@ -211,5 +211,8 @@
     <ClInclude Include="PrefabRegistry.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
+    <ClInclude Include="RotateTurretCommand.h">
+      <Filter>Engine\Command\TronCommands</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

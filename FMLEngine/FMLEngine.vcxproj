@@ -242,6 +242,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClInclude Include="MuteSoundCommand.h" />
     <ClInclude Include="PrefabRegistry.h" />
     <ClInclude Include="RotateCommand.h" />
+    <ClInclude Include="RotateTurretCommand.h" />
     <ClInclude Include="RotationComponent.h" />
     <ClInclude Include="SelectMenuOptionCommand.h" />
     <ClInclude Include="ServiceLocator.h" />

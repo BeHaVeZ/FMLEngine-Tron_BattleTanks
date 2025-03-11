@@ -14,7 +14,6 @@ const std::string backgroundImagePath = "data/levels/level00.png";
 
 bool CoopScene::Initialize(SDL_Renderer* renderer) {
 	InitializeBackground(renderer);
-	//InitializeTitle(renderer);
 	InitializeFPSCounter(renderer);
 
 	InitializeFirstTank();
