@@ -113,6 +113,9 @@
     <ClCompile Include="InputHandler.cpp">
       <Filter>Engine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="XInputGamepadHandlerImpl.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -197,6 +200,9 @@
       <Filter>Engine\Command\TronCommands</Filter>
     </ClInclude>
     <ClInclude Include="InputHandler.h">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="XInputGamepadHandlerImpl.h">
       <Filter>Engine\Input</Filter>
     </ClInclude>
   </ItemGroup>
