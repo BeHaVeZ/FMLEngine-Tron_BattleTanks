@@ -143,20 +143,3 @@ bool GameObject::HasParent() const
 {
 	return parent != nullptr;
 }
-
-void GameObject::AddObserver(Observer* observer)
-{
-	observers.push_back(observer);
-}
-
-void GameObject::RemoveObserver(Observer* observer)
-{
-	observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
-}
-
-void GameObject::Notify(Event event)
-{
-	for (auto observer : observers) {
-		observer->OnNotify(*this, event);
-	}
-}

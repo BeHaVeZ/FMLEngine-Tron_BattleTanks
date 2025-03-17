@@ -12,14 +12,12 @@
 #include "MuteSoundCommand.h"
 #include "MoveCommand.h"
 #include "RotateTurretCommand.h"
-#include "DamageCommand.h"
 
 const std::string backgroundImagePath = "data/levels/level00.png";
 
 bool TestingScene::Initialize(SDL_Renderer* renderer) {
-	//InitializeBackground(renderer);
+	InitializeBackground(renderer);
     InitializeFPSCounter(renderer);
-	InitializeTitle(renderer);
 
 	InitializeFirstTank();
 
@@ -47,21 +45,21 @@ void TestingScene::InitializeBackground(SDL_Renderer* renderer) {
 
 void TestingScene::InitializeTitle(SDL_Renderer* renderer)
 {
-    auto healthTextPlayer1 = std::make_unique<GameObject>("HealthFirstPlayer");
+    auto title = std::make_unique<GameObject>("title");
 
     SDL_Color color = { 0, 255, 0, 255 };
 
-    auto healthTextComponent = std::make_unique<TextComponent>(
-        "Health P1 3",         
+    auto titleTextComponent = std::make_unique<TextComponent>(
+        "TRON Battle Tanks",         
         "data/fonts/tron-arcade.ttf",      
-        20,                          
+        24,                          
         color,                       
         renderer);                   
 
-    healthTextPlayer1->AddComponent(std::move(healthTextComponent));
-    healthTextPlayer1->GetComponent<TransformComponent>()->SetPosition({ 200, 200 });
+    title->AddComponent(std::move(titleTextComponent));
+    title->GetComponent<TransformComponent>()->SetPosition({ 300, 300 });
 
-    gameObjects.push_back(std::move(healthTextPlayer1));
+    gameObjects.push_back(std::move(title));
 }
 
 void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
@@ -104,7 +102,6 @@ void TestingScene::InitializeInput()
         InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<MoveCommand>(tank1, glm::vec2(0, 1), 100.f));
         InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<MoveCommand>(tank1, glm::vec2(-1, 0), 100.f));
         InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<MoveCommand>(tank1, glm::vec2(1, 0), 100.f));
-        InputHandler::Instance().BindCommand(SDLK_r, std::make_unique<DamageCommand>(tank1,10),InputHandler::KeyAction::KeyUp);
 
         InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"),1.f));
         InputHandler::Instance().BindCommand(SDLK_q, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"),-1.f));

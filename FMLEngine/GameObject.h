@@ -5,10 +5,6 @@
 #include <algorithm>
 #include "Component.h"
 #include "SDL.h"
-#include "Observer.h"
-#include "Event.h"
-
-class Observer;
 
 class GameObject final {
 public:
@@ -44,15 +40,9 @@ public:
     bool HasChildren() const;
     bool HasParent() const;
 
-    void AddObserver(Observer* observer);
-    void RemoveObserver(Observer* observer);
-    void Notify(Event event);
-
 private:
     std::string tag;
     std::vector<std::unique_ptr<Component>> components;
     std::vector<std::unique_ptr<GameObject>> children;
     GameObject* parent = nullptr;
-
-    std::vector<Observer*> observers;
 };
