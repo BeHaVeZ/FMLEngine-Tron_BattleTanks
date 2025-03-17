@@ -2,38 +2,44 @@
 #include "TextureManager.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
+#include <iostream>
 
 TextureComponent::TextureComponent(const std::string& filePath, SDL_Renderer* renderer)
-    : texture(nullptr) {
-    if (!TextureManager::Instance().Load(filePath, filePath, renderer)) {
-        printf("Failed to load texture in TextureComponent constructor\n");
-    }
+	: texture(nullptr) {
+	if (!TextureManager::Instance().Load(filePath, filePath, renderer)) {
+		printf("Failed to load texture in TextureComponent constructor\n");
+	}
 
-    texture = TextureManager::Instance().GetTexture(filePath);
+	texture = TextureManager::Instance().GetTexture(filePath);
 
-    int width, height;
-    SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-    defaultWidth = width;
-    defaultHeight = height;
+	int width, height;
+	SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+	defaultWidth = width;
+	defaultHeight = height;
 
-    destRect = { 0, 0, width, height };
+	pivotPoint = { defaultWidth / 2, defaultHeight / 2 };
+
+	destRect = { 0, 0, width, height };
 }
 
 void TextureComponent::Render(SDL_Renderer* renderer) {
-    if (texture) {
-        auto transform = gameObject->GetComponent<TransformComponent>();
-        if (transform) {
-            destRect.x = static_cast<int>(transform->GetWorldPosition().x);
-            destRect.y = static_cast<int>(transform->GetWorldPosition().y);
+	if (texture) {
+		auto transform = gameObject->GetComponent<TransformComponent>();
+		if (transform) {
+			destRect.x = static_cast<int>(transform->GetWorldPosition().x);
+			destRect.y = static_cast<int>(transform->GetWorldPosition().y);
 
-            destRect.w = static_cast<int>(transform->IsSizeSet() ? transform->GetWidth() : defaultWidth);
-            destRect.h = static_cast<int>(transform->IsSizeSet() ? transform->GetHeight() : defaultHeight);
+			destRect.w = static_cast<int>(transform->IsSizeSet() ? transform->GetWidth() : defaultWidth);
+			destRect.h = static_cast<int>(transform->IsSizeSet() ? transform->GetHeight() : defaultHeight);
 
+			SDL_RenderCopyEx(renderer, texture, NULL, &destRect,
+				transform->GetWorldRotation(), &pivotPoint, SDL_FLIP_NONE);
+		}
+	}
+}
 
-            SDL_Point center = { destRect.w / 2, destRect.h / 2 };
-
-            SDL_RenderCopyEx(renderer, texture, NULL, &destRect,
-                transform->GetWorldRotation(), &center, SDL_FLIP_NONE);
-        }
-    }
+void TextureComponent::OffsetPivotPoint(glm::vec2 offset)
+{
+	pivotPoint.x += (int)offset.x;
+	pivotPoint.y += (int)offset.y;
 }
