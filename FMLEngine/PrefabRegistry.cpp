@@ -1,6 +1,7 @@
 #include "PrefabRegistry.h"
 #include "TextureComponent.h"
 #include "SceneManager.h"
+#include "HealthComponent.h"
 
 PrefabRegistry& PrefabRegistry::Instance()
 {
@@ -15,6 +16,11 @@ std::unique_ptr<GameObject> PrefabRegistry::CreateRedTankPrefab(glm::vec2 spawnP
 	auto tankTexture = std::make_unique<TextureComponent>("data/artassets/RedTank.png", SceneManager::Instance().GetRenderer());
 	tank->AddComponent(std::move(tankTexture));
 	tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+	auto healthComponent = std::make_unique<HealthComponent>(100);
+	tank->AddObserver(healthComponent.get());
+	tank->AddComponent(std::move(healthComponent));
+
 
 	auto turret = std::make_unique<GameObject>("Turret");
 	auto turretTexture = std::make_unique<TextureComponent>("data/artassets/Blue_Barrel.png", SceneManager::Instance().GetRenderer());

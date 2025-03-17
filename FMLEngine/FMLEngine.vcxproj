@@ -213,7 +213,9 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
   <ItemGroup>
     <ClCompile Include="CoopScene.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
+    <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="PrefabRegistry.cpp" />
+    <ClCompile Include="Subject.cpp" />
     <ClCompile Include="XInputGamepadHandlerImpl.cpp" />
     <ClCompile Include="MainMenuScene.cpp" />
     <ClCompile Include="RotationComponent.cpp" />
@@ -236,10 +238,14 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CoopScene.h" />
+    <ClInclude Include="DamageCommand.h" />
+    <ClInclude Include="Event.h" />
     <ClInclude Include="FPSComponent.h" />
+    <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="MainMenuScene.h" />
     <ClInclude Include="MoveCommand.h" />
     <ClInclude Include="MuteSoundCommand.h" />
+    <ClInclude Include="Observer.h" />
     <ClInclude Include="PrefabRegistry.h" />
     <ClInclude Include="RotateCommand.h" />
     <ClInclude Include="RotateTurretCommand.h" />
@@ -247,6 +253,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClInclude Include="SelectMenuOptionCommand.h" />
     <ClInclude Include="ServiceLocator.h" />
     <ClInclude Include="SoundSystem.h" />
+    <ClInclude Include="Subject.h" />
     <ClInclude Include="TestingScene.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />
