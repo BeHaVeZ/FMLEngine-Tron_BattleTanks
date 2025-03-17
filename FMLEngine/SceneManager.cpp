@@ -12,7 +12,8 @@ void SceneManager::ChangeScene(const std::string& sceneName) {
         InputHandler::Instance().ClearBindings();
         ServiceLocator::GetSoundSystem().ClearSounds();
 
-        if (currentScene) {
+        if (currentScene) 
+        {
             currentScene->Cleanup();
         }
 
