@@ -34,16 +34,6 @@ void TextureComponent::Render(SDL_Renderer* renderer) {
 
 			SDL_RenderCopyEx(renderer, texture, NULL, &destRect,
 				transform->GetWorldRotation(), &pivotPoint, SDL_FLIP_NONE);
-
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-			SDL_Rect pivotRect = {
-				static_cast<int>(destRect.x + pivotPoint.x - 2),
-				static_cast<int>(destRect.y + pivotPoint.y - 2),
-				4,
-				4
-			};
-			SDL_RenderFillRect(renderer, &pivotRect);
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		}
 	}
 }

@@ -51,12 +51,6 @@
     <Filter Include="Engine\Input">
       <UniqueIdentifier>{9888b5d7-a894-42cb-9efa-b750f4d3f2cb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Event">
-      <UniqueIdentifier>{5f6762e3-6186-4d4e-bbd9-7fbbc762a3ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Event\CustomEvents">
-      <UniqueIdentifier>{bbf55d3e-7a2e-43fb-acd6-ee91dcd7c1aa}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -124,9 +118,6 @@
     </ClCompile>
     <ClCompile Include="PrefabRegistry.cpp">
       <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="ScoreComponent.cpp">
-      <Filter>Engine\Components\AssignmentComponents</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -222,21 +213,6 @@
     </ClInclude>
     <ClInclude Include="RotateTurretCommand.h">
       <Filter>Engine\Command\TronCommands</Filter>
-    </ClInclude>
-    <ClInclude Include="Observer.h">
-      <Filter>Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="Subject.h">
-      <Filter>Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="Event.h">
-      <Filter>Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="AddScoreEvent.h">
-      <Filter>Engine\Event\CustomEvents</Filter>
-    </ClInclude>
-    <ClInclude Include="ScoreComponent.h">
-      <Filter>Engine\Components\AssignmentComponents</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

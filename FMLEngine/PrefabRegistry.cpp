@@ -20,7 +20,7 @@ std::unique_ptr<GameObject> PrefabRegistry::CreateRedTankPrefab(glm::vec2 spawnP
 	auto turretTexture = std::make_unique<TextureComponent>("data/artassets/Blue_Barrel.png", SceneManager::Instance().GetRenderer());
 	turret->AddComponent(std::move(turretTexture));
 	turret->GetComponent<TransformComponent>()->SetPosition({ 0, -5 });
-	turret->GetComponent<TextureComponent>()->OffsetPivotPoint({ 0,9 });
+	//turret->GetComponent<TextureComponent>()->OffsetPivotPoint({ 0,9 });
 
 	tank->AddChild(std::move(turret));
 	return tank;
