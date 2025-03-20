@@ -12,14 +12,16 @@
 #include "MuteSoundCommand.h"
 #include "MoveCommand.h"
 #include "RotateTurretCommand.h"
+#include "DamageCommand.h"
+#include "HealthUIComponent.h"
 
 const std::string backgroundImagePath = "data/levels/level00.png";
 
 bool TestingScene::Initialize(SDL_Renderer* renderer) {
-	InitializeBackground(renderer);
-    InitializeFPSCounter(renderer);
+	//InitializeBackground(renderer);
 
 	InitializeFirstTank();
+    InitializeFPSCounter(renderer);
 
     InitializeInput();
     InitializeSounds();
@@ -84,6 +86,15 @@ void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
     fpsGameObject->GetComponent<TransformComponent>()->SetPosition({ 10, 10 });
 
     gameObjects.push_back(std::move(fpsGameObject));
+
+
+    auto healthUIPlayer1 = std::make_unique<GameObject>("HealthUIPlayer1");
+    auto healthUIComponent = std::make_unique<HealthUIComponent>(100);
+	healthUIPlayer1->AddComponent(std::move(healthUIComponent));
+	healthUIPlayer1->GetComponent<HealthUIComponent>()->Initialize();
+	healthUIPlayer1->GetComponent<TransformComponent>()->SetPosition({ 10, 30 });
+	FindGameObjectByTag("Player1")->GetSubject().AddObserver(healthUIPlayer1->GetComponent<HealthUIComponent>());
+	gameObjects.push_back(std::move(healthUIPlayer1));
 }
 
 void TestingScene::InitializeFirstTank() 
@@ -105,6 +116,8 @@ void TestingScene::InitializeInput()
 
         InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"),1.f));
         InputHandler::Instance().BindCommand(SDLK_q, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"),-1.f));
+
+        InputHandler::Instance().BindCommand(SDLK_r, std::make_unique<DamageCommand>(tank1,10),InputHandler::KeyAction::KeyUp);
 
         int controllerId = 0;
         InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<MoveCommand>(tank1, glm::vec2(0, -1), 200.f));
