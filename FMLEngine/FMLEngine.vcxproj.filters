@@ -51,6 +51,9 @@
     <Filter Include="Engine\Input">
       <UniqueIdentifier>{9888b5d7-a894-42cb-9efa-b750f4d3f2cb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Event">
+      <UniqueIdentifier>{f669471a-3342-489e-bdd9-1008ccc01e94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -118,6 +121,9 @@
     </ClCompile>
     <ClCompile Include="PrefabRegistry.cpp">
       <Filter>Engine\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Subject.cpp">
+      <Filter>Engine\Event</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -213,6 +219,24 @@
     </ClInclude>
     <ClInclude Include="RotateTurretCommand.h">
       <Filter>Engine\Command\TronCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthComponent.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="HealthUIComponent.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Subject.h">
+      <Filter>Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="DamageCommand.h">
+      <Filter>Engine\Command\TronCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="Observer.h">
+      <Filter>Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Engine\Event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

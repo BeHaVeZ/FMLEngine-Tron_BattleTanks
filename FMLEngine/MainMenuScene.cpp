@@ -150,5 +150,5 @@ void MainMenuScene::InitializeSelectionArrow(SDL_Renderer* renderer)
 void MainMenuScene::InitializeSounds()
 {
 	ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
-	ServiceLocator::GetSoundSystem().PlaySound(1, 1.f);
+	ServiceLocator::GetSoundSystem().PlaySound(1, 0.f);
 }

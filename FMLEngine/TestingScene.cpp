@@ -131,7 +131,7 @@ void TestingScene::InitializeInput()
 void TestingScene::InitializeSounds()
 {
 	ServiceLocator::GetSoundSystem().AddSound("AyoWhatV3.wav",1,true);
-	ServiceLocator::GetSoundSystem().PlaySound(1, .3f);
+	ServiceLocator::GetSoundSystem().PlaySound(1, .0f);
 }
 
 
