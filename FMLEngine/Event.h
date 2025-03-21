@@ -1,26 +1,9 @@
 #pragma once
-#include <variant>
 
-enum class EventType 
-{
-    DamageTaken
-};
+class Observer;
 
-struct DamageEvent 
-{
-    int damageAmount;
-};
-
-using EventData = std::variant<DamageEvent>;
-
-class Event
-{
+class Event {
 public:
-    EventType type;
-    EventData data;
-
-    static Event Damage(int amount) 
-    {
-        return Event{ EventType::DamageTaken, DamageEvent{amount} };
-    }
+    virtual ~Event() = default;
+    virtual void Process(Observer& observer) const = 0;
 };

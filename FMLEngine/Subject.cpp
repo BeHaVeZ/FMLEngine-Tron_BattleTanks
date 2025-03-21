@@ -11,10 +11,10 @@ void Subject::RemoveObserver(Observer* observer)
 	observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
 }
 
-void Subject::Notify(const GameObject& gameObject, Event event)
+void Subject::Notify(const Event& event)
 {
-	for (auto observer : observers) 
-	{
-		observer->OnNotify(gameObject, event);
-	};
+    for (auto observer : observers) 
+    {
+        event.Process(*observer);
+    }
 }

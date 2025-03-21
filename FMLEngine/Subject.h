@@ -12,5 +12,5 @@ private:
 public:
     void AddObserver(Observer* observer);
     void RemoveObserver(Observer* observer);
-    void Notify(const GameObject& gameObject, Event event);
+    void Notify(const Event& event);
 };

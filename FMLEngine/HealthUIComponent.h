@@ -8,7 +8,7 @@
 class HealthUIComponent : public Component, public Observer
 {
 public:
-	HealthUIComponent(int health) : currentHealth(health)
+	HealthUIComponent(int health) : currentHealth(health), text(nullptr)
 	{
 		textComponent = std::make_unique<TextComponent>("P1 Health " + std::to_string(currentHealth), "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255, 255, 255, 255 }, SceneManager::Instance().GetRenderer());
 	}
@@ -18,18 +18,13 @@ public:
 		gameObject->AddComponent(std::move(textComponent));
 	}
 
-	void OnNotify(const GameObject&, Event event) override
-	{
-		if (event.type == EventType::DamageTaken)
-		{
-			auto damageEvent = std::get<DamageEvent>(event.data);
-			currentHealth -= damageEvent.damageAmount;
-			text = gameObject->GetComponent<TextComponent>();
-			text->SetText("P1 Health " + std::to_string(currentHealth), SceneManager::Instance().GetRenderer());
-			std::cout << "HealthUIComponent: Health updated to " << currentHealth << std::endl;
-		}
+	void HandleEvent(const DamageEvent& event) override
+	{ 
+		currentHealth -= event.GetDamage();
+		text = gameObject->GetComponent<TextComponent>();
+		text->SetText("P1 Health " + std::to_string(currentHealth), SceneManager::Instance().GetRenderer());
+		std::cout << "HealthUIComponent: Health updated to " << currentHealth << std::endl;
 	}
-
 private:
 	std::unique_ptr<TextComponent> textComponent;
 	TextComponent* text;
