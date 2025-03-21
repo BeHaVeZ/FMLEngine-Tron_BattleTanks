@@ -48,7 +48,8 @@ void SceneManager::Update(float deltaTime) {
 }
 
 void SceneManager::Render() {
-    if (currentScene) {
+    if (currentScene) 
+    {
         currentScene->Render(localRenderer);
     }
 }

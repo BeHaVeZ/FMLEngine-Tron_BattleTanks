@@ -14,6 +14,8 @@
 #include "RotateTurretCommand.h"
 #include "DamageCommand.h"
 #include "HealthUIComponent.h"
+#include "DebugDraw.h"
+
 
 const std::string backgroundImagePath = "data/levels/level00.png";
 
@@ -151,6 +153,8 @@ void TestingScene::Render(SDL_Renderer* renderer) {
 	for (auto& gameObject : gameObjects) {
 		gameObject->Render(renderer);
 	}
+
+	DebugDraw::DrawPoint({ 100,100 }, { 1,1,1,1 });
 
 	SDL_RenderPresent(renderer);
 }

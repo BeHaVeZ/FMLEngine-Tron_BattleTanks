@@ -131,6 +131,9 @@
     <ClCompile Include="DamageEvent.cpp">
       <Filter>Engine\Event</Filter>
     </ClCompile>
+    <ClCompile Include="DebugDraw.cpp">
+      <Filter>Engine\Debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -249,6 +252,9 @@
     </ClInclude>
     <ClInclude Include="HealthUIComponent.h">
       <Filter>Engine\Components\AssignmentComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDraw.h">
+      <Filter>Engine\Debug</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

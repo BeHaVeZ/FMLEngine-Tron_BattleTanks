@@ -15,6 +15,7 @@
 #include "Timer.h"
 #include "InputHandler.h"
 #include "Logger.h"
+#include "DebugDraw.h"
 
 Game::Game() : window(nullptr), renderer(nullptr), isRunning(false) {}
 
@@ -131,6 +132,7 @@ void Game::Render()
 {
 	SDL_RenderClear(renderer);
 	SceneManager::Instance().Render();
+	DebugDraw::Render(renderer);
 	SDL_RenderPresent(renderer);
 }
 

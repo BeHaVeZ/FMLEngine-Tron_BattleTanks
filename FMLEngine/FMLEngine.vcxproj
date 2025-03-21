@@ -213,6 +213,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
   <ItemGroup>
     <ClCompile Include="CoopScene.cpp" />
     <ClCompile Include="DamageEvent.cpp" />
+    <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="PrefabRegistry.cpp" />
     <ClCompile Include="Subject.cpp" />
@@ -240,6 +241,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClInclude Include="CoopScene.h" />
     <ClInclude Include="DamageCommand.h" />
     <ClInclude Include="DamageEvent.h" />
+    <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="HealthComponent.h" />
