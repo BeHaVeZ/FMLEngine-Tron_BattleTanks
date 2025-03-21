@@ -14,33 +14,39 @@
 #include "VersusScene.h"
 #include "Timer.h"
 #include "InputHandler.h"
+#include "Logger.h"
 
 Game::Game() : window(nullptr), renderer(nullptr), isRunning(false) {}
 
-Game::~Game() {
+Game::~Game() 
+{
 	Cleanup();
 }
 
 bool Game::Initialize() {
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-		std::cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) 
+	{
+		Logger::Log(LogLevel::Error, "SDL could not initialize! SDL_Error: %s", SDL_GetError());
 		return false;
 	}
 
-	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
-		std::cerr << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
+	if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) 
+	{
+		Logger::Log(LogLevel::Error, "SDL_image could not initialize! SDL_image Error: %s", IMG_GetError());
 		return false;
 	}
 
 	window = SDL_CreateWindow("Tron Battle Tanks - Alexander Terentyev", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ConfigManager::Instance().GetWindowWidth(), ConfigManager::Instance().GetWindowHeight(), SDL_WINDOW_SHOWN);
-	if (!window) {
-		std::cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+	if (!window) 
+	{
+		Logger::Log(LogLevel::Error, "Window could not be created! SDL_Error: %s", SDL_GetError());
 		return false;
 	}
 
 	SDL_DisplayMode current;
-	if (SDL_GetWindowDisplayMode(window, &current) != 0) {
-		std::cerr << "Could not get display mode for video display: " << SDL_GetError() << std::endl;
+	if (SDL_GetWindowDisplayMode(window, &current) != 0) 
+	{
+		Logger::Log(LogLevel::Error, "Could not get display mode for video display: %s", SDL_GetError());
 		refreshRate = 60;
 	}
 	else {
@@ -48,13 +54,15 @@ bool Game::Initialize() {
 	}
 
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	if (!renderer) {
-		std::cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << std::endl;
+	if (!renderer) 
+	{
+		Logger::Log(LogLevel::Error, "Renderer could not be created! SDL_Error: %s", SDL_GetError());
 		return false;
 	}
 
-	if (TTF_Init() == -1) {
-		std::cerr << "SDL_ttf could not initialize! TTF_Error: " << TTF_GetError() << std::endl;
+	if (TTF_Init() == -1) 
+	{
+		Logger::Log(LogLevel::Error, "SDL_ttf could not initialize! TTF_Error: %s", TTF_GetError());
 		return false;
 	}
 
@@ -100,8 +108,10 @@ void Game::Run()
 
 void Game::ProcessInput() {
 	SDL_Event event;
-	while (SDL_PollEvent(&event)) {
-		if (event.type == SDL_QUIT) {
+	while (SDL_PollEvent(&event)) 
+	{
+		if (event.type == SDL_QUIT) 
+		{
 			GameStateManager::Instance().SetRunning(false);
 		}
 
@@ -117,21 +127,25 @@ void Game::Update(float deltaTime)
 	SceneManager::Instance().Update(deltaTime);
 }
 
-void Game::Render() {
+void Game::Render() 
+{
 	SDL_RenderClear(renderer);
 	SceneManager::Instance().Render();
 	SDL_RenderPresent(renderer);
 }
 
-void Game::Cleanup() {
+void Game::Cleanup() 
+{
 	TextureManager::Instance().Clear();
 
-	if (renderer) {
+	if (renderer) 
+	{
 		SDL_DestroyRenderer(renderer);
 		renderer = nullptr;
 	}
 
-	if (window) {
+	if (window) 
+	{
 		SDL_DestroyWindow(window);
 		window = nullptr;
 	}

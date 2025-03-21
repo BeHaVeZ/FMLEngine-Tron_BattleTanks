@@ -1,6 +1,6 @@
 #include "SoundSystem.h"
 #include <SDL_mixer.h>
-#include <iostream>
+#include "Logger.h"
 #include <thread>
 #include <condition_variable>
 #include <queue>
@@ -26,7 +26,7 @@ public:
 
 		m_Pending.push({ id, volume });
 		m_Cv.notify_all();
-		std::cout << "Called Playsound of sdl sound with ID [" << id << "] at [" << volume << "] volume\n";
+		Logger::Log(LogLevel::Info, "Queued sound with ID [%d] at [%f] volume\n", id, volume);
 	}
 
 	void AddSound(const std::string& path, const SoundId id, bool doLoop = false)
@@ -34,7 +34,7 @@ public:
 		if (m_IsShutdown) return;
 
 		m_Sounds.emplace(id, Sound{ "data/sounds/" + path, nullptr, false, doLoop });
-		std::cout << "Added sound with ID [" << id << "] and path data/sounds/" << path << "]\n";
+		Logger::Log(LogLevel::Info, "Added sound with ID [%d] and path data/sounds/%s]\n", id, path.c_str());
 	}
 
 	void StartUp()
@@ -42,19 +42,17 @@ public:
 		if (!m_IsShutdown) return;
 
 		if (Mix_Init(MIX_INIT_OGG | MIX_INIT_MP3) == 0) {
-			std::cerr << "Failed to initialize SDL_mixer: " << Mix_GetError() << std::endl;
+			Logger::Log(LogLevel::Error, "Failed to initialize SDL_mixer: %s\n", Mix_GetError());
 			return;
 		}
 
 		if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 4096) != 0) {
-			std::cerr << "Failed to open audio: " << Mix_GetError() << std::endl;
+			Logger::Log(LogLevel::Error, "Failed to open audio: %s\n", Mix_GetError());
 			return;
 		}
 
 		m_UpdateThread = std::jthread(&SDL_SoundSystemImpl::Update, this);
 		m_IsShutdown = false;
-
-		std::cout << "SDL SoundSystem started up\n";
 	}
 
 	void Shutdown()
@@ -136,11 +134,13 @@ private:
 
 			sound.pChunk->volume = static_cast<uint8_t>(m_Pending.front().volume * MIX_MAX_VOLUME);
 			int channel = Mix_PlayChannel(-1, sound.pChunk, sound.doLoop ? -1 : 0);
-			if (channel == -1) {
-				std::cerr << "Failed to play sound: " << Mix_GetError() << std::endl;
+			if (channel == -1) 
+			{
+				Logger::Log(LogLevel::Error, "Failed to play sound with ID [%d] at [%f] volume\n", m_Pending.front().id, m_Pending.front().volume);
 			}
-			else {
-				std::cout << "Playing sound from update with ID [" << m_Pending.front().id << "] at [" << m_Pending.front().volume << "] volume\n";
+			else 
+			{
+				Logger::Log(LogLevel::Info, "Playing sound from update with ID [%d] at [%f] volume\n", m_Pending.front().id, m_Pending.front().volume);
 			}
 
 			m_Pending.pop();
@@ -204,31 +204,31 @@ void SDL_SoundSystem::ClearSounds()
 void Logging_SoundSystem::PlaySound(const SoundId id, const float volume)
 {
 	m_pSS->PlaySound(id, volume);
-	std::cout << "Queued sound with ID [" << id << "] at [" << volume << "] volume\n";
+	Logger::Log(LogLevel::Info, "Queued sound with ID [%d] at [%f] volume\n", id, volume);
 }
 
 void Logging_SoundSystem::AddSound(const std::string& path, const SoundId id, bool doLoop)
 {
 	m_pSS->AddSound(path, id, doLoop);
-	std::cout << "Adding sound with ID [" << id << "] and path [../Data/Audio/" << path << "]\n";
+	Logger::Log(LogLevel::Info, "Added sound with ID [%d] and path data/sounds/%s]\n", id, path.c_str());
 }
 
 void Logging_SoundSystem::StartUp()
 {
 	m_pSS->StartUp();
-	std::cout << "Starting up SoundSystem...\n";
+	Logger::Log(LogLevel::Info, "Starting up SoundSystem...\n");
 };
 
 void Logging_SoundSystem::Shutdown()
 {
 	m_pSS->Shutdown();
-	std::cout << "Shutting down SoundSystem...\n";
+	Logger::Log(LogLevel::Info, "Shutting down SoundSystem...\n");
 };
 
 bool Logging_SoundSystem::IsShutdown()
 {
 	bool isShutdown{ m_pSS->IsShutdown() };
-	std::cout << "SoundSystem is " << (isShutdown ? "shutdown" : "not shutdown") << "\n";
+	Logger::Log(LogLevel::Info, "SoundSystem is %s\n", isShutdown ? "shutdown" : "not shutdown");
 	return isShutdown;
 }
 #pragma endregion

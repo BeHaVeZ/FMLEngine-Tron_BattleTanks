@@ -3,7 +3,7 @@
 #include "Component.h"
 #include "Observer.h"
 #include "SceneManager.h"
-#include "iostream"
+#include "Logger.h"
 
 class HealthUIComponent : public Component, public Observer
 {
@@ -23,7 +23,7 @@ public:
 		currentHealth -= event.GetDamage();
 		text = gameObject->GetComponent<TextComponent>();
 		text->SetText("P1 Health " + std::to_string(currentHealth), SceneManager::Instance().GetRenderer());
-		std::cout << "HealthUIComponent: Health updated to " << currentHealth << std::endl;
+		Logger::Log(LogLevel::Info, "HealthUIComponent: Health updated to %d", currentHealth);
 	}
 private:
 	std::unique_ptr<TextComponent> textComponent;

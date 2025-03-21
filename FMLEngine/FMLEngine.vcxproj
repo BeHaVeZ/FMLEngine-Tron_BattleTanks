@@ -244,6 +244,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClInclude Include="FPSComponent.h" />
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="HealthUIComponent.h" />
+    <ClInclude Include="Logger.h" />
     <ClInclude Include="MainMenuScene.h" />
     <ClInclude Include="MoveCommand.h" />
     <ClInclude Include="MuteSoundCommand.h" />

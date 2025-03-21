@@ -3,7 +3,7 @@
 #include "GameObject.h"
 #include "TransformComponent.h"
 #include "SceneManager.h"
-#include "iostream"
+#include "Logger.h"
 
 class SelectMenuOptionCommand : public Command {
 public:
@@ -28,7 +28,7 @@ public:
                 break;
 
             default:
-                std::cout << "invalid option selected \n";
+				Logger::Log(LogLevel::Error, "Invalid rotation value");
                 break;
             }
         }
