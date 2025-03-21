@@ -17,8 +17,6 @@ TextureComponent::TextureComponent(const std::string& filePath, SDL_Renderer* re
 	defaultWidth = width;
 	defaultHeight = height;
 
-	pivotPoint = { defaultWidth / 2, defaultHeight / 2 };
-
 	destRect = { 0, 0, width, height };
 }
 
@@ -32,14 +30,20 @@ void TextureComponent::Render(SDL_Renderer* renderer) {
 			destRect.w = static_cast<int>(transform->IsSizeSet() ? transform->GetWidth() : defaultWidth);
 			destRect.h = static_cast<int>(transform->IsSizeSet() ? transform->GetHeight() : defaultHeight);
 
+			SDL_Point center{ static_cast<int>(transform->GetPivot().x),static_cast<int>(transform->GetPivot().y)};
+
 			SDL_RenderCopyEx(renderer, texture, NULL, &destRect,
-				transform->GetWorldRotation(), &pivotPoint, SDL_FLIP_NONE);
+				transform->GetWorldRotation(), &center, SDL_FLIP_NONE);
+
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); 
+			SDL_Rect pivotRect = {
+				static_cast<int>(destRect.x + center.x - 2),  
+				static_cast<int>(destRect.y + center.y - 2),
+				4,  
+				4
+			};
+			SDL_RenderFillRect(renderer, &pivotRect);
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 		}
 	}
-}
-
-void TextureComponent::OffsetPivotPoint(glm::vec2 offset)
-{
-	pivotPoint.x += (int)offset.x;
-	pivotPoint.y += (int)offset.y;
 }

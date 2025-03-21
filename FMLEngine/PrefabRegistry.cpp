@@ -15,6 +15,7 @@ std::unique_ptr<GameObject> PrefabRegistry::CreateRedTankPrefab(glm::vec2 spawnP
 	auto tank = std::make_unique<GameObject>(tag);
 
 	auto tankTexture = std::make_unique<TextureComponent>("data/artassets/RedTank.png", SceneManager::Instance().GetRenderer());
+	tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
 	tank->AddComponent(std::move(tankTexture));
 	tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
@@ -24,9 +25,10 @@ std::unique_ptr<GameObject> PrefabRegistry::CreateRedTankPrefab(glm::vec2 spawnP
 
 	auto turret = std::make_unique<GameObject>("Turret");
 	auto turretTexture = std::make_unique<TextureComponent>("data/artassets/Blue_Barrel.png", SceneManager::Instance().GetRenderer());
+	turret->GetComponent<TransformComponent>()->CentralizePivotOnTexture(turretTexture.get());
 	turret->AddComponent(std::move(turretTexture));
-	turret->GetComponent<TransformComponent>()->SetPosition({ 0, -5 });
-	//turret->GetComponent<TextureComponent>()->OffsetPivotPoint({ 0,9 });
+	turret->GetComponent<TransformComponent>()->SetPosition({ 0, -6 });
+	//turret->GetComponent<TransformComponent>()->OffsetPivotPoint({ 0,9 });
 
 	tank->AddChild(std::move(turret));
 	return tank;
