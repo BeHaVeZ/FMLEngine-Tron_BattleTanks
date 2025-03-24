@@ -3,15 +3,15 @@
 #include "Game.h"
 
 
-int main(int, char*[]) {
-	Game game;
-	if (!game.Initialize()) {
-		return -1;
+	int main(int, char* []) {
+		FML::Game game;
+		if (!game.Initialize()) {
+			return -1;
+		}
+
+		game.Run();
+
+		game.Cleanup();
+
+		return 0;
 	}
-
-	game.Run();
-
-	game.Cleanup();
-
-	return 0;
-}

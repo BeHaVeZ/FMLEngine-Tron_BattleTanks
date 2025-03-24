@@ -4,18 +4,23 @@
 #include "Component.h"
 #include "GameObject.h" 
 
-class TextComponent : public Component {
-public:
-    TextComponent(const std::string& text, const std::string& fontPath, int fontSize, SDL_Color color, SDL_Renderer* renderer);
-    ~TextComponent();
+namespace FML
+{
 
-    void SetText(const std::string& newText, SDL_Renderer* renderer);
-    std::string GetText() const { return text; }
-    void Render(SDL_Renderer* renderer) override;
+	class TextComponent : public Component {
+	public:
+		TextComponent(const std::string& text, const std::string& fontPath, int fontSize, SDL_Color color, SDL_Renderer* renderer);
+		~TextComponent();
 
-private:
-    std::string text;
-    TTF_Font* font;
-    SDL_Texture* texture;
-    SDL_Color color;
-};
+		void SetText(const std::string& newText, SDL_Renderer* renderer);
+		std::string GetText() const { return text; }
+		void Render(SDL_Renderer* renderer) override;
+
+	private:
+		std::string text;
+		TTF_Font* font;
+		SDL_Texture* texture;
+		SDL_Color color;
+	};
+
+}

@@ -1,7 +1,10 @@
 #pragma once
 
-class Command {
-public:
-    virtual ~Command() {}
-    virtual void Execute() = 0;
-};
+namespace FML
+{
+	class Command {
+	public:
+		virtual ~Command() {}
+		virtual void Execute() = 0;
+	};
+}

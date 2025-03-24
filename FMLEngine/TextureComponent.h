@@ -4,19 +4,25 @@
 #include "Component.h"
 #include <glm.hpp>
 
-class TextureComponent : public Component 
+namespace FML
 {
-public:
-    TextureComponent(const std::string& filePath, SDL_Renderer* renderer);
-    void Render(SDL_Renderer* renderer) override;
 
-	int GetDefaultWidth() const { return defaultWidth; }
-	int GetDefaultHeight() const { return defaultHeight; }
+	class TextureComponent : public Component
+	{
+	public:
+		TextureComponent(const std::string& filePath, SDL_Renderer* renderer);
+		void Render(SDL_Renderer* renderer) override;
 
-private:
-    SDL_Texture* texture;
-    SDL_Rect destRect;
+		int GetDefaultWidth() const { return defaultWidth; }
+		int GetDefaultHeight() const { return defaultHeight; }
 
-    int defaultWidth;
-    int defaultHeight;
-};
+	private:
+		SDL_Texture* texture;
+		SDL_Rect destRect;
+
+		int defaultWidth;
+		int defaultHeight;
+	};
+
+
+}

@@ -6,20 +6,27 @@
 #include "Command.h"
 #include "InputHandler.h"
 
-class XInputGamepadHandlerImpl final
+namespace FML
 {
-public:
-    void BindGamepadCommand(int controllerId, int button, std::unique_ptr<Command> command, InputHandler::KeyAction action);
-    void UpdateGamepadStates();
-    void ClearBindings();
 
-private:
-    void UpdateSingleGamepadState(DWORD dwUserIndex);
-    XINPUT_STATE gamepadStates[XUSER_MAX_COUNT];
-    struct GamepadCommands {
-        std::map<int, std::unique_ptr<Command>> downCommands;
-        std::map<int, std::unique_ptr<Command>> upCommands;
-    };
-    std::map<int, GamepadCommands> gamepadCommands;
-    bool commandsCleared = false;
-};
+	class XInputGamepadHandlerImpl final
+	{
+	public:
+		void BindGamepadCommand(int controllerId, int button, std::unique_ptr<Command> command, InputHandler::KeyAction action);
+		void UpdateGamepadStates();
+		void ClearBindings();
+
+	private:
+		void UpdateSingleGamepadState(DWORD dwUserIndex);
+		XINPUT_STATE gamepadStates[XUSER_MAX_COUNT];
+		struct GamepadCommands {
+			std::map<int, std::unique_ptr<Command>> downCommands;
+			std::map<int, std::unique_ptr<Command>> upCommands;
+		};
+		std::map<int, GamepadCommands> gamepadCommands;
+		bool commandsCleared = false;
+	};
+
+}
+
+

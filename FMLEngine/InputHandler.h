@@ -6,33 +6,39 @@
 #include "Windows.h"
 #include "Xinput.h"
 
-class XInputGamepadHandlerImpl;
+namespace FML
+{
 
-class InputHandler {
-public:
-    static InputHandler& Instance();
+	class XInputGamepadHandlerImpl;
 
-    enum class KeyAction {
-        KeyDown,
-        KeyUp
-    };
+	class InputHandler {
+	public:
+		static InputHandler& Instance();
 
-    void BindCommand(SDL_Keycode key, std::unique_ptr<Command> command, KeyAction action = KeyAction::KeyDown);
-    void BindGamepadCommand(int controllerId, int button, std::unique_ptr<Command> command, KeyAction action = KeyAction::KeyDown);
+		enum class KeyAction {
+			KeyDown,
+			KeyUp
+		};
 
-    void Update();
-    void ClearBindings();
-    void HandleInput(SDL_Event& event);
+		void BindCommand(SDL_Keycode key, std::unique_ptr<Command> command, KeyAction action = KeyAction::KeyDown);
+		void BindGamepadCommand(int controllerId, int button, std::unique_ptr<Command> command, KeyAction action = KeyAction::KeyDown);
 
-    InputHandler(const InputHandler&) = delete;
-    InputHandler& operator=(const InputHandler&) = delete;
+		void Update();
+		void ClearBindings();
+		void HandleInput(SDL_Event& event);
 
-private:
-    InputHandler() = default;
-    ~InputHandler() = default;
-    std::map<SDL_Keycode, bool> keyStates;
-    std::map<SDL_Keycode, std::unique_ptr<Command>> keyDownCommands;
-    std::map<SDL_Keycode, std::unique_ptr<Command>> keyUpCommands;
+		InputHandler(const InputHandler&) = delete;
+		InputHandler& operator=(const InputHandler&) = delete;
 
-    std::unique_ptr<XInputGamepadHandlerImpl> gamepadHandler{ std::make_unique<XInputGamepadHandlerImpl>() };
-};
+	private:
+		InputHandler() = default;
+		~InputHandler() = default;
+		std::map<SDL_Keycode, bool> keyStates;
+		std::map<SDL_Keycode, std::unique_ptr<Command>> keyDownCommands;
+		std::map<SDL_Keycode, std::unique_ptr<Command>> keyUpCommands;
+
+		std::unique_ptr<XInputGamepadHandlerImpl> gamepadHandler{ std::make_unique<XInputGamepadHandlerImpl>() };
+	};
+
+}
+

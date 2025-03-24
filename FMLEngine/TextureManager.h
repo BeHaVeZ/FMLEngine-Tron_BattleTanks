@@ -4,20 +4,26 @@
 #include <string>
 #include <map>
 
-class TextureManager : public Singleton<TextureManager> {
-public:
-    bool Load(std::string id, std::string filename, SDL_Renderer* renderer);
+namespace FML
+{
 
-    SDL_Texture* GetTexture(std::string id);
+	class TextureManager : public Singleton<TextureManager> {
+	public:
+		bool Load(std::string id, std::string filename, SDL_Renderer* renderer);
 
-    void Clear();
+		SDL_Texture* GetTexture(std::string id);
 
-private:
-    friend class Singleton<TextureManager>;
-    TextureManager() {}
-    ~TextureManager() {
-        Clear();
-    }
+		void Clear();
 
-    std::map<std::string, SDL_Texture*> textureMap;
-};
+	private:
+		friend class Singleton<TextureManager>;
+		TextureManager() {}
+		~TextureManager() {
+			Clear();
+		}
+
+		std::map<std::string, SDL_Texture*> textureMap;
+	};
+
+}
+

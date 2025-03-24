@@ -1,20 +1,23 @@
 #pragma once
 #include "SDL.h"
 
-class GameObject;
+namespace FML
+{
+	class GameObject;
 
-class Component {
-public:
-    virtual ~Component() = default;
+	class Component {
+	public:
+		virtual ~Component() = default;
 
-    virtual void Initialize() {};
-    virtual void Update(float) {};
-    virtual void Render(SDL_Renderer*) {};
+		virtual void Initialize() {};
+		virtual void Update(float) {};
+		virtual void Render(SDL_Renderer*) {};
 
-    void SetOwner(GameObject* owner) {
-        this->gameObject = owner;
-    }
+		void SetOwner(GameObject* owner) {
+			this->gameObject = owner;
+		}
 
-protected:
-    GameObject* gameObject = nullptr;
-};
+	protected:
+		GameObject* gameObject = nullptr;
+	};
+}

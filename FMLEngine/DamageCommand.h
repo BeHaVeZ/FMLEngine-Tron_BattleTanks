@@ -6,23 +6,28 @@
 #include "HealthComponent.h"
 #include <iostream>
 
-class DamageCommand : public Command
+namespace FML
 {
+	class DamageCommand : public Command
+	{
 	public:
-	DamageCommand(GameObject* gameObject, int damage) : gameObject(gameObject), damage(damage) {}
+		DamageCommand(GameObject* gameObject, int damage) : gameObject(gameObject), damage(damage) {}
 
-	void Execute() override {
-		if (gameObject)
-		{
-			HealthComponent* hc = gameObject->GetComponent<HealthComponent>();
-			if (hc)
+		void Execute() override {
+			if (gameObject)
 			{
-				hc->Damage(damage);
+				HealthComponent* hc = gameObject->GetComponent<HealthComponent>();
+				if (hc)
+				{
+					hc->Damage(damage);
+				}
 			}
 		}
-	}
 
 	private:
-	GameObject* gameObject;
-	int damage;
-};
+		GameObject* gameObject;
+		int damage;
+	};
+}
+
+

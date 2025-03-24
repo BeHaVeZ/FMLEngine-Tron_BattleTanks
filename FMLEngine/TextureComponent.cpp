@@ -4,46 +4,53 @@
 #include "TransformComponent.h"
 #include <iostream>
 
-TextureComponent::TextureComponent(const std::string& filePath, SDL_Renderer* renderer)
-	: texture(nullptr) {
-	if (!TextureManager::Instance().Load(filePath, filePath, renderer)) {
-		printf("Failed to load texture in TextureComponent constructor\n");
+namespace FML
+{
+
+	TextureComponent::TextureComponent(const std::string& filePath, SDL_Renderer* renderer)
+		: texture(nullptr) {
+		if (!TextureManager::Instance().Load(filePath, filePath, renderer)) {
+			printf("Failed to load texture in TextureComponent constructor\n");
+		}
+
+		texture = TextureManager::Instance().GetTexture(filePath);
+
+		int width, height;
+		SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+		defaultWidth = width;
+		defaultHeight = height;
+
+		destRect = { 0, 0, width, height };
 	}
 
-	texture = TextureManager::Instance().GetTexture(filePath);
+	void TextureComponent::Render(SDL_Renderer* renderer) {
+		if (texture) {
+			auto transform = gameObject->GetComponent<TransformComponent>();
+			if (transform) {
+				destRect.x = static_cast<int>(transform->GetWorldPosition().x);
+				destRect.y = static_cast<int>(transform->GetWorldPosition().y);
 
-	int width, height;
-	SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-	defaultWidth = width;
-	defaultHeight = height;
+				destRect.w = static_cast<int>(transform->IsSizeSet() ? transform->GetWidth() : defaultWidth);
+				destRect.h = static_cast<int>(transform->IsSizeSet() ? transform->GetHeight() : defaultHeight);
 
-	destRect = { 0, 0, width, height };
-}
+				SDL_Point center{ static_cast<int>(transform->GetPivot().x),static_cast<int>(transform->GetPivot().y) };
 
-void TextureComponent::Render(SDL_Renderer* renderer) {
-	if (texture) {
-		auto transform = gameObject->GetComponent<TransformComponent>();
-		if (transform) {
-			destRect.x = static_cast<int>(transform->GetWorldPosition().x);
-			destRect.y = static_cast<int>(transform->GetWorldPosition().y);
+				SDL_RenderCopyEx(renderer, texture, NULL, &destRect,
+					transform->GetWorldRotation(), &center, SDL_FLIP_NONE);
 
-			destRect.w = static_cast<int>(transform->IsSizeSet() ? transform->GetWidth() : defaultWidth);
-			destRect.h = static_cast<int>(transform->IsSizeSet() ? transform->GetHeight() : defaultHeight);
-
-			SDL_Point center{ static_cast<int>(transform->GetPivot().x),static_cast<int>(transform->GetPivot().y)};
-
-			SDL_RenderCopyEx(renderer, texture, NULL, &destRect,
-				transform->GetWorldRotation(), &center, SDL_FLIP_NONE);
-
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255); 
-			SDL_Rect pivotRect = {
-				static_cast<int>(destRect.x + center.x - 2),  
-				static_cast<int>(destRect.y + center.y - 2),
-				4,  
-				4
-			};
-			SDL_RenderFillRect(renderer, &pivotRect);
-			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+				SDL_Rect pivotRect = {
+					static_cast<int>(destRect.x + center.x - 2),
+					static_cast<int>(destRect.y + center.y - 2),
+					4,
+					4
+				};
+				SDL_RenderFillRect(renderer, &pivotRect);
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+			}
 		}
 	}
+
+
 }
+

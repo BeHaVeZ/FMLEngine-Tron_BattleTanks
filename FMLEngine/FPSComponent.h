@@ -4,18 +4,21 @@
 #include <SDL_ttf.h>
 #include <string>
 
-class FPSComponent : public Component {
-public:
-    FPSComponent(SDL_Renderer* renderer);
-    ~FPSComponent();
+namespace FML
+{
+	class FPSComponent : public Component {
+	public:
+		FPSComponent(SDL_Renderer* renderer);
+		~FPSComponent();
 
-    void Initialize() override;
-    void Update(float deltaTime) override;
+		void Initialize() override;
+		void Update(float deltaTime) override;
 
-private:
-    TextComponent* textComponent;
-    SDL_Renderer* storedRenderer;
-    float fpsCounter;
-    float frameTimeAccumulator;
-    int frameCount;
-};
+	private:
+		TextComponent* textComponent;
+		SDL_Renderer* storedRenderer;
+		float fpsCounter;
+		float frameTimeAccumulator;
+		int frameCount;
+	};
+}

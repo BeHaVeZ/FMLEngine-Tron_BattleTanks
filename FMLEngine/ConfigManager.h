@@ -1,23 +1,29 @@
 #pragma once
 
-class ConfigManager {
-public:
-    static ConfigManager& Instance() {
-        static ConfigManager instance;
-        return instance;
-    }
+namespace FML
+{
 
-    int GetWindowWidth() const { return windowWidth; }
-    int GetWindowHeight() const { return windowHeight; }
+	class ConfigManager {
+	public:
+		static ConfigManager& Instance() {
+			static ConfigManager instance;
+			return instance;
+		}
 
-    void SetWindowSize(int width, int height) {
-        windowWidth = width;
-        windowHeight = height;
-    }
+		int GetWindowWidth() const { return windowWidth; }
+		int GetWindowHeight() const { return windowHeight; }
 
-private:
-    ConfigManager() = default;
+		void SetWindowSize(int width, int height) {
+			windowWidth = width;
+			windowHeight = height;
+		}
 
-    int windowWidth = 1024;
-    int windowHeight = 768;
-};
+	private:
+		ConfigManager() = default;
+
+		int windowWidth = 1024;
+		int windowHeight = 768;
+	};
+
+
+}

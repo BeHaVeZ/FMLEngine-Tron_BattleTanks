@@ -3,28 +3,33 @@
 #include <memory>
 #include <vector>
 
-class MainMenuScene : public Scene {
-public:
-    MainMenuScene() : storedRenderer(nullptr), selectedIndex(0) {}
+namespace FML
+{
 
-    bool Initialize(SDL_Renderer* renderer) override;
-    void HandleInput(SDL_Event& event) override;
-    void InitializeInput() override;
-    void Update(float deltaTime) override;
-    void Render(SDL_Renderer* renderer) override;
-    void Cleanup() override;
+	class MainMenuScene : public Scene {
+	public:
+		MainMenuScene() : storedRenderer(nullptr), selectedIndex(0) {}
 
-    void InitializeBackground(SDL_Renderer* renderer);
-    void InitializeMenuOptions(SDL_Renderer* renderer);
-    void InitializeSelectionArrow(SDL_Renderer* renderer);
+		bool Initialize(SDL_Renderer* renderer) override;
+		void HandleInput(SDL_Event& event) override;
+		void InitializeInput() override;
+		void Update(float deltaTime) override;
+		void Render(SDL_Renderer* renderer) override;
+		void Cleanup() override;
 
-    void InitializeSounds();
+		void InitializeBackground(SDL_Renderer* renderer);
+		void InitializeMenuOptions(SDL_Renderer* renderer);
+		void InitializeSelectionArrow(SDL_Renderer* renderer);
+
+		void InitializeSounds();
 
 
-private:
-    std::vector<GameObject*> menuOptions;
-    std::unique_ptr<GameObject> selectionArrow;
-    int selectedIndex;
+	private:
+		std::vector<GameObject*> menuOptions;
+		std::unique_ptr<GameObject> selectionArrow;
+		int selectedIndex;
 
-    SDL_Renderer* storedRenderer;
-};
+		SDL_Renderer* storedRenderer;
+	};
+
+}

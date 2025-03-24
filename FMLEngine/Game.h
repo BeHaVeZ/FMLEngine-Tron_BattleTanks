@@ -1,36 +1,41 @@
 #pragma once
 #include <SDL.h>
 
-class Game {
-public:
-    Game();
-    ~Game();
+namespace FML
+{
+	class Game 
+	{
+	public:
+		Game();
+		~Game();
 
-    bool Initialize();
+		bool Initialize();
 
-    void Run();
+		void Run();
 
-    void ProcessInput();
+		void ProcessInput();
 
-    void Update(float deltaTime);
+		void Update(float deltaTime);
 
-    void Render();
+		void Render();
 
-    void Cleanup();
+		void Cleanup();
 
-    bool IsRunning() const { return isRunning; }
+		bool IsRunning() const { return isRunning; }
 
-    int GetWindowWidth() const { return windowWidth; }
-    int GetWindowHeight() const { return windowHeight; }
+		int GetWindowWidth() const { return windowWidth; }
+		int GetWindowHeight() const { return windowHeight; }
 
-private:
-    SDL_Window* window;
-    SDL_Renderer* renderer;
+	private:
+		SDL_Window* window;
+		SDL_Renderer* renderer;
 
-    bool isRunning;
+		bool isRunning;
 
-    int windowWidth = 1024;
-    int windowHeight = 768;
+		int windowWidth = 1024;
+		int windowHeight = 768;
 
-    int refreshRate = 60;
-};
+		int refreshRate = 60;
+	};
+}
+

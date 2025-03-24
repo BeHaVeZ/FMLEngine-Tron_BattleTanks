@@ -2,22 +2,26 @@
 #include "Observer.h"
 #include "Logger.h"
 
-class HealthComponent : public Component, public Observer 
+namespace FML
 {
-public:
-	HealthComponent(int initialHealth) : health(initialHealth) {}
 
-	void HandleEvent(const DamageEvent& event) override
+	class HealthComponent : public Component, public Observer
 	{
-		health -= event.GetDamage();
-		Logger::Log(LogLevel::Info, "HealthComponent::HandleEvent - Health changed to: %d", health);
-	}
+	public:
+		HealthComponent(int initialHealth) : health(initialHealth) {}
 
-	void Damage(int damage)
-	{
-		gameObject->GetSubject().Notify(DamageEvent(damage));
-	}
+		void HandleEvent(const DamageEvent& event) override
+		{
+			health -= event.GetDamage();
+			Logger::Log(LogLevel::Info, "HealthComponent::HandleEvent - Health changed to: %d", health);
+		}
 
-private:
-	int health;
-};
+		void Damage(int damage)
+		{
+			gameObject->GetSubject().Notify(DamageEvent(damage));
+		}
+
+	private:
+		int health;
+	};
+}

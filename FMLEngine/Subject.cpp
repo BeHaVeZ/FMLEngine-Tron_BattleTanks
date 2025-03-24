@@ -1,6 +1,8 @@
 #include "Subject.h"
 #include "Observer.h"
 
+namespace FML
+{
 void Subject::AddObserver(Observer* observer)
 {
 	observers.emplace_back(observer);
@@ -17,4 +19,5 @@ void Subject::Notify(const Event& event)
     {
         event.Process(*observer);
     }
+}
 }

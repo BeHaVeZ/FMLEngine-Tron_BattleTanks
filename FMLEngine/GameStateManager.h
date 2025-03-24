@@ -1,24 +1,31 @@
 #pragma once
 
-class GameStateManager {
-public:
-    static GameStateManager& Instance() {
-        static GameStateManager instance;
-        return instance;
-    }
+namespace FML
+{
 
-    bool IsRunning() const { return isRunning; }
-    void SetRunning(bool running) { isRunning = running; }
+	class GameStateManager {
+	public:
+		static GameStateManager& Instance() {
+			static GameStateManager instance;
+			return instance;
+		}
 
-    bool IsPaused() const { return isPaused; }
-    void SetPaused(bool paused) { isPaused = paused; }
+		bool IsRunning() const { return isRunning; }
+		void SetRunning(bool running) { isRunning = running; }
 
-    GameStateManager(const GameStateManager&) = delete;
-    GameStateManager& operator=(const GameStateManager&) = delete;
+		bool IsPaused() const { return isPaused; }
+		void SetPaused(bool paused) { isPaused = paused; }
 
-private:
-    GameStateManager() : isRunning(true), isPaused(false) {}
+		GameStateManager(const GameStateManager&) = delete;
+		GameStateManager& operator=(const GameStateManager&) = delete;
 
-    bool isRunning;
-    bool isPaused;
-};
+	private:
+		GameStateManager() : isRunning(true), isPaused(false) {}
+
+		bool isRunning;
+		bool isPaused;
+	};
+
+
+}
+

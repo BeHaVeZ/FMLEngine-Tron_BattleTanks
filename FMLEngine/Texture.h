@@ -3,27 +3,33 @@
 #include <SDL.h>
 #include <string>
 
-class Texture
+namespace FML
 {
-public:
-    Texture();
-    ~Texture();
 
-    bool LoadFromFile(SDL_Renderer* renderer, std::string path);
+	class Texture
+	{
+	public:
+		Texture();
+		~Texture();
 
-    void Free();
+		bool LoadFromFile(SDL_Renderer* renderer, std::string path);
 
-    void Render(SDL_Renderer* renderer, int x, int y, SDL_Rect* clip = nullptr);
+		void Free();
 
-    int GetWidth() const { return m_Width; }
-    int GetHeight() const { return m_Height; }
+		void Render(SDL_Renderer* renderer, int x, int y, SDL_Rect* clip = nullptr);
 
-    void SetWidth(int width) { m_Width = width; }
-    void SetHeight(int height) { m_Height = height; }
+		int GetWidth() const { return m_Width; }
+		int GetHeight() const { return m_Height; }
+
+		void SetWidth(int width) { m_Width = width; }
+		void SetHeight(int height) { m_Height = height; }
 
 
-private:
-    SDL_Texture* m_Texture;
-    int m_Width;
-    int m_Height;
-};
+	private:
+		SDL_Texture* m_Texture;
+		int m_Width;
+		int m_Height;
+	};
+
+}
+
