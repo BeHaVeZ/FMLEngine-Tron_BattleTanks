@@ -32,7 +32,6 @@ void DebugDraw::Render(SDL_Renderer* renderer)
     {
         SDL_SetRenderDrawColor(renderer, (Uint8)line.color.r * 255, (Uint8)line.color.g * 255, (Uint8)line.color.b * 255, (Uint8)line.color.a * 255);
         SDL_RenderDrawLine(renderer, (int)line.start.x, (int)line.start.y, (int)line.end.x, (int)line.end.y);
-		Logger::Log(LogLevel::Info, "Drawing line from (%f,%f) to (%f,%f)", line.start.x, line.start.y, line.end.x, line.end.y);
     }
     lines.clear();
 

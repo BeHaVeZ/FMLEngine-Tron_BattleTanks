@@ -147,16 +147,11 @@ void TestingScene::Update(float deltaTime) {
 	}
 }
 
-void TestingScene::Render(SDL_Renderer* renderer) {
-	SDL_RenderClear(renderer);
-
+void TestingScene::Render(SDL_Renderer* renderer) 
+{
 	for (auto& gameObject : gameObjects) {
 		gameObject->Render(renderer);
 	}
-
-	DebugDraw::DrawPoint({ 100,100 }, { 1,1,1,1 });
-
-	SDL_RenderPresent(renderer);
 }
 
 void TestingScene::Cleanup() {

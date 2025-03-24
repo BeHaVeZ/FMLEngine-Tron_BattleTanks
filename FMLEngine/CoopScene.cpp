@@ -135,14 +135,11 @@ void CoopScene::Update(float deltaTime) {
 	}
 }
 
-void CoopScene::Render(SDL_Renderer* renderer) {
-	SDL_RenderClear(renderer);
-
+void CoopScene::Render(SDL_Renderer* renderer) 
+{
 	for (auto& gameObject : gameObjects) {
 		gameObject->Render(renderer);
 	}
-
-	SDL_RenderPresent(renderer);
 }
 
 void CoopScene::Cleanup() {

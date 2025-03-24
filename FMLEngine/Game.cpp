@@ -128,11 +128,15 @@ void Game::Update(float deltaTime)
 	SceneManager::Instance().Update(deltaTime);
 }
 
-void Game::Render() 
+void Game::Render()
 {
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
+
 	SceneManager::Instance().Render();
+
 	DebugDraw::Render(renderer);
+
 	SDL_RenderPresent(renderer);
 }
 

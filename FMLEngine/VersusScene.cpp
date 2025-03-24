@@ -144,13 +144,10 @@ void VersusScene::Update(float deltaTime) {
 
 void VersusScene::Render(SDL_Renderer* renderer) 
 {
-    SDL_RenderClear(renderer);
 
     for (auto& gameObject : gameObjects) {
         gameObject->Render(renderer);
     }
-
-    SDL_RenderPresent(renderer);
 }
 
 void VersusScene::Cleanup() 

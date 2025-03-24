@@ -61,8 +61,6 @@ void MainMenuScene::Update(float)
 
 void MainMenuScene::Render(SDL_Renderer* renderer)
 {
-	SDL_RenderClear(renderer);
-
 	for (auto& gameObject : gameObjects)
 	{
 		gameObject->Render(renderer);
@@ -71,8 +69,6 @@ void MainMenuScene::Render(SDL_Renderer* renderer)
 	for (auto& option : menuOptions) {
 		option->Render(renderer);
 	}
-
-	SDL_RenderPresent(renderer);
 }
 
 void MainMenuScene::Cleanup()
