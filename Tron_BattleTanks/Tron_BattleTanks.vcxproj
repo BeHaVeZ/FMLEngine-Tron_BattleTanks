@@ -21,32 +21,32 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{86f10275-0dca-4101-919c-92485baffc65}</ProjectGuid>
-    <RootNamespace>FMLEngine</RootNamespace>
+    <ProjectGuid>{e8ca9831-3ca0-4779-b580-ea018414204d}</ProjectGuid>
+    <RootNamespace>TronBattleTanks</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -88,19 +88,18 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Github\FMLEngine-Tron_BattleTanks\vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;$(SolutionDir)vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vendor\SDL2-2.30.7\lib\x86;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x86;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x86;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x86;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x86;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x86;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FMLEngine.lib;SDL2.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)vendor\SDL2_image-2.8.2\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
@@ -110,33 +109,25 @@ xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(Out
 xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"
-rd /s /q "$(SolutionDir)intermediates"</Command>
-    </PreBuildEvent>
-    <Lib>
-      <AdditionalDependencies>xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Github\FMLEngine-Tron_BattleTanks\vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;$(SolutionDir)vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vendor\SDL2-2.30.7\lib\x86;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x86;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x86;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x86;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x86;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x86;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FMLEngine.lib;SDL2.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)vendor\SDL2_image-2.8.2\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
@@ -146,29 +137,21 @@ xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(Out
 xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"
-rd /s /q "$(SolutionDir)intermediates"</Command>
-    </PreBuildEvent>
-    <Lib>
-      <AdditionalDependencies>xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Github\FMLEngine-Tron_BattleTanks\vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;$(SolutionDir)vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vendor\SDL2-2.30.7\lib\x64;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x64;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x64;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x64;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x64;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x64;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FMLEngine.lib;SDL2.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)vendor\SDL2_image-2.8.2\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
@@ -178,33 +161,25 @@ xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(Out
 xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"
-rd /s /q "$(SolutionDir)intermediates"</Command>
-    </PreBuildEvent>
-    <Lib>
-      <AdditionalDependencies>xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Github\FMLEngine-Tron_BattleTanks\vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)vendor\SDL2_image-2.8.2\include;$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\SDL2_mixer-2.8.1\include;$(SolutionDir)vendor\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)vendor\SDL2-2.30.7\lib\x64;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x64;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x64;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x64;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x64;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x64;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FMLEngine.lib;SDL2.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
       <Command>xcopy "$(SolutionDir)vendor\SDL2_image-2.8.2\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
@@ -214,81 +189,9 @@ xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(Out
 xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
-    <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"
-rd /s /q "$(SolutionDir)intermediates"</Command>
-    </PreBuildEvent>
-    <Lib>
-      <AdditionalDependencies>xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CoopScene.cpp" />
-    <ClCompile Include="DamageEvent.cpp" />
-    <ClCompile Include="DebugDraw.cpp" />
-    <ClCompile Include="FPSComponent.cpp" />
-    <ClCompile Include="PrefabRegistry.cpp" />
-    <ClCompile Include="Subject.cpp" />
-    <ClCompile Include="XInputGamepadHandlerImpl.cpp" />
-    <ClCompile Include="MainMenuScene.cpp" />
-    <ClCompile Include="RotationComponent.cpp" />
-    <ClCompile Include="ServiceLocator.cpp" />
-    <ClCompile Include="SoundSystem.cpp" />
-    <ClCompile Include="TestingScene.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="InputHandler.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="TextComponent.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TextureComponent.cpp" />
-    <ClCompile Include="TextureManager.cpp" />
-    <ClCompile Include="Timer.cpp" />
-    <ClCompile Include="TransformComponent.cpp" />
-    <ClCompile Include="VersusScene.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CoopScene.h" />
-    <ClInclude Include="DamageCommand.h" />
-    <ClInclude Include="DamageEvent.h" />
-    <ClInclude Include="DebugDraw.h" />
-    <ClInclude Include="Event.h" />
-    <ClInclude Include="FPSComponent.h" />
-    <ClInclude Include="HealthComponent.h" />
-    <ClInclude Include="HealthUIComponent.h" />
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="MainMenuScene.h" />
-    <ClInclude Include="MoveCommand.h" />
-    <ClInclude Include="MuteSoundCommand.h" />
-    <ClInclude Include="Observer.h" />
-    <ClInclude Include="PrefabRegistry.h" />
-    <ClInclude Include="RotateCommand.h" />
-    <ClInclude Include="RotateTurretCommand.h" />
-    <ClInclude Include="RotationComponent.h" />
-    <ClInclude Include="SelectMenuOptionCommand.h" />
-    <ClInclude Include="ServiceLocator.h" />
-    <ClInclude Include="SoundSystem.h" />
-    <ClInclude Include="Subject.h" />
-    <ClInclude Include="TestingScene.h" />
-    <ClInclude Include="Command.h" />
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="ConfigManager.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="GameStateManager.h" />
-    <ClInclude Include="InputHandler.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="Singleton.h" />
-    <ClInclude Include="TextComponent.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="TextureComponent.h" />
-    <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="Timer.h" />
-    <ClInclude Include="TransformComponent.h" />
-    <ClInclude Include="VersusScene.h" />
-    <ClInclude Include="XInputGamepadHandlerImpl.h" />
+    <ClCompile Include="Tron_BattleTanks.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
