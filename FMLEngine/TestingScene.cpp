@@ -14,6 +14,7 @@
 #include "DamageCommand.h"
 #include "HealthUIComponent.h"
 #include "DebugDraw.h"
+#include "TestCommand.h"
 
 namespace FML
 {
@@ -21,7 +22,7 @@ namespace FML
 	const std::string backgroundImagePath = "data/levels/level00.png";
 
 	bool TestingScene::Initialize(SDL_Renderer* renderer) {
-		//InitializeBackground(renderer);
+		InitializeBackground(renderer);
 
 		InitializeFirstTank();
 		InitializeFPSCounter(renderer);
@@ -109,6 +110,9 @@ namespace FML
 
 	void TestingScene::InitializeInput()
 	{
+		InputHandler::Instance().BindCommand(SDLK_p, std::make_unique<TestCommand>());
+
+
 		auto tank1 = FindGameObjectByTag("Player1");
 		if (tank1)
 		{

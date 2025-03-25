@@ -177,5 +177,8 @@
     <ClInclude Include="FPSComponent.h">
       <Filter>Engine\Components</Filter>
     </ClInclude>
+    <ClInclude Include="TestCommand.h">
+      <Filter>Engine\Command</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

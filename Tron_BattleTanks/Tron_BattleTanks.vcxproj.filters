@@ -27,6 +27,9 @@
     <Filter Include="Header Files\Scenes">
       <UniqueIdentifier>{579a5cd2-6d0e-45fd-99f1-efd353f76c61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scenes\SoloModeScenes">
+      <UniqueIdentifier>{84b185d2-69e7-4f1d-8c9b-d3afe85e5378}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tron_BattleTanks.cpp">

@@ -251,6 +251,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClInclude Include="ServiceLocator.h" />
     <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="Subject.h" />
+    <ClInclude Include="TestCommand.h" />
     <ClInclude Include="TestingScene.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />
