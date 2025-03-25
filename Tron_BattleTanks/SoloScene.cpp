@@ -1,5 +1,5 @@
 #include "PrefabRegistry.h"
-#include "TestingScene.h"
+#include "SoloScene.h"
 #include "TextureComponent.h"
 #include "TransformComponent.h"
 #include "InputHandler.h"
@@ -20,8 +20,8 @@ namespace FML
 
 	const std::string backgroundImagePath = "data/levels/level00.png";
 
-	bool TestingScene::Initialize(SDL_Renderer* renderer) {
-		//InitializeBackground(renderer);
+	bool SoloScene::Initialize(SDL_Renderer* renderer) {
+		InitializeBackground(renderer);
 
 		InitializeFirstTank();
 		InitializeFPSCounter(renderer);
@@ -32,7 +32,7 @@ namespace FML
 		return true;
 	}
 
-	void TestingScene::InitializeBackground(SDL_Renderer* renderer) {
+	void SoloScene::InitializeBackground(SDL_Renderer* renderer) {
 		auto background = std::make_unique<GameObject>("Background");
 		auto backgroundTexture = std::make_unique<TextureComponent>(backgroundImagePath, renderer);
 		background->AddComponent(std::move(backgroundTexture));
@@ -48,7 +48,7 @@ namespace FML
 		gameObjects.push_back(std::move(background));
 	}
 
-	void TestingScene::InitializeTitle(SDL_Renderer* renderer)
+	void SoloScene::InitializeTitle(SDL_Renderer* renderer)
 	{
 		auto title = std::make_unique<GameObject>("title");
 
@@ -67,7 +67,7 @@ namespace FML
 		gameObjects.push_back(std::move(title));
 	}
 
-	void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
+	void SoloScene::InitializeFPSCounter(SDL_Renderer* renderer)
 	{
 		auto fpsGameObject = std::make_unique<GameObject>("FPSCounter");
 
@@ -100,14 +100,14 @@ namespace FML
 		gameObjects.push_back(std::move(healthUIPlayer1));
 	}
 
-	void TestingScene::InitializeFirstTank()
+	void SoloScene::InitializeFirstTank()
 	{
 		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 200,200 }, "Player1");
 		gameObjects.push_back(std::move(tank));
 	}
 
 
-	void TestingScene::InitializeInput()
+	void SoloScene::InitializeInput()
 	{
 		auto tank1 = FindGameObjectByTag("Player1");
 		if (tank1)
@@ -131,34 +131,31 @@ namespace FML
 		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
 	}
 
-	void TestingScene::InitializeSounds()
+	void SoloScene::InitializeSounds()
 	{
 		ServiceLocator::GetSoundSystem().AddSound("AyoWhatV3.wav", 1, true);
 		ServiceLocator::GetSoundSystem().PlaySound(1, .0f);
 	}
 
 
-	void TestingScene::HandleInput(SDL_Event& event) {
+	void SoloScene::HandleInput(SDL_Event& event) {
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void TestingScene::Update(float deltaTime) {
+	void SoloScene::Update(float deltaTime) {
 		for (auto& gameObject : gameObjects) {
 			gameObject->Update(deltaTime);
 		}
 	}
 
-	void TestingScene::Render(SDL_Renderer* renderer)
+	void SoloScene::Render(SDL_Renderer* renderer)
 	{
 		for (auto& gameObject : gameObjects) {
 			gameObject->Render(renderer);
 		}
 	}
 
-	void TestingScene::Cleanup() {
+	void SoloScene::Cleanup() 
+	{
 	}
-
-
 }
-
-

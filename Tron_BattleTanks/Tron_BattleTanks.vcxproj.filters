@@ -9,14 +9,90 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Header Files\GameComponents">
+      <UniqueIdentifier>{68a4df46-df0b-4362-9a15-1e84b3477290}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameEvents">
+      <UniqueIdentifier>{03451d27-2f65-4692-b665-d04ab84058d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameCommands">
+      <UniqueIdentifier>{00d947c9-1c41-4f18-93b3-94e45de6c273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameCommands\MainMenuCommands">
+      <UniqueIdentifier>{4a2f9a03-5646-4dcd-aabc-a4a3c97dadf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameManagers">
+      <UniqueIdentifier>{fe1ed542-6d87-46ef-94b9-8600d8f8ad4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Scenes">
+      <UniqueIdentifier>{579a5cd2-6d0e-45fd-99f1-efd353f76c61}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tron_BattleTanks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\FMLEngine\DamageEvent.cpp">
+      <Filter>Header Files\GameEvents</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FMLEngine\PrefabRegistry.cpp">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FMLEngine\CoopScene.cpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FMLEngine\MainMenuScene.cpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FMLEngine\VersusScene.cpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="SoloScene.cpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\FMLEngine\DamageEvent.h">
+      <Filter>Header Files\GameEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\HealthComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\HealthUIComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\RotateCommand.h">
+      <Filter>Header Files\GameCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\MoveCommand.h">
+      <Filter>Header Files\GameCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\DamageCommand.h">
+      <Filter>Header Files\GameCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\RotateTurretCommand.h">
+      <Filter>Header Files\GameCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\MuteSoundCommand.h">
+      <Filter>Header Files\GameCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\SelectMenuOptionCommand.h">
+      <Filter>Header Files\GameCommands\MainMenuCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\PrefabRegistry.h">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\CoopScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\MainMenuScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FMLEngine\VersusScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SoloScene.h">
+      <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

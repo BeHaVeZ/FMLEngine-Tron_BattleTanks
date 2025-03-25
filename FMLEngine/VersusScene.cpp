@@ -9,6 +9,7 @@
 #include "MoveCommand.h"
 #include <iostream>
 #include "PrefabRegistry.h"
+#include "RotateTurretCommand.h"
 
 namespace FML
 {
@@ -110,6 +111,9 @@ namespace FML
 			InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<MoveCommand>(tank, glm::vec2(0, 1), 100.f));
 			InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<MoveCommand>(tank, glm::vec2(-1, 0), 100.f));
 			InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 100.f));
+
+			InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<RotateTurretCommand>(tank->FindChildByTag("Turret"), 1.f));
+			InputHandler::Instance().BindCommand(SDLK_q, std::make_unique<RotateTurretCommand>(tank->FindChildByTag("Turret"), -1.f));
 		}
 
 		tank = FindGameObjectByTag("Player2");

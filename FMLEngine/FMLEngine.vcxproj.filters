@@ -20,29 +20,14 @@
     <Filter Include="Engine\Components">
       <UniqueIdentifier>{a8b7d55c-809c-4135-8f41-a99512873fda}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Components\AssignmentComponents">
-      <UniqueIdentifier>{16f92c94-24b6-4213-9984-30fb944a752c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Rendering">
       <UniqueIdentifier>{c18c0cd7-5f88-4cb8-9ddb-f454d74bd22f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Scenes\AssignmentScenes">
-      <UniqueIdentifier>{3f7b40d7-2fd6-4d5a-b485-7e5c5c8b3c9a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Interfaces">
       <UniqueIdentifier>{6ed1bb93-6eb3-45df-be53-a46ce6b49043}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Sound">
       <UniqueIdentifier>{6ff5e46c-c868-4c3c-89a7-04c7f91d6156}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\MainMenuCommands">
-      <UniqueIdentifier>{e79db2a0-3c9f-4e60-b8d5-cb467e254f68}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Scenes\TronScenes">
-      <UniqueIdentifier>{a1067124-431f-4340-a8b3-633023242212}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Command\TronCommands">
-      <UniqueIdentifier>{825e6ff6-762f-4de1-9269-9b9a9ec1b976}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Input">
       <UniqueIdentifier>{9888b5d7-a894-42cb-9efa-b750f4d3f2cb}</UniqueIdentifier>
@@ -52,6 +37,9 @@
     </Filter>
     <Filter Include="Engine\Debug">
       <UniqueIdentifier>{bd17e339-e6c9-427a-a265-4c66f741c41d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Scenes\TestScene">
+      <UniqueIdentifier>{3f7b40d7-2fd6-4d5a-b485-7e5c5c8b3c9a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -79,32 +67,17 @@
     <ClCompile Include="TextComponent.cpp">
       <Filter>Engine\Components</Filter>
     </ClCompile>
-    <ClCompile Include="FPSComponent.cpp">
-      <Filter>Engine\Components\AssignmentComponents</Filter>
-    </ClCompile>
     <ClCompile Include="TransformComponent.cpp">
       <Filter>Engine\Components</Filter>
     </ClCompile>
     <ClCompile Include="TestingScene.cpp">
-      <Filter>Engine\Scenes\AssignmentScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="RotationComponent.cpp">
-      <Filter>Engine\Components\AssignmentComponents</Filter>
+      <Filter>Engine\Scenes\TestScene</Filter>
     </ClCompile>
     <ClCompile Include="SoundSystem.cpp">
       <Filter>Engine\Sound</Filter>
     </ClCompile>
     <ClCompile Include="ServiceLocator.cpp">
       <Filter>Engine\Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="MainMenuScene.cpp">
-      <Filter>Engine\Scenes\TronScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="VersusScene.cpp">
-      <Filter>Engine\Scenes\TronScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="CoopScene.cpp">
-      <Filter>Engine\Scenes\TronScenes</Filter>
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Engine\Managers</Filter>
@@ -115,17 +88,14 @@
     <ClCompile Include="XInputGamepadHandlerImpl.cpp">
       <Filter>Engine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="PrefabRegistry.cpp">
-      <Filter>Engine\Managers</Filter>
-    </ClCompile>
     <ClCompile Include="Subject.cpp">
-      <Filter>Engine\Event</Filter>
-    </ClCompile>
-    <ClCompile Include="DamageEvent.cpp">
       <Filter>Engine\Event</Filter>
     </ClCompile>
     <ClCompile Include="DebugDraw.cpp">
       <Filter>Engine\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="FPSComponent.cpp">
+      <Filter>Engine\Components</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -171,14 +141,8 @@
     <ClInclude Include="TextComponent.h">
       <Filter>Engine\Components</Filter>
     </ClInclude>
-    <ClInclude Include="FPSComponent.h">
-      <Filter>Engine\Components\AssignmentComponents</Filter>
-    </ClInclude>
     <ClInclude Include="TestingScene.h">
-      <Filter>Engine\Scenes\AssignmentScenes</Filter>
-    </ClInclude>
-    <ClInclude Include="RotationComponent.h">
-      <Filter>Engine\Components\AssignmentComponents</Filter>
+      <Filter>Engine\Scenes\TestScene</Filter>
     </ClInclude>
     <ClInclude Include="ServiceLocator.h">
       <Filter>Engine\Managers</Filter>
@@ -186,29 +150,8 @@
     <ClInclude Include="SoundSystem.h">
       <Filter>Engine\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenuScene.h">
-      <Filter>Engine\Scenes\TronScenes</Filter>
-    </ClInclude>
-    <ClInclude Include="RotateCommand.h">
-      <Filter>Engine\Command\TronCommands</Filter>
-    </ClInclude>
-    <ClInclude Include="VersusScene.h">
-      <Filter>Engine\Scenes\TronScenes</Filter>
-    </ClInclude>
-    <ClInclude Include="CoopScene.h">
-      <Filter>Engine\Scenes\TronScenes</Filter>
-    </ClInclude>
-    <ClInclude Include="SelectMenuOptionCommand.h">
-      <Filter>Engine\MainMenuCommands</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveCommand.h">
-      <Filter>Engine\Command\TronCommands</Filter>
-    </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Engine\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="MuteSoundCommand.h">
-      <Filter>Engine\Command\TronCommands</Filter>
     </ClInclude>
     <ClInclude Include="InputHandler.h">
       <Filter>Engine\Input</Filter>
@@ -216,17 +159,8 @@
     <ClInclude Include="XInputGamepadHandlerImpl.h">
       <Filter>Engine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="PrefabRegistry.h">
-      <Filter>Engine\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="RotateTurretCommand.h">
-      <Filter>Engine\Command\TronCommands</Filter>
-    </ClInclude>
     <ClInclude Include="Subject.h">
       <Filter>Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="DamageCommand.h">
-      <Filter>Engine\Command\TronCommands</Filter>
     </ClInclude>
     <ClInclude Include="Observer.h">
       <Filter>Engine\Event</Filter>
@@ -237,17 +171,11 @@
     <ClInclude Include="Logger.h">
       <Filter>Engine\Debug</Filter>
     </ClInclude>
-    <ClInclude Include="DamageEvent.h">
-      <Filter>Engine\Event</Filter>
-    </ClInclude>
-    <ClInclude Include="HealthComponent.h">
-      <Filter>Engine\Components\AssignmentComponents</Filter>
-    </ClInclude>
-    <ClInclude Include="HealthUIComponent.h">
-      <Filter>Engine\Components\AssignmentComponents</Filter>
-    </ClInclude>
     <ClInclude Include="DebugDraw.h">
       <Filter>Engine\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="FPSComponent.h">
+      <Filter>Engine\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

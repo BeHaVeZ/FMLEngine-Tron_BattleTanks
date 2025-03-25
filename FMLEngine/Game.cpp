@@ -16,6 +16,7 @@
 #include "InputHandler.h"
 #include "Logger.h"
 #include "DebugDraw.h"
+#include "../Tron_BattleTanks/SoloScene.h" //This is caused because scenes are being loaded from game but it should not be (GameEngine does not know what scenes any game will have -> abstract
 
 namespace FML
 {
@@ -77,9 +78,10 @@ namespace FML
 		ServiceLocator::GetSoundSystem().StartUp();
 
 		SceneManager::Instance().AddScene("MainMenu", std::make_unique<MainMenuScene>());
-		SceneManager::Instance().AddScene("Solo", std::make_unique<TestingScene>());
+		SceneManager::Instance().AddScene("Solo", std::make_unique<SoloScene>());
 		SceneManager::Instance().AddScene("CoopScene", std::make_unique<CoopScene>());
 		SceneManager::Instance().AddScene("VersusScene", std::make_unique<VersusScene>());
+		SceneManager::Instance().AddScene("Testing", std::make_unique<TestingScene>());
 
 		SceneManager::Instance().ChangeScene("MainMenu");
 

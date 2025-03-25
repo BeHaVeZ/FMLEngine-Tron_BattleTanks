@@ -53,13 +53,16 @@ namespace FML
 		auto tank = std::make_unique<GameObject>(tag);
 
 		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/YellowTank.png", SceneManager::Instance().GetRenderer());
+		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
 		tank->AddComponent(std::move(tankTexture));
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
 		auto turret = std::make_unique<GameObject>("Turret");
 		auto turretTexture = std::make_unique<TextureComponent>("data/artassets/Yellow_Barrel.png", SceneManager::Instance().GetRenderer());
+		turret->GetComponent<TransformComponent>()->CentralizePivotOnTexture(turretTexture.get());
 		turret->AddComponent(std::move(turretTexture));
-		turret->GetComponent<TransformComponent>()->SetPosition({ 0, -5 });
+		turret->GetComponent<TransformComponent>()->SetPosition({ 0, -6 });
+		//turret->GetComponent<TransformComponent>()->OffsetPivotPoint({ 0,9 });
 
 		tank->AddChild(std::move(turret));
 		return tank;

@@ -223,15 +223,10 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CoopScene.cpp" />
-    <ClCompile Include="DamageEvent.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
-    <ClCompile Include="PrefabRegistry.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="XInputGamepadHandlerImpl.cpp" />
-    <ClCompile Include="MainMenuScene.cpp" />
-    <ClCompile Include="RotationComponent.cpp" />
     <ClCompile Include="ServiceLocator.cpp" />
     <ClCompile Include="SoundSystem.cpp" />
     <ClCompile Include="TestingScene.cpp" />
@@ -246,27 +241,13 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
-    <ClCompile Include="VersusScene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CoopScene.h" />
-    <ClInclude Include="DamageCommand.h" />
-    <ClInclude Include="DamageEvent.h" />
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FPSComponent.h" />
-    <ClInclude Include="HealthComponent.h" />
-    <ClInclude Include="HealthUIComponent.h" />
     <ClInclude Include="Logger.h" />
-    <ClInclude Include="MainMenuScene.h" />
-    <ClInclude Include="MoveCommand.h" />
-    <ClInclude Include="MuteSoundCommand.h" />
     <ClInclude Include="Observer.h" />
-    <ClInclude Include="PrefabRegistry.h" />
-    <ClInclude Include="RotateCommand.h" />
-    <ClInclude Include="RotateTurretCommand.h" />
-    <ClInclude Include="RotationComponent.h" />
-    <ClInclude Include="SelectMenuOptionCommand.h" />
     <ClInclude Include="ServiceLocator.h" />
     <ClInclude Include="SoundSystem.h" />
     <ClInclude Include="Subject.h" />
@@ -287,7 +268,6 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TransformComponent.h" />
-    <ClInclude Include="VersusScene.h" />
     <ClInclude Include="XInputGamepadHandlerImpl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -47,7 +47,8 @@ namespace FML
 			InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<RotateCommand>(arrow, 180.0f));
 			InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<RotateCommand>(arrow, 0.0f));
 
-			InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<SelectMenuOptionCommand>(arrow));
+			InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
+			InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_A, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
 
 			InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_A, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
 			InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<RotateCommand>(arrow, 270.0f));

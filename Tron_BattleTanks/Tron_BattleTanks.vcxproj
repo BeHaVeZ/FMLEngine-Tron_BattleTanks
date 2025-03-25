@@ -92,7 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -109,6 +109,9 @@ xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(Out
 xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -118,7 +121,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -137,6 +140,9 @@ xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(Out
 xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -144,7 +150,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -161,6 +167,9 @@ xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(Out
 xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -170,7 +179,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -189,9 +198,34 @@ xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(Out
 xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\FMLEngine\CoopScene.cpp" />
+    <ClCompile Include="..\FMLEngine\DamageEvent.cpp" />
+    <ClCompile Include="..\FMLEngine\MainMenuScene.cpp" />
+    <ClCompile Include="..\FMLEngine\PrefabRegistry.cpp" />
+    <ClCompile Include="..\FMLEngine\VersusScene.cpp" />
+    <ClCompile Include="SoloScene.cpp" />
     <ClCompile Include="Tron_BattleTanks.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\FMLEngine\CoopScene.h" />
+    <ClInclude Include="..\FMLEngine\DamageCommand.h" />
+    <ClInclude Include="..\FMLEngine\DamageEvent.h" />
+    <ClInclude Include="..\FMLEngine\HealthComponent.h" />
+    <ClInclude Include="..\FMLEngine\HealthUIComponent.h" />
+    <ClInclude Include="..\FMLEngine\MainMenuScene.h" />
+    <ClInclude Include="..\FMLEngine\MoveCommand.h" />
+    <ClInclude Include="..\FMLEngine\MuteSoundCommand.h" />
+    <ClInclude Include="..\FMLEngine\PrefabRegistry.h" />
+    <ClInclude Include="..\FMLEngine\RotateCommand.h" />
+    <ClInclude Include="..\FMLEngine\RotateTurretCommand.h" />
+    <ClInclude Include="..\FMLEngine\SelectMenuOptionCommand.h" />
+    <ClInclude Include="..\FMLEngine\VersusScene.h" />
+    <ClInclude Include="SoloScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
