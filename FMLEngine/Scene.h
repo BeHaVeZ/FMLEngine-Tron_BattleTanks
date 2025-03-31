@@ -19,7 +19,7 @@ namespace FML
         virtual void Update(float deltaTime);
         virtual void Render(SDL_Renderer* renderer);
         virtual void Cleanup() = 0;
-        //virtual void AddGameObject(std::unique_ptr<GameObject> gameObject, glm::vec2 position = { 0,0 });
+        virtual void AddGameObject(std::unique_ptr<GameObject> gameObject, glm::vec2 position = { 0,0 });
 
         GameObject* FindGameObjectByTag(const std::string& tag);
 

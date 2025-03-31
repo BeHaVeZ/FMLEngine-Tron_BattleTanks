@@ -65,7 +65,7 @@ namespace FML
 		title->AddComponent(std::move(titleTextComponent));
 		title->GetComponent<TransformComponent>()->SetPosition({ 300, 300 });
 
-		gameObjects.push_back(std::move(title));
+		AddGameObject(std::move(title));
 	}
 
 	void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
@@ -104,10 +104,11 @@ namespace FML
 	void TestingScene::InitializeFirstTank()
 	{
 		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 200,200 }, "Player1");
-		gameObjects.push_back(std::move(tank));
+		AddGameObject(std::move(tank));
 
 		tank = PrefabRegistry::Instance().CreateBlueTankPrefab({ 300,200 }, "Player2");
-		gameObjects.push_back(std::move(tank));
+
+		AddGameObject(std::move(tank));
 	}
 
 
