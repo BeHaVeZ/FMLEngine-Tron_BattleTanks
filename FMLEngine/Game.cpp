@@ -3,7 +3,6 @@
 #include "SceneManager.h"
 #include "TestingScene.h"
 #include <SDL_image.h>
-#include <iostream>
 #include <SDL_ttf.h>
 #include "GameStateManager.h"
 #include "ConfigManager.h"
@@ -17,6 +16,7 @@
 #include "Logger.h"
 #include "DebugDraw.h"
 #include "../Tron_BattleTanks/SoloScene.h" //This is caused because scenes are being loaded from game but it should not be (GameEngine does not know what scenes any game will have -> abstract
+#include "CollisionManager.h"
 
 namespace FML
 {
@@ -130,6 +130,7 @@ namespace FML
 	{
 		InputHandler::Instance().Update();
 		SceneManager::Instance().Update(deltaTime);
+		CollisionManager::Instance().CheckCollisions();
 	}
 
 	void Game::Render()

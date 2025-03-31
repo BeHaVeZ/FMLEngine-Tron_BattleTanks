@@ -3,6 +3,8 @@
 #include "SceneManager.h"
 #include "HealthComponent.h"
 #include "HealthUIComponent.h"
+#include "Collider.h"
+#include "BoxCollider.h"
 
 namespace FML
 {
@@ -34,6 +36,11 @@ namespace FML
 		//turret->GetComponent<TransformComponent>()->OffsetPivotPoint({ 0,9 });
 
 		tank->AddChild(std::move(turret));
+
+		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth(),tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
+		auto playerCollider = std::make_unique<BoxCollider>(tankBox);
+		tank->AddComponent(std::move(playerCollider));
+
 		return tank;
 	}
 
@@ -44,6 +51,11 @@ namespace FML
 		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/BlueTank.png", SceneManager::Instance().GetRenderer());
 		tank->AddComponent(std::move(tankTexture));
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth(),tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
+		auto playerCollider = std::make_unique<BoxCollider>(tankBox);
+		//playerCollider->isStatic = true;
+		tank->AddComponent(std::move(playerCollider));
 
 		return tank;
 	}

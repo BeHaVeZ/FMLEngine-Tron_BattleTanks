@@ -41,6 +41,9 @@
     <Filter Include="Engine\Scenes\TestScene">
       <UniqueIdentifier>{3f7b40d7-2fd6-4d5a-b485-7e5c5c8b3c9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Collision">
+      <UniqueIdentifier>{0a0c9749-3ffb-40c7-8439-156622d73434}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -96,6 +99,15 @@
     </ClCompile>
     <ClCompile Include="FPSComponent.cpp">
       <Filter>Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Engine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxCollider.cpp">
+      <Filter>Engine\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>Engine\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,6 +191,15 @@
     </ClInclude>
     <ClInclude Include="TestCommand.h">
       <Filter>Engine\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
+      <Filter>Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxCollider.h">
+      <Filter>Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>Engine\Managers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

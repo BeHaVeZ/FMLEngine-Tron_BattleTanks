@@ -13,9 +13,12 @@ namespace FML
 		virtual void Update(float) {};
 		virtual void Render(SDL_Renderer*) {};
 
-		void SetOwner(GameObject* owner) {
+		void SetOwner(GameObject* owner) 
+		{
 			this->gameObject = owner;
 		}
+
+		GameObject* GetOwner() { return gameObject; }
 
 	protected:
 		GameObject* gameObject = nullptr;

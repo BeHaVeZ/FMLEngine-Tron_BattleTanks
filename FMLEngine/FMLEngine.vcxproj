@@ -223,6 +223,9 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoxCollider.cpp" />
+    <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="Subject.cpp" />
@@ -243,6 +246,9 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClCompile Include="TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoxCollider.h" />
+    <ClInclude Include="Collider.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FPSComponent.h" />

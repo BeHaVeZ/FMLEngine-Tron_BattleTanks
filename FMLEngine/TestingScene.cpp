@@ -105,12 +105,15 @@ namespace FML
 	{
 		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 200,200 }, "Player1");
 		gameObjects.push_back(std::move(tank));
+
+		tank = PrefabRegistry::Instance().CreateBlueTankPrefab({ 300,200 }, "Player2");
+		gameObjects.push_back(std::move(tank));
 	}
 
 
 	void TestingScene::InitializeInput()
 	{
-		InputHandler::Instance().BindCommand(SDLK_p, std::make_unique<TestCommand>());
+		InputHandler::Instance().BindCommand(SDLK_p, std::make_unique<TestCommand>(), InputHandler::KeyAction::KeyUp);
 
 
 		auto tank1 = FindGameObjectByTag("Player1");
