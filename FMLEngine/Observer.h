@@ -1,12 +1,11 @@
 #pragma once
-#include "DamageEvent.h"
+#include "Event.h"
 
-namespace FML
+namespace FML 
 {
-	class Observer
-	{
-	public:
-		virtual ~Observer() {}
-		virtual void HandleEvent(const DamageEvent& event) = 0;
-	};
+    class Observer {
+    public:
+        virtual ~Observer() {}
+        virtual void HandleEvent(const Event& event) = 0;
+    };
 }

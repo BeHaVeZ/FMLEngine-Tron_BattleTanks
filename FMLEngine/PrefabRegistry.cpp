@@ -49,6 +49,7 @@ namespace FML
 		auto tank = std::make_unique<GameObject>(tag);
 
 		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/BlueTank.png", SceneManager::Instance().GetRenderer());
+		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
 		tank->AddComponent(std::move(tankTexture));
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 

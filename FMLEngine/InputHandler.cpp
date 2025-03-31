@@ -1,6 +1,8 @@
 #include "InputHandler.h"
 #include "XInputGamepadHandlerImpl.h"
 #include <iostream>
+#include "PrefabRegistry.h"
+#include "SceneManager.h"
 
 namespace FML
 {
@@ -50,6 +52,19 @@ namespace FML
 
 	void InputHandler::HandleInput(SDL_Event& event)
 	{
+		if (event.type == SDL_MOUSEBUTTONDOWN) {
+			if (event.button.button == SDL_BUTTON_LEFT)
+			{
+				int x = event.button.x;
+				int y = event.button.y;
+
+				std::cout << "Mouse click at: (" << x << ", " << y << ")" << std::endl;
+
+				auto tank = PrefabRegistry::Instance().CreateBlueTankPrefab({}, "Enemy");
+				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(tank), { x,y });
+			}
+		}
+
 		if (event.type == SDL_KEYDOWN)
 		{
 			if (!event.key.repeat)
