@@ -143,23 +143,18 @@ namespace FML
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void VersusScene::Update(float deltaTime) {
-		for (auto& gameObject : gameObjects) {
-			gameObject->Update(deltaTime);
-		}
+	void VersusScene::Update(float deltaTime) 
+	{
+		Scene::Update(deltaTime);
 	}
 
 	void VersusScene::Render(SDL_Renderer* renderer)
 	{
-
-		for (auto& gameObject : gameObjects) {
-			gameObject->Render(renderer);
-		}
+		Scene::Render(renderer);
 	}
 
 	void VersusScene::Cleanup()
 	{
 	}
-
 }
 

@@ -132,17 +132,14 @@ namespace FML
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void CoopScene::Update(float deltaTime) {
-		for (auto& gameObject : gameObjects) {
-			gameObject->Update(deltaTime);
-		}
+	void CoopScene::Update(float deltaTime) 
+	{
+		Scene::Update(deltaTime);
 	}
 
 	void CoopScene::Render(SDL_Renderer* renderer)
 	{
-		for (auto& gameObject : gameObjects) {
-			gameObject->Render(renderer);
-		}
+		Scene::Render(renderer);
 	}
 
 	void CoopScene::Cleanup() {

@@ -1,9 +1,11 @@
 #include "GameObject.h"
 #include "TransformComponent.h"
+#include "Collider.h"
+#include "CollisionManager.h"
 
 namespace FML
 {
-	GameObject::GameObject(const std::string& tag) : tag(tag), parent(nullptr)
+	GameObject::GameObject(const std::string& tag) : tag(tag), parent(nullptr), isMarkedForDestruction(false)
 	{
 		auto transform = std::make_unique<TransformComponent>();
 		AddComponent(std::move(transform));
@@ -90,6 +92,8 @@ namespace FML
 
 	void GameObject::Update(float deltaTime)
 	{
+		if (isMarkedForDestruction) return;
+
 		for (auto& component : components) {
 			component->Update(deltaTime);
 		}
@@ -100,6 +104,8 @@ namespace FML
 
 	void GameObject::Render(SDL_Renderer* renderer)
 	{
+		if (isMarkedForDestruction) return;
+
 		for (auto& component : components) {
 			component->Render(renderer);
 		}
@@ -146,6 +152,29 @@ namespace FML
 		return parent != nullptr;
 	}
 
+	void GameObject::Destroy()
+	{
+		isMarkedForDestruction = true;
 
+		// Notify systems that might hold/observe references to this GameObject
+		//GetSubject().Notify(*this, Event::OnDestroy());
+
+		auto collider = GetComponent<Collider>();
+		if (collider) 
+		{
+			CollisionManager::Instance().UnregisterCollider(collider);
+		}
+
+		for (auto& child : children) 
+		{
+			child->Destroy();
+		}
+		children.clear();
+
+		if (parent) 
+		{
+			parent->RemoveChild(this);
+		}
+	}
 }
 

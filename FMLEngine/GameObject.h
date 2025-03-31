@@ -47,6 +47,8 @@ namespace FML
 		) {};
 
 		Subject& GetSubject() { return subject; }
+		bool IsMarkedForDestruction() const { return isMarkedForDestruction; }
+		void Destroy();
 
 	private:
 		std::string tag;
@@ -54,5 +56,6 @@ namespace FML
 		std::vector<std::unique_ptr<GameObject>> children;
 		GameObject* parent = nullptr;
 		Subject subject;
+		bool isMarkedForDestruction = false;
 	};
 }

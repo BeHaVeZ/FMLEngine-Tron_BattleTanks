@@ -65,12 +65,10 @@ namespace FML
 
 	void MainMenuScene::Render(SDL_Renderer* renderer)
 	{
-		for (auto& gameObject : gameObjects)
-		{
-			gameObject->Render(renderer);
-		}
+		Scene::Render(renderer);
 
-		for (auto& option : menuOptions) {
+		for (auto& option : menuOptions) 
+		{
 			option->Render(renderer);
 		}
 	}

@@ -83,7 +83,7 @@ namespace FML
 		SceneManager::Instance().AddScene("VersusScene", std::make_unique<VersusScene>());
 		SceneManager::Instance().AddScene("Testing", std::make_unique<TestingScene>());
 
-		SceneManager::Instance().ChangeScene("Testing");
+		SceneManager::Instance().ChangeScene("MainMenu");
 
 		GameStateManager::Instance().SetRunning(true);
 		return true;
@@ -105,13 +105,15 @@ namespace FML
 
 			int frameTime = SDL_GetTicks() - Timer::Instance().GetLastTick();
 
-			if (frameDelay > frameTime) {
+			if (frameDelay > frameTime) 
+			{
 				SDL_Delay(frameDelay - frameTime);
 			}
 		}
 	}
 
-	void Game::ProcessInput() {
+	void Game::ProcessInput() 
+	{
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{

@@ -142,17 +142,14 @@ namespace FML
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void SoloScene::Update(float deltaTime) {
-		for (auto& gameObject : gameObjects) {
-			gameObject->Update(deltaTime);
-		}
+	void SoloScene::Update(float deltaTime) 
+	{
+		Scene::Update(deltaTime);
 	}
 
 	void SoloScene::Render(SDL_Renderer* renderer)
 	{
-		for (auto& gameObject : gameObjects) {
-			gameObject->Render(renderer);
-		}
+		Scene::Render(renderer);
 	}
 
 	void SoloScene::Cleanup() 

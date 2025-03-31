@@ -145,27 +145,24 @@ namespace FML
 	}
 
 
-	void TestingScene::HandleInput(SDL_Event& event) {
+	void TestingScene::HandleInput(SDL_Event& event) 
+	{
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void TestingScene::Update(float deltaTime) {
-		for (auto& gameObject : gameObjects) {
-			gameObject->Update(deltaTime);
-		}
+	void TestingScene::Update(float deltaTime) 
+	{
+		Scene::Update(deltaTime);
 	}
 
 	void TestingScene::Render(SDL_Renderer* renderer)
 	{
-		for (auto& gameObject : gameObjects) {
-			gameObject->Render(renderer);
-		}
+		Scene::Render(renderer);
 	}
 
-	void TestingScene::Cleanup() {
+	void TestingScene::Cleanup() 
+	{
 	}
-
-
 }
 
 
