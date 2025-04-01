@@ -10,7 +10,7 @@ namespace FML {
     class HealthUIComponent : public Component, public Observer {
     public:
         HealthUIComponent(int health) : currentHealth(health), text(nullptr) {
-            textComponent = std::make_unique<TextComponent>("P1 Health " + std::to_string(currentHealth), "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255, 255, 255, 255 }, SceneManager::Instance().GetRenderer());
+            textComponent = std::make_unique<TextComponent>("P1 Health " + std::to_string(currentHealth), "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 0, 0, 255, 255 }, SceneManager::Instance().GetRenderer());
         }
 
         void Initialize() override {

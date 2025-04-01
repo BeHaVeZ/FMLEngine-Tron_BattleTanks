@@ -15,6 +15,7 @@
 #include "HealthUIComponent.h"
 #include "DebugDraw.h"
 #include "TestCommand.h"
+#include "BoxCollider.h"
 
 namespace FML
 {
@@ -26,6 +27,8 @@ namespace FML
 
 		InitializeFirstTank();
 		InitializeFPSCounter(renderer);
+
+		InitializeWalls();
 
 		InitializeInput();
 		InitializeSounds();
@@ -47,25 +50,12 @@ namespace FML
 			);
 		}
 		gameObjects.push_back(std::move(background));
-	}
 
-	void TestingScene::InitializeTitle(SDL_Renderer* renderer)
-	{
-		auto title = std::make_unique<GameObject>("title");
+		float offset = 100.f;
 
-		SDL_Color color = { 0, 255, 0, 255 };
-
-		auto titleTextComponent = std::make_unique<TextComponent>(
-			"TRON Battle Tanks",
-			"data/fonts/tron-arcade.ttf",
-			24,
-			color,
-			renderer);
-
-		title->AddComponent(std::move(titleTextComponent));
-		title->GetComponent<TransformComponent>()->SetPosition({ 300, 300 });
-
-		AddGameObject(std::move(title));
+		auto bg = FindGameObjectByTag("Background");
+		bg->GetComponent<TransformComponent>()->SetSize((float)ConfigManager::Instance().GetWindowWidth(), (float)ConfigManager::Instance().GetWindowHeight() - offset);
+		bg->GetComponent<TransformComponent>()->SetPosition({0,offset});
 	}
 
 	void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
@@ -111,6 +101,30 @@ namespace FML
 		AddGameObject(std::move(tank));
 	}
 
+	void TestingScene::InitializeWalls()
+	{
+		//auto wall = std::make_unique<GameObject>("Wall");
+
+		//SDL_Rect box = { 0,0,1024,7 };
+
+		//auto wallCollider = std::make_unique<BoxCollider>(box);
+		//wallCollider->isStatic = true;
+		//wall->AddComponent(std::move(wallCollider));
+
+		//AddGameObject(std::move(wall));
+
+		//auto wall1 = std::make_unique<GameObject>("Wall");
+		//SDL_Rect box1 = { 102,63,35,55 };
+
+		//wall1->GetComponent<TransformComponent>()->SetPosition({ 102, 63 });
+
+		//wallCollider = std::make_unique<BoxCollider>(box1);
+		//wallCollider->isStatic = true;
+		//wall1->AddComponent(std::move(wallCollider));
+
+		//AddGameObject(std::move(wall1));
+	}
+
 
 	void TestingScene::InitializeInput()
 	{
@@ -146,12 +160,12 @@ namespace FML
 	}
 
 
-	void TestingScene::HandleInput(SDL_Event& event) 
+	void TestingScene::HandleInput(SDL_Event& event)
 	{
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void TestingScene::Update(float deltaTime) 
+	void TestingScene::Update(float deltaTime)
 	{
 		Scene::Update(deltaTime);
 	}
@@ -161,7 +175,7 @@ namespace FML
 		Scene::Render(renderer);
 	}
 
-	void TestingScene::Cleanup() 
+	void TestingScene::Cleanup()
 	{
 	}
 }

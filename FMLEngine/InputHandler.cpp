@@ -60,8 +60,8 @@ namespace FML
 
 				std::cout << "Mouse click at: (" << x << ", " << y << ")" << std::endl;
 
-				auto tank = PrefabRegistry::Instance().CreateBlueTankPrefab({}, "Enemy");
-				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(tank), { x,y });
+				//auto tank = PrefabRegistry::Instance().CreateBlueTankPrefab({}, "Enemy");
+				//SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(tank), { x,y });
 			}
 		}
 

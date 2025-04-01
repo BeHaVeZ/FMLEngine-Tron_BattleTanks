@@ -16,6 +16,6 @@ namespace FML
 	}
 	void BoxCollider::Render(SDL_Renderer*)
 	{
-		DebugDraw::DrawRectangle({ box.x,box.y }, { box.w,box.h }, { 1,1,1,1 });
+		DebugDraw::DrawRectangle({ box.x,box.y }, { box.w,box.h }, { 0,1,0,1 });
 	}
 }
