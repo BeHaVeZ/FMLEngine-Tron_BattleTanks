@@ -111,12 +111,14 @@ namespace FML
 		//wallCollider->isStatic = true;
 		//wall->AddComponent(std::move(wallCollider));
 
+		//wall->GetComponent<TransformComponent>()->SetPosition({ 0, 100 });
+
 		//AddGameObject(std::move(wall));
 
 		//auto wall1 = std::make_unique<GameObject>("Wall");
 		//SDL_Rect box1 = { 102,63,35,55 };
 
-		//wall1->GetComponent<TransformComponent>()->SetPosition({ 102, 63 });
+		//wall1->GetComponent<TransformComponent>()->SetPosition({ 102, 163 });
 
 		//wallCollider = std::make_unique<BoxCollider>(box1);
 		//wallCollider->isStatic = true;

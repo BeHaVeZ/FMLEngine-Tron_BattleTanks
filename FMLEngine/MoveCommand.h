@@ -8,16 +8,21 @@
 
 namespace FML
 {
-	class MoveCommand : public Command {
+	class MoveCommand : public Command 
+	{
 	public:
 		MoveCommand(GameObject* object, glm::vec2 direction, float distance)
-			: gameObject(object), direction(glm::normalize(direction)), moveDistance(distance) {
+			: gameObject(object), direction(glm::normalize(direction)), moveDistance(distance) 
+		{
 		}
 
-		void Execute() override {
-			if (gameObject) {
+		void Execute() override 
+		{
+			if (gameObject) 
+			{
 				auto transform = gameObject->GetComponent<TransformComponent>();
-				if (transform) {
+				if (transform && transform->IsMoving() == false) 
+				{
 					glm::vec2 newPosition = transform->GetLocalPosition() + direction * moveDistance * Timer::Instance().GetDeltaTime();
 					transform->SetPosition(newPosition);
 

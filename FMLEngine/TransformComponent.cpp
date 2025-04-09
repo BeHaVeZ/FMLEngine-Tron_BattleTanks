@@ -1,12 +1,13 @@
 #include "TransformComponent.h"
 #include "TextureComponent.h"
 #include <cmath>
+#include <iostream>
 
 namespace FML
 {
 
 	TransformComponent::TransformComponent(glm::vec2 position, float rotation, glm::vec2 pivot)
-		: localPosition(position), localRotation(rotation), pivot(pivot), width(0), height(0), worldPosition(position), worldRotation(rotation), isDirty(true)
+		: localPosition(position), localRotation(rotation), pivot(pivot), width(0), height(0), worldPosition(position), worldRotation(rotation), isDirty(true),isMoving(false)
 	{
 	}
 
@@ -16,6 +17,7 @@ namespace FML
 		{
 			localPosition = newPosition;
 			MarkDirty();
+			MarkMoving(true);
 		}
 	}
 
@@ -62,6 +64,10 @@ namespace FML
 			UpdateWorldPosition();
 			isDirty = false;
 		}
+		if (isMoving)
+		{
+			MarkMoving(false);
+		}
 	}
 
 	void TransformComponent::UpdateWorldPosition()
@@ -104,11 +110,14 @@ namespace FML
 		}
 	}
 
+	void TransformComponent::MarkMoving(bool moving) 
+	{
+		isMoving = moving;
+	}
+
 	bool TransformComponent::IsSizeSet() const
 	{
 		return width > 0.0f && height > 0.0f;
 	}
-
-
 }
 

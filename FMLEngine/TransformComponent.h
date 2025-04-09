@@ -23,6 +23,9 @@ namespace FML
 		void Update(float deltaTime) override;
 		void UpdateWorldPosition();
 		void MarkDirty();
+		void MarkMoving(bool moving);
+
+		bool IsMoving() const { return isMoving; }
 
 		bool IsSizeSet() const;
 
@@ -38,7 +41,7 @@ namespace FML
 		glm::vec2 localPosition, worldPosition, pivot;
 		float localRotation, worldRotation;
 		float width, height;
-		bool isDirty;
+		bool isDirty,isMoving;
 	};
 
 

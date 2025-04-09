@@ -9,7 +9,8 @@
 
 namespace FML
 {
-	class GameObject final {
+	class GameObject final 
+	{
 	public:
 		GameObject(const std::string& tag = "");
 		~GameObject() = default;
