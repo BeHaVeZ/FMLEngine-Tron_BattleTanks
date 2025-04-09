@@ -14,6 +14,8 @@
 #include "DamageCommand.h"
 #include "HealthUIComponent.h"
 #include "DebugDraw.h"
+#include "FileReader.h"
+#include <BoxCollider.h>
 
 namespace FML
 {
@@ -25,6 +27,8 @@ namespace FML
 
 		InitializeFirstTank();
 		InitializeFPSCounter(renderer);
+
+		InitializeWalls();
 
 		InitializeInput();
 		InitializeSounds();
@@ -135,6 +139,26 @@ namespace FML
 	{
 		ServiceLocator::GetSoundSystem().AddSound("AyoWhatV3.wav", 1, true);
 		ServiceLocator::GetSoundSystem().PlaySound(1, .0f);
+	}
+
+	void SoloScene::InitializeWalls()
+	{
+		FileReader reader("data/levels/level00C.txt");
+		auto walls = reader.ReadRectangles();
+
+		for (const auto& rect : walls) {
+			auto wall = std::make_unique<GameObject>("Wall");
+
+			SDL_Rect box = { rect.x, rect.y, rect.w, rect.h };
+
+			auto wallCollider = std::make_unique<BoxCollider>(box);
+			wallCollider->isStatic = true;
+			wall->AddComponent(std::move(wallCollider));
+
+			wall->GetComponent<TransformComponent>()->SetPosition({ rect.x, rect.y });
+
+			AddGameObject(std::move(wall));
+		}
 	}
 
 

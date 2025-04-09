@@ -20,6 +20,8 @@ namespace FML
 		void InitializeInput() override;
 		void InitializeSounds();
 
+		void InitializeWalls();
+
 		void HandleInput(SDL_Event& event) override;
 
 		void Update(float deltaTime) override;

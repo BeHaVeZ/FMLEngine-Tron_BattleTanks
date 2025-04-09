@@ -53,6 +53,9 @@
     <ClCompile Include="SoloScene.cpp">
       <Filter>Header Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="FileReader.cpp">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FMLEngine\DamageEvent.h">
@@ -96,6 +99,9 @@
     </ClInclude>
     <ClInclude Include="SoloScene.h">
       <Filter>Header Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="FileReader.h">
+      <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

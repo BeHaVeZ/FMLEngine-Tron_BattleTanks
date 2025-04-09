@@ -16,6 +16,7 @@
 #include "DebugDraw.h"
 #include "TestCommand.h"
 #include "BoxCollider.h"
+#include "../Tron_BattleTanks/FileReader.h"
 
 namespace FML
 {
@@ -103,28 +104,22 @@ namespace FML
 
 	void TestingScene::InitializeWalls()
 	{
-		//auto wall = std::make_unique<GameObject>("Wall");
+		FileReader reader("data/levels/level00C.txt");
+		auto walls = reader.ReadRectangles();
 
-		//SDL_Rect box = { 0,0,1024,7 };
+		for (const auto& rect : walls) {
+			auto wall = std::make_unique<GameObject>("Wall");
 
-		//auto wallCollider = std::make_unique<BoxCollider>(box);
-		//wallCollider->isStatic = true;
-		//wall->AddComponent(std::move(wallCollider));
+			SDL_Rect box = { rect.x, rect.y, rect.w, rect.h };
 
-		//wall->GetComponent<TransformComponent>()->SetPosition({ 0, 100 });
+			auto wallCollider = std::make_unique<BoxCollider>(box);
+			wallCollider->isStatic = true;
+			wall->AddComponent(std::move(wallCollider));
 
-		//AddGameObject(std::move(wall));
+			wall->GetComponent<TransformComponent>()->SetPosition({ rect.x, rect.y });
 
-		//auto wall1 = std::make_unique<GameObject>("Wall");
-		//SDL_Rect box1 = { 102,63,35,55 };
-
-		//wall1->GetComponent<TransformComponent>()->SetPosition({ 102, 163 });
-
-		//wallCollider = std::make_unique<BoxCollider>(box1);
-		//wallCollider->isStatic = true;
-		//wall1->AddComponent(std::move(wallCollider));
-
-		//AddGameObject(std::move(wall1));
+			AddGameObject(std::move(wall));
+		}
 	}
 
 
@@ -151,6 +146,8 @@ namespace FML
 			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<MoveCommand>(tank1, glm::vec2(0, 1), 200.f));
 			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<MoveCommand>(tank1, glm::vec2(-1, 0), 200.f));
 			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<MoveCommand>(tank1, glm::vec2(1, 0), 200.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_RIGHT_SHOULDER, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"), 1.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_LEFT_SHOULDER,std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"), -1.f));
 		}
 		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
 	}

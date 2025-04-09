@@ -50,6 +50,10 @@ namespace FML
 		gamepadHandler->ClearBindings();
 	}
 
+	glm::vec2 firstClick; // First click position
+	glm::vec2 secondClick; // Second click position
+	bool isFirstClick = true; // Toggle between first and second click
+
 	void InputHandler::HandleInput(SDL_Event& event)
 	{
 		if (event.type == SDL_MOUSEBUTTONDOWN) {
@@ -58,10 +62,20 @@ namespace FML
 				int x = event.button.x;
 				int y = event.button.y;
 
-				std::cout << "Mouse click at: (" << x << ", " << y << ")" << std::endl;
-
-				//auto tank = PrefabRegistry::Instance().CreateBlueTankPrefab({}, "Enemy");
-				//SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(tank), { x,y });
+				if (isFirstClick) {
+					firstClick = { x, y };
+					isFirstClick = false;
+					std::cout << "First click at: (" << x << ", " << y << ")" << std::endl;
+				}
+				else {
+					secondClick = { x, y };
+					isFirstClick = true;
+					std::cout << "Second click at: (" << x << ", " << y << ")" << std::endl;
+					// Calculate dimensions
+					int width = (int)secondClick.x - (int)firstClick.x;
+					int height = (int)secondClick.y - (int)firstClick.y;
+					std::cout << "Rectangle dimensions: {" << firstClick.x << ", " << firstClick.y << ", " << width << ", " << height << "}," << std::endl;
+				}
 			}
 		}
 
