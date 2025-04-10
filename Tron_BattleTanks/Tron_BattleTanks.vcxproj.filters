@@ -109,5 +109,11 @@
     <ClInclude Include="ShootCommand.h">
       <Filter>Header Files\GameCommands</Filter>
     </ClInclude>
+    <ClInclude Include="BulletMoveComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletCollisionBehaviorComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -174,6 +174,7 @@ namespace FML
 	void TestingScene::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
+		DebugDraw::Render(renderer);
 	}
 
 	void TestingScene::Cleanup()

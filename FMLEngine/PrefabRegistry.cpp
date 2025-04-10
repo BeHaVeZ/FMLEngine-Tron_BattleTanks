@@ -6,6 +6,8 @@
 #include "Collider.h"
 #include "BoxCollider.h"
 #include "../Tron_BattleTanks/ShootComponent.h"
+#include "../Tron_BattleTanks/BulletMoveComponent.h"
+#include "../Tron_BattleTanks/BulletCollisionBehaviorComponent.h"
 
 namespace FML
 {
@@ -38,7 +40,7 @@ namespace FML
 
 		float shootAllowanceRange = 30.f;
 
-		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, 2.f);
+		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, 0.f);
 		turret->AddComponent(std::move(shootComponent));
 
 		tank->AddChild(std::move(turret));
@@ -87,5 +89,38 @@ namespace FML
 		return tank;
 	}
 
+	std::unique_ptr<GameObject> PrefabRegistry::CreateBulletPrefab(glm::vec2 spawnPosition, glm::vec2 moveDirection, const std::string tag) const
+	{
+		auto bullet = std::make_unique<GameObject>(tag);
+
+		auto bulletTexture = std::make_unique<TextureComponent>("data/artassets/Bullet.png", SceneManager::Instance().GetRenderer());
+
+		auto bulletTransform = bullet->GetComponent<TransformComponent>();
+
+		bulletTransform->CentralizePivotOnTexture(bulletTexture.get());
+		bullet->AddComponent(std::move(bulletTexture));
+
+		bullet->GetComponent<TransformComponent>()->SetPosition(spawnPosition - bulletTransform->GetPivot());
+
+		auto bulletMoveComponent = std::make_unique<BulletMoveComponent>(moveDirection, 100.f);
+		bullet->AddComponent(std::move(bulletMoveComponent));
+
+		auto bulletBehavior = std::make_unique<BulletCollisionBehaviorComponent>();
+		bullet->AddComponent(std::move(bulletBehavior));
+
+		auto bulletCollider = std::make_unique<BoxCollider>(SDL_Rect{0, 0,bullet->GetComponent<TextureComponent>()->GetDefaultWidth(),bullet->GetComponent<TextureComponent>()->GetDefaultHeight()});
+
+		GameObject* bulletRaw = bullet.get();
+		bulletCollider->OnCollision = [bulletRaw](Collider* other)
+			{
+				auto behavior = bulletRaw->GetComponent<BulletCollisionBehaviorComponent>();
+				if (behavior)
+					behavior->OnCollision(bulletRaw, other);
+			};
+
+		bullet->AddComponent(std::move(bulletCollider));
+
+		return bullet;
+	}
 }
 

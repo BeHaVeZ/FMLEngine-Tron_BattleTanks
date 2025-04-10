@@ -32,6 +32,8 @@ namespace FML
                 {
                     collisionPairs.emplace_back(colliders[i], colliders[j]);
                     Logger::Log(LogLevel::Warning, "Collision Detected");
+                    if (colliders[i]->OnCollision) colliders[i]->OnCollision(colliders[j]);
+                    if (colliders[j]->OnCollision) colliders[j]->OnCollision(colliders[i]);
                 }
             }
         }

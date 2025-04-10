@@ -6,6 +6,7 @@
 #include <iostream>
 #include "TransformComponent.h"
 #include <SDL.h>
+#include "DebugDraw.h"
 
 namespace FML
 {
@@ -52,6 +53,7 @@ namespace FML
 
 			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 			SDL_RenderDrawLine(renderer, int(pivotPosition.x), int(pivotPosition.y), int(endPoint.x), int(endPoint.y));
+			DebugDraw::DrawCircle(shootPoint, 5.f, { 1.f,0.f,0.f,1.f });
 		}
 
 		void Shoot()
@@ -69,7 +71,7 @@ namespace FML
 			else 
 			{
 				Logger::Log(LogLevel::Debug, "Shooting from %s", gameObject->GetParent()->GetTag().c_str());
-				//SceneManager::Instance().GetCurrentScene()->AddGameObject(Bullet);
+				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateBulletPrefab({shootPoint},rayDirection,"Bullet"));
 				canShoot = false;
 				timeSinceLastShot = 0.0f;
 			}

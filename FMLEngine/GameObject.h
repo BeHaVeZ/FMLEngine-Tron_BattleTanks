@@ -44,9 +44,6 @@ namespace FML
 		bool HasChildren() const;
 		bool HasParent() const;
 
-		void HandleCollisionEvent(GameObject* //other
-		) {};
-
 		Subject& GetSubject() { return subject; }
 		bool IsMarkedForDestruction() const { return isMarkedForDestruction; }
 		void Destroy();

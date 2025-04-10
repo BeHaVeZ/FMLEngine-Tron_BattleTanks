@@ -2,6 +2,7 @@
 #include "Component.h"
 #include <SDL.h>
 #include <memory>
+#include <functional>
 
 namespace FML 
 {
@@ -14,6 +15,8 @@ namespace FML
         virtual ~Collider();
         virtual SDL_Rect GetBoundingBox() const = 0;
 
+
+        std::function<void(Collider* other)> OnCollision;
         bool isStatic;
     };
 }
