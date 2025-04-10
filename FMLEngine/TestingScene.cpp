@@ -17,10 +17,11 @@
 #include "TestCommand.h"
 #include "BoxCollider.h"
 #include "../Tron_BattleTanks/FileReader.h"
+#include "../Tron_BattleTanks/ShootComponent.h"
+#include "../Tron_BattleTanks/ShootCommand.h"
 
 namespace FML
 {
-
 	const std::string backgroundImagePath = "data/levels/level00.png";
 
 	bool TestingScene::Initialize(SDL_Renderer* renderer) {
@@ -97,7 +98,7 @@ namespace FML
 		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 200,200 }, "Player1");
 		AddGameObject(std::move(tank));
 
-		tank = PrefabRegistry::Instance().CreateBlueTankPrefab({ 300,200 }, "Player2");
+		tank = PrefabRegistry::Instance().CreateBlueTankPrefab({ 256,256 }, "Player2");
 
 		AddGameObject(std::move(tank));
 	}
@@ -140,6 +141,7 @@ namespace FML
 			InputHandler::Instance().BindCommand(SDLK_q, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"), -1.f));
 
 			InputHandler::Instance().BindCommand(SDLK_r, std::make_unique<DamageCommand>(tank1, 10), InputHandler::KeyAction::KeyUp);
+			InputHandler::Instance().BindCommand(SDLK_SPACE, std::make_unique<ShootCommand>(tank1->FindChildByTag("Turret")), InputHandler::KeyAction::KeyUp);
 
 			int controllerId = 0;
 			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<MoveCommand>(tank1, glm::vec2(0, -1), 200.f));

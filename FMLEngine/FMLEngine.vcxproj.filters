@@ -199,7 +199,7 @@
       <Filter>Engine\Collision</Filter>
     </ClInclude>
     <ClInclude Include="CollisionManager.h">
-      <Filter>Engine\Managers</Filter>
+      <Filter>Engine\Collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

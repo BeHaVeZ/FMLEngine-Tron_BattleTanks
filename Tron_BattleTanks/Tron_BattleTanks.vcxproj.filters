@@ -103,5 +103,11 @@
     <ClInclude Include="FileReader.h">
       <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
+    <ClInclude Include="ShootComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="ShootCommand.h">
+      <Filter>Header Files\GameCommands</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

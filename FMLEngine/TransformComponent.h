@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "GameObject.h"
 #include <glm.hpp>
+#include <SDL.h>
 
 namespace FML
 {

@@ -227,6 +227,8 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="..\FMLEngine\SelectMenuOptionCommand.h" />
     <ClInclude Include="..\FMLEngine\VersusScene.h" />
     <ClInclude Include="FileReader.h" />
+    <ClInclude Include="ShootCommand.h" />
+    <ClInclude Include="ShootComponent.h" />
     <ClInclude Include="SoloScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

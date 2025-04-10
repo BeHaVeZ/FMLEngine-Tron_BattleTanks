@@ -2,6 +2,8 @@
 #include <vector>
 #include "Collider.h"
 #include <SDL.h>
+#include "glm.hpp"
+#include <string>
 
 namespace FML
 {
@@ -22,6 +24,11 @@ namespace FML
         void CheckCollisions();
 
         void ResolveCollision(Collider* colliderA, Collider* colliderB);
+
+        bool Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
+
+        bool IntersectRayWithRectangle(const glm::vec2& rayStart, const glm::vec2& rayEnd, const SDL_Rect& rect);
+
 
     private:
         CollisionManager() {}

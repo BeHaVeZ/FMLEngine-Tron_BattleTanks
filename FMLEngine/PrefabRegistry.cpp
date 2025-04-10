@@ -5,6 +5,7 @@
 #include "HealthUIComponent.h"
 #include "Collider.h"
 #include "BoxCollider.h"
+#include "../Tron_BattleTanks/ShootComponent.h"
 
 namespace FML
 {
@@ -32,8 +33,13 @@ namespace FML
 		auto turretTexture = std::make_unique<TextureComponent>("data/artassets/Blue_Barrel.png", SceneManager::Instance().GetRenderer());
 		turret->GetComponent<TransformComponent>()->CentralizePivotOnTexture(turretTexture.get());
 		turret->AddComponent(std::move(turretTexture));
-		turret->GetComponent<TransformComponent>()->SetPosition({ 0, -6 });
+		//turret->GetComponent<TransformComponent>()->SetPosition({ 0, -6 });
 		//turret->GetComponent<TransformComponent>()->OffsetPivotPoint({ 0,9 });
+
+		float shootAllowanceRange = 30.f;
+
+		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, 2.f);
+		turret->AddComponent(std::move(shootComponent));
 
 		tank->AddChild(std::move(turret));
 
