@@ -15,19 +15,23 @@
 #include "HealthUIComponent.h"
 #include "DebugDraw.h"
 #include "FileReader.h"
-#include <BoxCollider.h>
+#include "BoxCollider.h"
+#include "TestCommand.h"
+#include "ShootCommand.h"
 
 namespace FML
 {
 
 	const std::string backgroundImagePath = "data/levels/level00.png";
 
-	bool SoloScene::Initialize(SDL_Renderer* renderer) {
+	bool SoloScene::Initialize(SDL_Renderer* renderer)
+	{
 		InitializeBackground(renderer);
-
-		InitializeFirstTank();
 		InitializeFPSCounter(renderer);
 
+		InitializeFirstTank();
+		InitializeHealthUI();
+		InitializeScoreObjects();
 		InitializeWalls();
 
 		InitializeInput();
@@ -84,30 +88,20 @@ namespace FML
 
 		SDL_Color fpsColor = { 255, 255, 255, 255 };
 
-		auto titleTextComponent = std::make_unique<TextComponent>(
-			"FPS 0",
-			"data/fonts/tron-arcade.ttf",
-			10,
-			fpsColor,
-			renderer);
+		auto titleTextComponent = std::make_unique<TextComponent>("FPS 0", "data/fonts/tron-arcade.ttf", 10, fpsColor, renderer);
 		fpsGameObject->AddComponent(std::move(titleTextComponent));
-
 
 		auto fpsComponent = std::make_unique<FPSComponent>(renderer);
 		fpsGameObject->AddComponent(std::move(fpsComponent));
 		fpsGameObject->GetComponent<FPSComponent>()->Initialize();
-
 		fpsGameObject->GetComponent<TransformComponent>()->SetPosition({ 10, 10 });
 
 		gameObjects.push_back(std::move(fpsGameObject));
+	}
 
-
-		auto healthUIPlayer1 = std::make_unique<GameObject>("HealthUIPlayer1");
-		auto healthUIComponent = std::make_unique<HealthUIComponent>(100);
-		healthUIPlayer1->AddComponent(std::move(healthUIComponent));
-		healthUIPlayer1->GetComponent<HealthUIComponent>()->Initialize();
-		healthUIPlayer1->GetComponent<TransformComponent>()->SetPosition({ 10, 30 });
-		FindGameObjectByTag("Player1")->GetSubject().AddObserver(healthUIPlayer1->GetComponent<HealthUIComponent>());
+	void SoloScene::InitializeHealthUI()
+	{
+		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, 3, "HealthUIPlayer1");
 		gameObjects.push_back(std::move(healthUIPlayer1));
 	}
 
@@ -117,9 +111,21 @@ namespace FML
 		gameObjects.push_back(std::move(tank));
 	}
 
+	void SoloScene::InitializeScoreObjects()
+	{
+		auto highScoreUI = PrefabRegistry::Instance().CreateHighScoreUI({ 400,30 }, "HighScoreUI");
+		gameObjects.push_back(std::move(highScoreUI));
+
+		auto currentScoreUI = PrefabRegistry::Instance().CreateCurrentScoreUI({ 750,30 }, "CurrentScoreUI");
+		gameObjects.push_back(std::move(currentScoreUI));
+	}
+
 
 	void SoloScene::InitializeInput()
 	{
+		InputHandler::Instance().BindCommand(SDLK_p, std::make_unique<TestCommand>(), InputHandler::KeyAction::KeyUp);
+
+
 		auto tank1 = FindGameObjectByTag("Player1");
 		if (tank1)
 		{
@@ -132,12 +138,16 @@ namespace FML
 			InputHandler::Instance().BindCommand(SDLK_q, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"), -1.f));
 
 			InputHandler::Instance().BindCommand(SDLK_r, std::make_unique<DamageCommand>(tank1, 10), InputHandler::KeyAction::KeyUp);
+			InputHandler::Instance().BindCommand(SDLK_SPACE, std::make_unique<ShootCommand>(tank1->FindChildByTag("Turret")), InputHandler::KeyAction::KeyUp);
 
 			int controllerId = 0;
-			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<MoveCommand>(tank1, glm::vec2(0, -1), 200.f));
-			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<MoveCommand>(tank1, glm::vec2(0, 1), 200.f));
-			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<MoveCommand>(tank1, glm::vec2(-1, 0), 200.f));
-			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<MoveCommand>(tank1, glm::vec2(1, 0), 200.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<MoveCommand>(tank1, glm::vec2(0, -1), 100.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<MoveCommand>(tank1, glm::vec2(0, 1), 100.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<MoveCommand>(tank1, glm::vec2(-1, 0), 100.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<MoveCommand>(tank1, glm::vec2(1, 0), 100.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_RIGHT_SHOULDER, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"), 1.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_LEFT_SHOULDER, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"), -1.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_A, std::make_unique<ShootCommand>(tank1->FindChildByTag("Turret")), InputHandler::KeyAction::KeyUp);
 		}
 		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
 	}

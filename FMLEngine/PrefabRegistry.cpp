@@ -130,5 +130,50 @@ namespace FML
 
 		return bullet;
 	}
+	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer1(glm::vec2 spawnPosition, int maxHealth, const std::string tag) const
+	{
+		auto healthUIPlayer1 = std::make_unique<GameObject>(tag);
+		auto healthUIComponent = std::make_unique<HealthUIComponent>(maxHealth);
+		healthUIPlayer1->AddComponent(std::move(healthUIComponent));
+		healthUIPlayer1->GetComponent<HealthUIComponent>()->Initialize();
+		healthUIPlayer1->GetComponent<TransformComponent>()->SetPosition({ 10, 30 });
+		SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1")->GetSubject().AddObserver(healthUIPlayer1->GetComponent<HealthUIComponent>());
+		return healthUIPlayer1;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer2(glm::vec2 spawnPosition, int maxHealth, const std::string tag) const
+	{
+		auto healthUIPlayer2 = std::make_unique<GameObject>(tag);
+		auto healthUIComponent = std::make_unique<HealthUIComponent>(maxHealth);
+		healthUIPlayer2->AddComponent(std::move(healthUIComponent));
+		healthUIPlayer2->GetComponent<HealthUIComponent>()->Initialize();
+		healthUIPlayer2->GetComponent<TransformComponent>()->SetPosition({ 10, 30 });
+		SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player2")->GetSubject().AddObserver(healthUIPlayer2->GetComponent<HealthUIComponent>());
+		return healthUIPlayer2;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateHighScoreUI(glm::vec2 spawnPosition, const std::string tag) const 
+	{
+		auto highScoreUIText = std::make_unique<GameObject>(tag);
+		auto highScoreTextComponent = std::make_unique<TextComponent>("Highscore", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,255,0,255 },SceneManager::Instance().GetRenderer());
+
+		highScoreUIText->AddComponent(std::move(highScoreTextComponent));
+		highScoreUIText->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+		return highScoreUIText;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateCurrentScoreUI(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto currentScoreUIText = std::make_unique<GameObject>(tag);
+		auto highScoreTextComponent = std::make_unique<TextComponent>("Current score", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,255,0,255 }, SceneManager::Instance().GetRenderer());
+
+		currentScoreUIText->AddComponent(std::move(highScoreTextComponent));
+		currentScoreUIText->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+
+		return currentScoreUIText;
+	}
+
 }
 

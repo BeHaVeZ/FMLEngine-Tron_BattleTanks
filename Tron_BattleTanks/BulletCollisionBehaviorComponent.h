@@ -46,7 +46,7 @@ namespace FML
 				}
 				self->Destroy();
 			}
-			else if (tag == "Wall")
+			else if (tag == "Wall" || tag == "Bullet")
 			{
 				auto bulletCollider = self->GetComponent<Collider>();
 				auto wallCollider = otherGO->GetComponent<Collider>();
@@ -60,11 +60,11 @@ namespace FML
 					self->GetComponent<BulletMoveComponent>()->Bounce(normal);
 				}
 			}
-			else if (tag == "Bullet")
-			{
-				self->Destroy();
-				otherGO->Destroy();
-			}
+			//else if (tag == "Bullet")
+			//{
+			//	self->Destroy();
+			//	otherGO->Destroy();
+			//}
 		}
 	};
 }

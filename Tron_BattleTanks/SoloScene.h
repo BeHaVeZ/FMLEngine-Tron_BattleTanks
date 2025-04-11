@@ -15,7 +15,10 @@ namespace FML
 		void InitializeBackground(SDL_Renderer* renderer);
 		void InitializeTitle(SDL_Renderer* renderer);
 		void InitializeFPSCounter(SDL_Renderer* renderer);
+		void InitializeHealthUI();
 		void InitializeFirstTank();
+
+		void InitializeScoreObjects();
 
 		void InitializeInput() override;
 		void InitializeSounds();
