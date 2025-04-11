@@ -27,7 +27,7 @@ namespace FML
 		tank->AddComponent(std::move(tankTexture));
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
-		auto tankHealth = std::make_unique<HealthComponent>(100);
+		auto tankHealth = std::make_unique<HealthComponent>(3);
 		tank->GetSubject().AddObserver(tankHealth.get());
 		tank->AddComponent(std::move(tankHealth));
 
@@ -61,6 +61,10 @@ namespace FML
 		tank->AddComponent(std::move(tankTexture));
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
+		auto tankHealth = std::make_unique<HealthComponent>(1);
+		tank->GetSubject().AddObserver(tankHealth.get());
+		tank->AddComponent(std::move(tankHealth));
+
 		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth(),tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
 		auto playerCollider = std::make_unique<BoxCollider>(tankBox);
 		//playerCollider->isStatic = true;
@@ -77,6 +81,10 @@ namespace FML
 		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
 		tank->AddComponent(std::move(tankTexture));
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+		auto tankHealth = std::make_unique<HealthComponent>(3);
+		tank->GetSubject().AddObserver(tankHealth.get());
+		tank->AddComponent(std::move(tankHealth));
 
 		auto turret = std::make_unique<GameObject>("Turret");
 		auto turretTexture = std::make_unique<TextureComponent>("data/artassets/Yellow_Barrel.png", SceneManager::Instance().GetRenderer());
@@ -102,7 +110,7 @@ namespace FML
 
 		bullet->GetComponent<TransformComponent>()->SetPosition(spawnPosition - bulletTransform->GetPivot());
 
-		auto bulletMoveComponent = std::make_unique<BulletMoveComponent>(moveDirection, 100.f);
+		auto bulletMoveComponent = std::make_unique<BulletMoveComponent>(moveDirection, 250.f);
 		bullet->AddComponent(std::move(bulletMoveComponent));
 
 		auto bulletBehavior = std::make_unique<BulletCollisionBehaviorComponent>();

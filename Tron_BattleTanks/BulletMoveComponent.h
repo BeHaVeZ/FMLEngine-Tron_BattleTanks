@@ -9,7 +9,7 @@ namespace FML
 	class BulletMoveComponent : public Component
 	{
 	public:
-		BulletMoveComponent(glm::vec2 moveDirection = {0,0}, float bulletSpeed = 30.f) : moveDirection(moveDirection), bulletSpeed(bulletSpeed) {};
+		BulletMoveComponent(glm::vec2 moveDirection = {0,0}, float bulletSpeed = 30.f) : moveDirection(moveDirection), bulletSpeed(bulletSpeed), bounceCount(0),maxBounces(4) {};
 
 		void Update(float deltaTime) override
 		{
@@ -20,8 +20,25 @@ namespace FML
 				transform->SetPosition(newPos);
 			}
 		}
+
+		void Bounce(const glm::vec2& normal)
+		{
+			if (bounceCount == maxBounces)
+			{
+				gameObject->Destroy();
+				return;
+			}
+			moveDirection = glm::reflect(moveDirection, glm::normalize(normal));
+			++bounceCount;
+		}
+
+		glm::vec2 GetMoveDirection() const { return moveDirection; }
+		void SetMoveDirection(const glm::vec2& dir) { moveDirection = dir; }
+
 	private:
 		glm::vec2 moveDirection;
 		float bulletSpeed;
+		int bounceCount;
+		int maxBounces;
 	};
 }

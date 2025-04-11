@@ -50,6 +50,13 @@ namespace FML
 			);
 		}
 		gameObjects.push_back(std::move(background));
+
+		float offset = 100.f;
+
+		auto bg = FindGameObjectByTag("Background");
+		bg->GetComponent<TransformComponent>()->SetSize((float)ConfigManager::Instance().GetWindowWidth(), (float)ConfigManager::Instance().GetWindowHeight() - offset);
+		bg->GetComponent<TransformComponent>()->SetPosition({ 0,offset });
+
 	}
 
 	void SoloScene::InitializeTitle(SDL_Renderer* renderer)
@@ -166,7 +173,7 @@ namespace FML
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void SoloScene::Update(float deltaTime) 
+	void SoloScene::Update(float deltaTime)
 	{
 		Scene::Update(deltaTime);
 	}
@@ -176,7 +183,7 @@ namespace FML
 		Scene::Render(renderer);
 	}
 
-	void SoloScene::Cleanup() 
+	void SoloScene::Cleanup()
 	{
 	}
 }

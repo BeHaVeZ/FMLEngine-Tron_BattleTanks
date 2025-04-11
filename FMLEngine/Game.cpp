@@ -130,9 +130,7 @@ namespace FML
 
 	void Game::Update(float deltaTime)
 	{
-		InputHandler::Instance().Update();
 		SceneManager::Instance().Update(deltaTime);
-		CollisionManager::Instance().CheckCollisions();
 	}
 
 	void Game::Render()

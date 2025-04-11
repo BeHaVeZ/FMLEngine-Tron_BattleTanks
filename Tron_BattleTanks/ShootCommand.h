@@ -14,7 +14,7 @@ namespace FML
 
 		void Execute() override 
 		{
-			if (gameObject)
+			if (gameObject && !gameObject->IsMarkedForDestruction())
 			{
 				gameObject->GetComponent<ShootComponent>()->Shoot();
 			}

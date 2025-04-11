@@ -45,7 +45,8 @@ namespace FML
 	}
 
 	void SceneManager::Update(float deltaTime) {
-		if (currentScene) {
+		if (currentScene) 
+		{
 			currentScene->Update(deltaTime);
 		}
 	}

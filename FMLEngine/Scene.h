@@ -22,6 +22,8 @@ namespace FML
         virtual void AddGameObject(std::unique_ptr<GameObject> gameObject, glm::vec2 position = { 0,0 });
 
         GameObject* FindGameObjectByTag(const std::string& tag);
+        void CleanupDestroyedGameObjects();
+
 
     protected:
         std::vector<std::unique_ptr<GameObject>> gameObjects;

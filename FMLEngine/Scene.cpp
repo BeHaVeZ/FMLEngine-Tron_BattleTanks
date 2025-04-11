@@ -1,11 +1,16 @@
 #include "Scene.h"
 #include "TransformComponent.h"
+#include "CollisionManager.h"
+#include "InputHandler.h"
 
 namespace FML
 {
 	void Scene::Update(float deltaTime)
 	{
+		InputHandler::Instance().Update();
 		UpdateGameObjects(deltaTime);
+		CollisionManager::Instance().CheckCollisions();
+		CleanupDestroyedGameObjects();
 	}
 
 	void Scene::Render(SDL_Renderer* renderer)
@@ -13,33 +18,28 @@ namespace FML
 		RenderGameObjects(renderer);
 	}
 
-    void Scene::AddGameObject(std::unique_ptr<GameObject> gameObject, glm::vec2 position) 
+	void Scene::AddGameObject(std::unique_ptr<GameObject> gameObject, glm::vec2 position)
 	{
-        if (gameObject) 
+		if (gameObject)
 		{
-            TransformComponent* transform = gameObject->GetComponent<TransformComponent>();
+			TransformComponent* transform = gameObject->GetComponent<TransformComponent>();
 
-            gameObjects.emplace_back(std::move(gameObject));
+			gameObjects.emplace_back(std::move(gameObject));
 
-            if (transform && position != glm::vec2(0, 0)) 
+			if (transform && position != glm::vec2(0, 0))
 			{
-                transform->SetPosition(position);
-            }
-        }
-    }
+				transform->SetPosition(position);
+			}
+		}
+	}
 
 	void Scene::UpdateGameObjects(float deltaTime)
 	{
-		for (auto it = gameObjects.begin(); it != gameObjects.end();)
+		for (auto& gameObject : gameObjects)
 		{
-			if ((*it)->IsMarkedForDestruction())
+			if (!gameObject->IsMarkedForDestruction())
 			{
-				it = gameObjects.erase(it);
-			}
-			else
-			{
-				(*it)->Update(deltaTime);
-				++it;
+				gameObject->Update(deltaTime);
 			}
 		}
 	}
@@ -62,5 +62,25 @@ namespace FML
 			}
 		}
 		return nullptr;
+	}
+
+	void Scene::CleanupDestroyedGameObjects()
+	{
+		for (auto& gameObject : gameObjects)
+		{
+			if (gameObject->IsMarkedForDestruction())
+			{
+				auto collider = gameObject->GetComponent<Collider>();
+				if (collider)
+					CollisionManager::Instance().UnregisterCollider(collider);
+			}
+		}
+
+		gameObjects.erase(
+			std::remove_if(gameObjects.begin(), gameObjects.end(),
+				[](const std::unique_ptr<GameObject>& obj) {
+					return obj->IsMarkedForDestruction();
+				}),
+			gameObjects.end());
 	}
 }

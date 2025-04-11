@@ -155,26 +155,6 @@ namespace FML
 	void GameObject::Destroy()
 	{
 		isMarkedForDestruction = true;
-
-		// Notify systems that might hold/observe references to this GameObject
-		//GetSubject().Notify(*this, Event::OnDestroy());
-
-		auto collider = GetComponent<Collider>();
-		if (collider) 
-		{
-			CollisionManager::Instance().UnregisterCollider(collider);
-		}
-
-		for (auto& child : children) 
-		{
-			child->Destroy();
-		}
-		children.clear();
-
-		if (parent) 
-		{
-			parent->RemoveChild(this);
-		}
 	}
 }
 

@@ -7,183 +7,190 @@
 
 namespace FML
 {
-    void CollisionManager::RegisterCollider(Collider* collider) 
-    {
-        colliders.emplace_back(collider);
-    }
+	void CollisionManager::RegisterCollider(Collider* collider)
+	{
+		colliders.emplace_back(collider);
+	}
 
-    void CollisionManager::UnregisterCollider(Collider* collider) 
-    {
-        colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
-    }
+	void CollisionManager::UnregisterCollider(Collider* collider)
+	{
+		colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
+	}
 
-    void CollisionManager::CheckCollisions() 
-    {
-        std::vector<std::pair<Collider*, Collider*>> collisionPairs;
+	void CollisionManager::CheckCollisions()
+	{
+		std::vector<std::pair<Collider*, Collider*>> collisionPairs;
 
-        for (size_t i = 0; i < colliders.size(); ++i) 
-        {
-            for (size_t j = i + 1; j < colliders.size(); ++j) 
-            {
-                SDL_Rect boxA = colliders[i]->GetBoundingBox();
-                SDL_Rect boxB = colliders[j]->GetBoundingBox();
+		for (size_t i = 0; i < colliders.size(); ++i)
+		{
+			for (size_t j = i + 1; j < colliders.size(); ++j)
+			{
+				SDL_Rect boxA = colliders[i]->GetBoundingBox();
+				SDL_Rect boxB = colliders[j]->GetBoundingBox();
 
-                if (SDL_HasIntersection(&boxA, &boxB)) 
-                {
-                    collisionPairs.emplace_back(colliders[i], colliders[j]);
-                    Logger::Log(LogLevel::Warning, "Collision Detected");
-                    if (colliders[i]->OnCollision) colliders[i]->OnCollision(colliders[j]);
-                    if (colliders[j]->OnCollision) colliders[j]->OnCollision(colliders[i]);
-                }
-            }
-        }
+				if (SDL_HasIntersection(&boxA, &boxB))
+				{
+					GameObject* objA = colliders[i]->GetOwner();
+					GameObject* objB = colliders[j]->GetOwner();
 
-        for (auto& pair : collisionPairs) 
-        {
-            ResolveCollision(pair.first, pair.second);
-        }
-    }
+					if (!objA || !objB || objA->IsMarkedForDestruction() || objB->IsMarkedForDestruction())
+						continue;
 
-    void CollisionManager::ResolveCollision(Collider* colliderA, Collider* colliderB) 
-    {
-        GameObject* gameObjectA = colliderA->GetOwner();
-        GameObject* gameObjectB = colliderB->GetOwner();
+					collisionPairs.emplace_back(colliders[i], colliders[j]);
+					Logger::Log(LogLevel::Warning, "Collision Detected");
 
-        if (!gameObjectA || !gameObjectB) 
-        {
-            Logger::Log(LogLevel::Error, "ResolveCollision: GameObject is null");
-            return;
-        }
+					if (colliders[i]->OnCollision)
+						colliders[i]->OnCollision(colliders[j]);
 
-        auto transformA = gameObjectA->GetComponent<TransformComponent>();
-        auto transformB = gameObjectB->GetComponent<TransformComponent>();
+					if (objB && !objB->IsMarkedForDestruction() && colliders[j]->OnCollision)
+						colliders[j]->OnCollision(colliders[i]);
+				}
+			}
+		}
 
-        if (!transformA || !transformB) 
-        {
-            Logger::Log(LogLevel::Error, "ResolveCollision: TransformComponent is null");
-            return;
-        }
+		for (auto& pair : collisionPairs)
+		{
+			ResolveCollision(pair.first, pair.second);
+		}
+	}
 
-        SDL_Rect boxA = colliderA->GetBoundingBox();
-        SDL_Rect boxB = colliderB->GetBoundingBox();
+	void CollisionManager::ResolveCollision(Collider* colliderA, Collider* colliderB)
+	{
+		GameObject* gameObjectA = colliderA->GetOwner();
+		GameObject* gameObjectB = colliderB->GetOwner();
 
-        int overlapLeft = boxA.x + boxA.w - boxB.x;
-        int overlapRight = boxB.x + boxB.w - boxA.x;
-        int overlapTop = boxA.y + boxA.h - boxB.y;
-        int overlapBottom = boxB.y + boxB.h - boxA.y;
+		if (!gameObjectA || !gameObjectB)
+		{
+			Logger::Log(LogLevel::Error, "ResolveCollision: GameObject is null");
+			return;
+		}
 
-        int minOverlap = std::min({ overlapLeft, overlapRight, overlapTop, overlapBottom });
+		auto transformA = gameObjectA->GetComponent<TransformComponent>();
+		auto transformB = gameObjectB->GetComponent<TransformComponent>();
 
-        if (minOverlap == overlapLeft) 
-        {
-            if (!colliderA->isStatic) {
-                transformA->SetPosition({ boxA.x - minOverlap, boxA.y });
-            }
-            if (!colliderB->isStatic) {
-                transformB->SetPosition({ boxB.x + minOverlap, boxB.y });
-            }
-        }
-        else if (minOverlap == overlapRight) 
-        {
-            if (!colliderA->isStatic) {
-                transformA->SetPosition({ boxA.x + minOverlap, boxA.y });
-            }
-            if (!colliderB->isStatic) {
-                transformB->SetPosition({ boxB.x - minOverlap, boxB.y });
-            }
-        }
-        else if (minOverlap == overlapTop) 
-        {
-            if (!colliderA->isStatic) 
-            {
-                transformA->SetPosition({ boxA.x, boxA.y - minOverlap });
-            }
-            if (!colliderB->isStatic) 
-            {
-                transformB->SetPosition({ boxB.x, boxB.y + minOverlap });
-            }
-        }
-        else {
-            if (!colliderA->isStatic) {
-                transformA->SetPosition({ boxA.x, boxA.y + minOverlap });
-            }
-            if (!colliderB->isStatic) {
-                transformB->SetPosition({ boxB.x, boxB.y - minOverlap });
-            }
-        }
+		if (!transformA || !transformB)
+		{
+			Logger::Log(LogLevel::Error, "ResolveCollision: TransformComponent is null");
+			return;
+		}
 
-        colliderA->GetOwner()->HandleCollisionEvent(colliderB->GetOwner());
-        colliderB->GetOwner()->HandleCollisionEvent(colliderA->GetOwner());
-    }
-    bool CollisionManager::Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude, GameObject* excludeParent) 
-    {
-        bool hitDetected = false;
-        glm::vec2 normalizedDirection = glm::normalize(direction);
-        glm::vec2 end = start + normalizedDirection * maxDistance;
+		SDL_Rect boxA = colliderA->GetBoundingBox();
+		SDL_Rect boxB = colliderB->GetBoundingBox();
 
-        for (auto* collider : colliders) 
-        {
-            GameObject* colliderGameObject = collider->GetOwner();
-            if (colliderGameObject == exclude || colliderGameObject == excludeParent) 
-            {
-                continue; 
-            }
+		int overlapLeft = boxA.x + boxA.w - boxB.x;
+		int overlapRight = boxB.x + boxB.w - boxA.x;
+		int overlapTop = boxA.y + boxA.h - boxB.y;
+		int overlapBottom = boxB.y + boxB.h - boxA.y;
 
-            SDL_Rect box = collider->GetBoundingBox();
-            if (IntersectRayWithRectangle(start, end, box)) 
-            {
-                hitDetected = true;
-                Logger::Log(LogLevel::Debug, "Raycast hit detected with object: %s", colliderGameObject->GetTag().c_str());
-            }
-        }
-        return hitDetected;
-    }
+		int minOverlap = std::min({ overlapLeft, overlapRight, overlapTop, overlapBottom });
 
-    bool CollisionManager::IntersectRayWithRectangle(const glm::vec2& rayStart, const glm::vec2& rayEnd, const SDL_Rect& rect) 
-    {
-        float t0 = 0.0f; 
-        float t1 = std::numeric_limits<float>::max();
+		if (minOverlap == overlapLeft)
+		{
+			if (!colliderA->isStatic) {
+				transformA->SetPosition({ boxA.x - minOverlap, boxA.y });
+			}
+			if (!colliderB->isStatic) {
+				transformB->SetPosition({ boxB.x + minOverlap, boxB.y });
+			}
+		}
+		else if (minOverlap == overlapRight)
+		{
+			if (!colliderA->isStatic) {
+				transformA->SetPosition({ boxA.x + minOverlap, boxA.y });
+			}
+			if (!colliderB->isStatic) {
+				transformB->SetPosition({ boxB.x - minOverlap, boxB.y });
+			}
+		}
+		else if (minOverlap == overlapTop)
+		{
+			if (!colliderA->isStatic)
+			{
+				transformA->SetPosition({ boxA.x, boxA.y - minOverlap });
+			}
+			if (!colliderB->isStatic)
+			{
+				transformB->SetPosition({ boxB.x, boxB.y + minOverlap });
+			}
+		}
+		else {
+			if (!colliderA->isStatic) {
+				transformA->SetPosition({ boxA.x, boxA.y + minOverlap });
+			}
+			if (!colliderB->isStatic) {
+				transformB->SetPosition({ boxB.x, boxB.y - minOverlap });
+			}
+		}
+	}
+	bool CollisionManager::Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude, GameObject* excludeParent)
+	{
+		bool hitDetected = false;
+		glm::vec2 normalizedDirection = glm::normalize(direction);
+		glm::vec2 end = start + normalizedDirection * maxDistance;
 
-        float invDir;
-        glm::vec2 rayDir = rayEnd - rayStart;
+		for (auto* collider : colliders)
+		{
+			GameObject* colliderGameObject = collider->GetOwner();
+			if (colliderGameObject == exclude || colliderGameObject == excludeParent)
+			{
+				continue;
+			}
 
-        if (std::abs(rayDir.x) < std::numeric_limits<float>::epsilon()) 
-        {
-            if (rayStart.x < rect.x || rayStart.x >(rect.x + rect.w)) 
-            {
-                return false;
-            }
-        }
-        else 
-        {
-            invDir = 1.0f / rayDir.x;
-            float tNearX = (rect.x - rayStart.x) * invDir;
-            float tFarX = ((rect.x + rect.w) - rayStart.x) * invDir;
+			SDL_Rect box = collider->GetBoundingBox();
+			if (IntersectRayWithRectangle(start, end, box))
+			{
+				hitDetected = true;
+				Logger::Log(LogLevel::Debug, "Raycast hit detected with object: %s", colliderGameObject->GetTag().c_str());
+			}
+		}
+		return hitDetected;
+	}
 
-            if (tNearX > tFarX) std::swap(tNearX, tFarX);
-            t0 = std::max(t0, tNearX);
-            t1 = std::min(t1, tFarX); 
-            if (t0 > t1) return false;
-        }
-        if (std::abs(rayDir.y) < std::numeric_limits<float>::epsilon()) 
-        {
-            if (rayStart.y < rect.y || rayStart.y >(rect.y + rect.h)) 
-            {
-                return false;
-            }
-        }
-        else 
-        {
-            invDir = 1.0f / rayDir.y;
-            float tNearY = (rect.y - rayStart.y) * invDir;
-            float tFarY = ((rect.y + rect.h) - rayStart.y) * invDir;
+	bool CollisionManager::IntersectRayWithRectangle(const glm::vec2& rayStart, const glm::vec2& rayEnd, const SDL_Rect& rect)
+	{
+		float t0 = 0.0f;
+		float t1 = std::numeric_limits<float>::max();
 
-            if (tNearY > tFarY) std::swap(tNearY, tFarY);
-            t0 = std::max(t0, tNearY);
-            t1 = std::min(t1, tFarY);
-            if (t0 > t1) return false;
-        }
+		float invDir;
+		glm::vec2 rayDir = rayEnd - rayStart;
 
-        return t1 >= 0 && t0 <= 1.0f;
-    }
+		if (std::abs(rayDir.x) < std::numeric_limits<float>::epsilon())
+		{
+			if (rayStart.x < rect.x || rayStart.x >(rect.x + rect.w))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			invDir = 1.0f / rayDir.x;
+			float tNearX = (rect.x - rayStart.x) * invDir;
+			float tFarX = ((rect.x + rect.w) - rayStart.x) * invDir;
+
+			if (tNearX > tFarX) std::swap(tNearX, tFarX);
+			t0 = std::max(t0, tNearX);
+			t1 = std::min(t1, tFarX);
+			if (t0 > t1) return false;
+		}
+		if (std::abs(rayDir.y) < std::numeric_limits<float>::epsilon())
+		{
+			if (rayStart.y < rect.y || rayStart.y >(rect.y + rect.h))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			invDir = 1.0f / rayDir.y;
+			float tNearY = (rect.y - rayStart.y) * invDir;
+			float tFarY = ((rect.y + rect.h) - rayStart.y) * invDir;
+
+			if (tNearY > tFarY) std::swap(tNearY, tFarY);
+			t0 = std::max(t0, tNearY);
+			t1 = std::min(t1, tFarY);
+			if (t0 > t1) return false;
+		}
+
+		return t1 >= 0 && t0 <= 1.0f;
+	}
 }
