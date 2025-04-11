@@ -3,6 +3,7 @@
 #include <iostream>
 #include "PrefabRegistry.h"
 #include "SceneManager.h"
+#include "Logger.h"
 
 namespace FML
 {
@@ -50,9 +51,9 @@ namespace FML
 		gamepadHandler->ClearBindings();
 	}
 
-	glm::vec2 firstClick; // First click position
-	glm::vec2 secondClick; // Second click position
-	bool isFirstClick = true; // Toggle between first and second click
+	glm::vec2 firstClick; 
+	glm::vec2 secondClick;
+	bool isFirstClick = true;
 
 	void InputHandler::HandleInput(SDL_Event& event)
 	{
@@ -71,11 +72,19 @@ namespace FML
 					secondClick = { x, y };
 					isFirstClick = true;
 					std::cout << "Second click at: (" << x << ", " << y << ")" << std::endl;
-					// Calculate dimensions
 					int width = (int)secondClick.x - (int)firstClick.x;
 					int height = (int)secondClick.y - (int)firstClick.y;
 					std::cout << "Rectangle dimensions: {" << firstClick.x << ", " << firstClick.y << ", " << width << ", " << height << "}," << std::endl;
 				}
+			}
+			if (event.button.button == SDL_BUTTON_RIGHT)
+			{
+				int x = event.button.x;
+				int y = event.button.y;
+				glm::vec2 clickPos = { x, y };
+
+				Logger::Log(LogLevel::Info, "Spawning tank at: (%d, %d)", x, y);
+				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateBlueTankPrefab(clickPos, "Enemy"));
 			}
 		}
 

@@ -132,24 +132,44 @@ namespace FML
 	}
 	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer1(glm::vec2 spawnPosition, int maxHealth, const std::string tag) const
 	{
+		int numberOffset = 30;
+		auto healthUI = std::make_unique<GameObject>(tag);
+		auto healthUITextComponent = std::make_unique<TextComponent>("Health P1", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 0,0,255,255 }, SceneManager::Instance().GetRenderer());
+
+		healthUI->AddComponent(std::move(healthUITextComponent));
+		healthUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x,spawnPosition.y });
+
+
 		auto healthUIPlayer1 = std::make_unique<GameObject>(tag);
 		auto healthUIComponent = std::make_unique<HealthUIComponent>(maxHealth);
 		healthUIPlayer1->AddComponent(std::move(healthUIComponent));
 		healthUIPlayer1->GetComponent<HealthUIComponent>()->Initialize();
-		healthUIPlayer1->GetComponent<TransformComponent>()->SetPosition({ 10, 30 });
+		healthUIPlayer1->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });
 		SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1")->GetSubject().AddObserver(healthUIPlayer1->GetComponent<HealthUIComponent>());
-		return healthUIPlayer1;
+
+		healthUI->AddChild(std::move(healthUIPlayer1));
+		return healthUI;
 	}
 
 	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer2(glm::vec2 spawnPosition, int maxHealth, const std::string tag) const
 	{
+		int numberOffset = 30;
+		auto healthUI = std::make_unique<GameObject>(tag);
+		auto healthUITextComponent = std::make_unique<TextComponent>("Health P2", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,0,0,255 }, SceneManager::Instance().GetRenderer());
+
+		healthUI->AddComponent(std::move(healthUITextComponent));
+		healthUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y});
+
+
 		auto healthUIPlayer2 = std::make_unique<GameObject>(tag);
-		auto healthUIComponent = std::make_unique<HealthUIComponent>(maxHealth);
+		auto healthUIComponent = std::make_unique<HealthUIComponent>(maxHealth,SDL_Color(255,0,0,255));
 		healthUIPlayer2->AddComponent(std::move(healthUIComponent));
 		healthUIPlayer2->GetComponent<HealthUIComponent>()->Initialize();
-		healthUIPlayer2->GetComponent<TransformComponent>()->SetPosition({ 10, 30 });
+		healthUIPlayer2->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });
 		SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player2")->GetSubject().AddObserver(healthUIPlayer2->GetComponent<HealthUIComponent>());
-		return healthUIPlayer2;
+
+		healthUI->AddChild(std::move(healthUIPlayer2));
+		return healthUI;
 	}
 
 	std::unique_ptr<GameObject> PrefabRegistry::CreateHighScoreUI(glm::vec2 spawnPosition, const std::string tag) const 

@@ -103,6 +103,8 @@ namespace FML
 	{
 		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, 3, "HealthUIPlayer1");
 		gameObjects.push_back(std::move(healthUIPlayer1));
+		//auto healthUIPlayer2 = PrefabRegistry::Instance().CreateHealthUIForPlayer2({ 200,30 }, 3, "HealthUIPlayer2");
+		//gameObjects.push_back(std::move(healthUIPlayer2));
 	}
 
 	void SoloScene::InitializeFirstTank()
@@ -137,7 +139,7 @@ namespace FML
 			InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"), 1.f));
 			InputHandler::Instance().BindCommand(SDLK_q, std::make_unique<RotateTurretCommand>(tank1->FindChildByTag("Turret"), -1.f));
 
-			InputHandler::Instance().BindCommand(SDLK_r, std::make_unique<DamageCommand>(tank1, 10), InputHandler::KeyAction::KeyUp);
+			InputHandler::Instance().BindCommand(SDLK_r, std::make_unique<DamageCommand>(tank1, 1), InputHandler::KeyAction::KeyUp);
 			InputHandler::Instance().BindCommand(SDLK_SPACE, std::make_unique<ShootCommand>(tank1->FindChildByTag("Turret")), InputHandler::KeyAction::KeyUp);
 
 			int controllerId = 0;

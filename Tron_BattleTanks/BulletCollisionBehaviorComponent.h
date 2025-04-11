@@ -39,10 +39,6 @@ namespace FML
 				if (healthComponent)
 				{
 					healthComponent->Damage(1);
-					if (healthComponent->GetCurrentHealth() <= 0)
-					{
-						otherGO->Destroy();
-					}
 				}
 				self->Destroy();
 			}
