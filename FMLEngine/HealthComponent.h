@@ -2,6 +2,8 @@
 #include "Observer.h"
 #include "DamageEvent.h"
 #include "Logger.h"
+#include "SceneManager.h"
+#include "../Tron_BattleTanks/ScoreComponent.h"
 
 namespace FML
 {
@@ -16,6 +18,10 @@ namespace FML
 				health -= damageEvent->GetDamage();
 				if (health <= 0)
 				{
+					if (gameObject->GetTag() == "Enemy")
+					{
+						SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1")->GetComponent<ScoreComponent>()->AddScore();
+					}
 					gameObject->Destroy();
 					return;
 				}

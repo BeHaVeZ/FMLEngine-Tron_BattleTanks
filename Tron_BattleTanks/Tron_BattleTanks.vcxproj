@@ -208,6 +208,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="..\FMLEngine\MainMenuScene.cpp" />
     <ClCompile Include="..\FMLEngine\PrefabRegistry.cpp" />
     <ClCompile Include="..\FMLEngine\VersusScene.cpp" />
+    <ClCompile Include="BlueTankKilledEvent.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="SoloScene.cpp" />
     <ClCompile Include="Tron_BattleTanks.cpp" />
@@ -226,9 +227,12 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="..\FMLEngine\RotateTurretCommand.h" />
     <ClInclude Include="..\FMLEngine\SelectMenuOptionCommand.h" />
     <ClInclude Include="..\FMLEngine\VersusScene.h" />
+    <ClInclude Include="BlueTankKilledEvent.h" />
     <ClInclude Include="BulletCollisionBehaviorComponent.h" />
     <ClInclude Include="BulletMoveComponent.h" />
     <ClInclude Include="FileReader.h" />
+    <ClInclude Include="ScoreComponent.h" />
+    <ClInclude Include="ScoreUIComponent.h" />
     <ClInclude Include="ShootCommand.h" />
     <ClInclude Include="ShootComponent.h" />
     <ClInclude Include="SoloScene.h" />

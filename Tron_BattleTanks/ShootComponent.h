@@ -66,7 +66,7 @@ namespace FML
 
 			if (CollisionManager::Instance().Raycast(pivotPosition, rayDirection, maxRayLength, gameObject, parent))
 			{
-				std::cout << "Ray hit an object!" << std::endl;
+				Logger::Log(LogLevel::Info, "There is something in front of the turret so can't shoot");
 			}
 			else 
 			{

@@ -83,7 +83,7 @@ namespace FML
 		SceneManager::Instance().AddScene("VersusScene", std::make_unique<VersusScene>());
 		SceneManager::Instance().AddScene("Testing", std::make_unique<TestingScene>());
 
-		SceneManager::Instance().ChangeScene("Solo");
+		SceneManager::Instance().ChangeScene("MainMenu");
 
 		GameStateManager::Instance().SetRunning(true);
 		return true;

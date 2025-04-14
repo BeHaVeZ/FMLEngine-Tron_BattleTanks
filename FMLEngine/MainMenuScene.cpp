@@ -36,12 +36,15 @@ namespace FML
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void MainMenuScene::InitializeInput() {
+	void MainMenuScene::InitializeInput() 
+	{
+		int controllerID = 0;
 		InputHandler::Instance().BindCommand(SDLK_m, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
-		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindGamepadCommand(controllerID, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
 
 		auto arrow = FindGameObjectByTag("SelectionArrow");
-		if (arrow) {
+		if (arrow) 
+{
 			InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<RotateCommand>(arrow, 270.0f));
 			InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<RotateCommand>(arrow, 90.0f));
 			InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<RotateCommand>(arrow, 180.0f));
@@ -49,19 +52,20 @@ namespace FML
 
 			InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
 			InputHandler::Instance().BindCommand(SDLK_SPACE, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
-			InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_A, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
+			InputHandler::Instance().BindGamepadCommand(controllerID, XINPUT_GAMEPAD_A, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
 
-			InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_A, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
-			InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<RotateCommand>(arrow, 270.0f));
-			InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<RotateCommand>(arrow, 90.0f));
-			InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<RotateCommand>(arrow, 180.0f));
-			InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<RotateCommand>(arrow, 0.0f));
+			InputHandler::Instance().BindGamepadCommand(controllerID, XINPUT_GAMEPAD_A, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
+			InputHandler::Instance().BindGamepadCommand(controllerID, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<RotateCommand>(arrow, 270.0f));
+			InputHandler::Instance().BindGamepadCommand(controllerID, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<RotateCommand>(arrow, 90.0f));
+			InputHandler::Instance().BindGamepadCommand(controllerID, XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<RotateCommand>(arrow, 180.0f));
+			InputHandler::Instance().BindGamepadCommand(controllerID, XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<RotateCommand>(arrow, 0.0f));
 		}
 	}
 
 
-	void MainMenuScene::Update(float)
+	void MainMenuScene::Update(float deltaTime)
 	{
+		Scene::Update(deltaTime);
 	}
 
 	void MainMenuScene::Render(SDL_Renderer* renderer)

@@ -56,6 +56,9 @@
     <ClCompile Include="FileReader.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
+    <ClCompile Include="BlueTankKilledEvent.cpp">
+      <Filter>Header Files\GameEvents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FMLEngine\DamageEvent.h">
@@ -114,6 +117,15 @@
     </ClInclude>
     <ClInclude Include="BulletCollisionBehaviorComponent.h">
       <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="ScoreUIComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="BlueTankKilledEvent.h">
+      <Filter>Header Files\GameEvents</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

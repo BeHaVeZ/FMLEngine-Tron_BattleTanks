@@ -56,11 +56,6 @@ namespace FML
 					self->GetComponent<BulletMoveComponent>()->Bounce(normal);
 				}
 			}
-			//else if (tag == "Bullet")
-			//{
-			//	self->Destroy();
-			//	otherGO->Destroy();
-			//}
 		}
 	};
 }
