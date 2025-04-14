@@ -21,6 +21,7 @@ namespace FML
 
         void RegisterCollider(Collider* collider);
         void UnregisterCollider(Collider* collider);
+        void ClearColliders() { colliders.clear(); }
         void CheckCollisions();
 
         void ResolveCollision(Collider* colliderA, Collider* colliderB);

@@ -19,6 +19,7 @@
 #include "../Tron_BattleTanks/FileReader.h"
 #include "../Tron_BattleTanks/ShootComponent.h"
 #include "../Tron_BattleTanks/ShootCommand.h"
+#include "../Tron_BattleTanks/SkipLevelCommand.h"
 
 namespace FML
 {
@@ -127,6 +128,7 @@ namespace FML
 	void TestingScene::InitializeInput()
 	{
 		InputHandler::Instance().BindCommand(SDLK_p, std::make_unique<TestCommand>(), InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindCommand(SDLK_F2, std::make_unique<SkipLevelCommand>(), InputHandler::KeyAction::KeyUp);
 
 
 		auto tank1 = FindGameObjectByTag("Player1");
@@ -175,12 +177,8 @@ namespace FML
 	void TestingScene::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
-		DebugDraw::Render(renderer);
 	}
 
-	void TestingScene::Cleanup()
-	{
-	}
 }
 
 

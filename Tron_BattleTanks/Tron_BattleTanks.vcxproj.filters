@@ -59,6 +59,12 @@
     <ClCompile Include="SoloScene.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
     </ClCompile>
+    <ClCompile Include="SoloLevel2.cpp">
+      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="InputBindingHelper.cpp">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FMLEngine\DamageEvent.h">
@@ -126,6 +132,18 @@
     </ClInclude>
     <ClInclude Include="SoloScene.h">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SoloLevel2.h">
+      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="SkipLevelCommand.h">
+      <Filter>Header Files\GameCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="ReloadSceneCommand.h">
+      <Filter>Header Files\GameCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="InputBindingHelper.h">
+      <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

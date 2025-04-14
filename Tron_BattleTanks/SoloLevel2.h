@@ -7,7 +7,7 @@
 namespace FML
 {
 
-	class CoopScene final : public Scene {
+	class SoloLevel2 final : public Scene {
 	public:
 		bool Initialize(SDL_Renderer* renderer) override;
 
@@ -16,17 +16,16 @@ namespace FML
 		void InitializeTitle(SDL_Renderer* renderer);
 		void InitializeFPSCounter(SDL_Renderer* renderer);
 		void InitializeFirstTank();
-		void InitializeSecondTank();
-		void InitializeInput() override;
 
 
 		void InitializeUI();
 		void InitializeHealthUI();
 		void InitializeScoreUI();
 
-		void InitializeWalls();
-
+		void InitializeInput() override;
 		void InitializeSounds();
+
+		void InitializeWalls();
 
 		void HandleInput(SDL_Event& event) override;
 

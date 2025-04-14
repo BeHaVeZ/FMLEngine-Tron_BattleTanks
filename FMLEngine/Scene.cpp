@@ -18,6 +18,11 @@ namespace FML
 		RenderGameObjects(renderer);
 	}
 
+	void Scene::Cleanup()
+	{
+		gameObjects.clear();
+	}
+
 	void Scene::AddGameObject(std::unique_ptr<GameObject> gameObject, glm::vec2 position)
 	{
 		if (gameObject)
@@ -71,7 +76,7 @@ namespace FML
 			if (gameObject->IsMarkedForDestruction())
 			{
 				auto collider = gameObject->GetComponent<Collider>();
-				if (collider)
+				if (collider && gameObject)
 					CollisionManager::Instance().UnregisterCollider(collider);
 			}
 		}

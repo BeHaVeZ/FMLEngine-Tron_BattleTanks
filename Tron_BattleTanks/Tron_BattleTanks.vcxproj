@@ -210,6 +210,8 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="..\FMLEngine\VersusScene.cpp" />
     <ClCompile Include="BlueTankKilledEvent.cpp" />
     <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="InputBindingHelper.cpp" />
+    <ClCompile Include="SoloLevel2.cpp" />
     <ClCompile Include="SoloScene.cpp" />
     <ClCompile Include="Tron_BattleTanks.cpp" />
   </ItemGroup>
@@ -231,10 +233,14 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="BulletCollisionBehaviorComponent.h" />
     <ClInclude Include="BulletMoveComponent.h" />
     <ClInclude Include="FileReader.h" />
+    <ClInclude Include="InputBindingHelper.h" />
+    <ClInclude Include="ReloadSceneCommand.h" />
     <ClInclude Include="ScoreComponent.h" />
     <ClInclude Include="ScoreUIComponent.h" />
     <ClInclude Include="ShootCommand.h" />
     <ClInclude Include="ShootComponent.h" />
+    <ClInclude Include="SkipLevelCommand.h" />
+    <ClInclude Include="SoloLevel2.h" />
     <ClInclude Include="SoloScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

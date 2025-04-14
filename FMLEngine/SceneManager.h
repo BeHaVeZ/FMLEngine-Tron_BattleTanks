@@ -18,6 +18,8 @@ namespace FML
 		void ChangeScene(const std::string& sceneName);
 		void RemoveScene(const std::string& name);
 		Scene* GetCurrentScene() const;
+		void ReloadScene();
+		void GoToNextScene();
 
 		void HandleInput(SDL_Event& event);
 		void Update(float deltaTime);
@@ -33,6 +35,7 @@ namespace FML
 		SceneManager() : localRenderer(nullptr), currentScene(nullptr) {}
 
 		std::map<std::string, std::unique_ptr<Scene>> scenes;
+		std::vector<std::string> sceneOrder;
 		Scene* currentScene = nullptr;
 
 		SDL_Renderer* localRenderer = nullptr;

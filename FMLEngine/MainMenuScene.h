@@ -15,7 +15,6 @@ namespace FML
 		void InitializeInput() override;
 		void Update(float deltaTime) override;
 		void Render(SDL_Renderer* renderer) override;
-		void Cleanup() override;
 
 		void InitializeBackground(SDL_Renderer* renderer);
 		void InitializeMenuOptions(SDL_Renderer* renderer);

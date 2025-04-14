@@ -14,7 +14,10 @@ namespace FML
 
 	void CollisionManager::UnregisterCollider(Collider* collider)
 	{
-		colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
+		if (!colliders.empty())
+		{
+			colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
+		}
 	}
 
 	void CollisionManager::CheckCollisions()
@@ -37,7 +40,7 @@ namespace FML
 						continue;
 
 					collisionPairs.emplace_back(colliders[i], colliders[j]);
-					Logger::Log(LogLevel::Warning, "Collision Detected");
+					Logger::Log(LogLevel::Debug, "Collision detected between %s and %s at position(%d,%d)", objA->GetTag().c_str(), objB->GetTag().c_str(), boxA.x, boxA.y);
 
 					if (colliders[i]->OnCollision)
 						colliders[i]->OnCollision(colliders[j]);

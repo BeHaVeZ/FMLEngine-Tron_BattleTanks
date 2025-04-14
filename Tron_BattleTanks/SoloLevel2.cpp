@@ -1,4 +1,5 @@
-#include "VersusScene.h"
+#include "PrefabRegistry.h"
+#include "SoloLevel2.h"
 #include "TextureComponent.h"
 #include "TransformComponent.h"
 #include "InputHandler.h"
@@ -6,36 +7,34 @@
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "ServiceLocator.h"
-#include "MoveCommand.h"
 #include <iostream>
-#include "PrefabRegistry.h"
-#include "RotateTurretCommand.h"
-#include "BoxCollider.h"
-#include "RotateCommand.h"
+#include "MuteSoundCommand.h"
+#include "MoveCommand.h"
 #include "RotateTurretCommand.h"
 #include "DamageCommand.h"
-#include "MuteSoundCommand.h"
-#include "../Tron_BattleTanks/FileReader.h"
-#include "../Tron_BattleTanks/ShootCommand.h"
-#include "../Tron_BattleTanks/SkipLevelCommand.h"
-#include "../Tron_BattleTanks/InputBindingHelper.h"
-#include <TestCommand.h>
+#include "HealthUIComponent.h"
+#include "DebugDraw.h"
+#include "FileReader.h"
+#include "BoxCollider.h"
+#include "TestCommand.h"
+#include "ShootCommand.h"
+#include "SkipLevelCommand.h"
+#include "InputBindingHelper.h"
+
 
 namespace FML
 {
 
-	const std::string backgroundImagePath = "data/levels/level00.png";
+	const std::string backgroundImagePath = "data/levels/level01.png";
 
-	bool VersusScene::Initialize(SDL_Renderer* renderer)
+	bool SoloLevel2::Initialize(SDL_Renderer* renderer)
 	{
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
 
 		InitializeFirstTank();
-		InitializeSecondTank();
 
 		InitializeUI();
-
 		InitializeWalls();
 
 		InitializeInput();
@@ -44,8 +43,7 @@ namespace FML
 		return true;
 	}
 
-	void VersusScene::InitializeBackground(SDL_Renderer* renderer)
-	{
+	void SoloLevel2::InitializeBackground(SDL_Renderer* renderer) {
 		auto background = std::make_unique<GameObject>("Background");
 		auto backgroundTexture = std::make_unique<TextureComponent>(backgroundImagePath, renderer);
 		background->AddComponent(std::move(backgroundTexture));
@@ -65,9 +63,29 @@ namespace FML
 		auto bg = FindGameObjectByTag("Background");
 		bg->GetComponent<TransformComponent>()->SetSize((float)ConfigManager::Instance().GetWindowWidth(), (float)ConfigManager::Instance().GetWindowHeight() - offset);
 		bg->GetComponent<TransformComponent>()->SetPosition({ 0,offset });
+
 	}
 
-	void VersusScene::InitializeFPSCounter(SDL_Renderer* renderer)
+	void SoloLevel2::InitializeTitle(SDL_Renderer* renderer)
+	{
+		auto title = std::make_unique<GameObject>("title");
+
+		SDL_Color color = { 0, 255, 0, 255 };
+
+		auto titleTextComponent = std::make_unique<TextComponent>(
+			"TRON Battle Tanks",
+			"data/fonts/tron-arcade.ttf",
+			24,
+			color,
+			renderer);
+
+		title->AddComponent(std::move(titleTextComponent));
+		title->GetComponent<TransformComponent>()->SetPosition({ 300, 300 });
+
+		gameObjects.push_back(std::move(title));
+	}
+
+	void SoloLevel2::InitializeFPSCounter(SDL_Renderer* renderer)
 	{
 		auto fpsGameObject = std::make_unique<GameObject>("FPSCounter");
 
@@ -84,52 +102,54 @@ namespace FML
 		gameObjects.push_back(std::move(fpsGameObject));
 	}
 
-	void VersusScene::InitializeFirstTank()
-	{
-		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 57,118 }, "Player1");
-		gameObjects.push_back(std::move(tank));
-	}
-
-	void VersusScene::InitializeSecondTank()
-	{
-		auto tank = PrefabRegistry::Instance().CreateYellowTankPrefab({ 938,705 }, "Player2");
-		gameObjects.push_back(std::move(tank));
-	}
-
-	void VersusScene::InitializeInput()
-	{
-		InputBindingHelper::BindGlobalCommands();
-
-		auto tankP1 = FindGameObjectByTag("Player1");
-		auto tankP2 = FindGameObjectByTag("Player2");
-		if (tankP1 && tankP2)
-		{
-			InputBindingHelper::BindDuoModeControls(tankP1, tankP2);
-		}
-	}
-
-	void VersusScene::InitializeUI()
+	void SoloLevel2::InitializeUI()
 	{
 		InitializeHealthUI();
 		InitializeScoreUI();
 	}
 
-	void VersusScene::InitializeHealthUI()
+	void SoloLevel2::InitializeHealthUI()
 	{
 		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, 3, "HealthUIPlayer1");
 		gameObjects.push_back(std::move(healthUIPlayer1));
-		auto healthUIPlayer2 = PrefabRegistry::Instance().CreateHealthUIForPlayer2({ 200,30 }, 3, "HealthUIPlayer2");
-		gameObjects.push_back(std::move(healthUIPlayer2));
 	}
 
-	void VersusScene::InitializeScoreUI()
+	void SoloLevel2::InitializeFirstTank()
 	{
-		//VERSUS TODO WHAT SHOULD THIS BE?
+		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 57,118 }, "Player1");
+		gameObjects.push_back(std::move(tank));
 	}
 
-	void VersusScene::InitializeWalls()
+	void SoloLevel2::InitializeScoreUI()
 	{
-		FileReader reader("data/levels/level00C.txt");
+		auto highScoreUI = PrefabRegistry::Instance().CreateHighScoreUI({ 400,30 }, "HighScoreUI");
+		gameObjects.push_back(std::move(highScoreUI));
+
+		auto currentScoreUI = PrefabRegistry::Instance().CreateCurrentScoreUI({ 750,30 }, "CurrentScoreUI");
+		gameObjects.push_back(std::move(currentScoreUI));
+	}
+
+
+	void SoloLevel2::InitializeInput()
+	{
+		InputBindingHelper::BindGlobalCommands();
+
+		auto tank = FindGameObjectByTag("Player1");
+		if (tank)
+		{
+			InputBindingHelper::BindSoloModeControls(tank);
+		}
+	}
+
+	void SoloLevel2::InitializeSounds()
+	{
+		ServiceLocator::GetSoundSystem().AddSound("AyoWhatV3.wav", 1, true);
+		ServiceLocator::GetSoundSystem().PlaySound(1, .0f);
+	}
+
+	void SoloLevel2::InitializeWalls()
+	{
+		FileReader reader("data/levels/level01C.txt");
 		auto walls = reader.ReadRectangles();
 
 		for (const auto& rect : walls) {
@@ -147,26 +167,18 @@ namespace FML
 		}
 	}
 
-	void VersusScene::InitializeSounds()
-	{
-		ServiceLocator::GetSoundSystem().AddSound("AyoWhat.wav", 1, true);
-		ServiceLocator::GetSoundSystem().PlaySound(1, .5f);
-	}
 
-
-	void VersusScene::HandleInput(SDL_Event& event)
-	{
+	void SoloLevel2::HandleInput(SDL_Event& event) {
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void VersusScene::Update(float deltaTime) 
+	void SoloLevel2::Update(float deltaTime)
 	{
 		Scene::Update(deltaTime);
 	}
 
-	void VersusScene::Render(SDL_Renderer* renderer)
+	void SoloLevel2::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
 	}
 }
-

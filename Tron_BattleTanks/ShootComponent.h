@@ -1,12 +1,13 @@
 #pragma once
-#include "Component.h"
-#include "GameObject.h"
-#include "CollisionManager.h"
 #include <glm.hpp>
 #include <iostream>
-#include "TransformComponent.h"
 #include <SDL.h>
+#include "GameObject.h"
+#include "Component.h"
+#include "TransformComponent.h"
 #include "DebugDraw.h"
+#include "CollisionManager.h"
+#include "PrefabRegistry.h"
 
 namespace FML
 {

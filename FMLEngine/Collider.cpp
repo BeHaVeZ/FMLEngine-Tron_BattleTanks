@@ -10,5 +10,6 @@ namespace FML
 
     Collider::~Collider() 
     {
+        CollisionManager::Instance().UnregisterCollider(this);
     }
 }

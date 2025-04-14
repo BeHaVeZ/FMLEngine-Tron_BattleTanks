@@ -1,11 +1,14 @@
+#pragma once
 #include "Command.h"
 #include "ServiceLocator.h"
 
 namespace FML
 {
-	class MuteSoundCommand : public Command {
+	class MuteSoundCommand : public Command 
+	{
 	public:
-		void Execute() override {
+		void Execute() override 
+		{
 			auto& soundSystem = ServiceLocator::GetSoundSystem();
 			if (soundSystem.isMuted) {
 				soundSystem.UnmuteSound();

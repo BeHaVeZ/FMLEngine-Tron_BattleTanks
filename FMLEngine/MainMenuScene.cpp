@@ -79,10 +79,6 @@ namespace FML
 		Scene::Render(renderer);
 	}
 
-	void MainMenuScene::Cleanup()
-	{
-	}
-
 	void MainMenuScene::InitializeBackground(SDL_Renderer* renderer)
 	{
 		auto background = std::make_unique<GameObject>();

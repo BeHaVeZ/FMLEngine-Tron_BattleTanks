@@ -38,15 +38,16 @@ namespace FML
 				SDL_RenderCopyEx(renderer, texture, NULL, &destRect,
 					transform->GetWorldRotation(), &center, SDL_FLIP_NONE);
 
-				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-				SDL_Rect pivotRect = {
-					static_cast<int>(destRect.x + center.x - 2),
-					static_cast<int>(destRect.y + center.y - 2),
-					4,
-					4
-				};
-				SDL_RenderFillRect(renderer, &pivotRect);
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+				//FOR PIVOT POINT UNCOMMENT THIS
+				//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+				//SDL_Rect pivotRect = {
+				//	static_cast<int>(destRect.x + center.x - 2),
+				//	static_cast<int>(destRect.y + center.y - 2),
+				//	4,
+				//	4
+				//};
+				//SDL_RenderFillRect(renderer, &pivotRect);
+				//SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 			}
 		}
 	}
