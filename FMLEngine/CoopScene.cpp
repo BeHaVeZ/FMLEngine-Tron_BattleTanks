@@ -9,6 +9,13 @@
 #include "MoveCommand.h"
 #include <iostream>
 #include "PrefabRegistry.h"
+#include "BoxCollider.h"
+#include "RotateCommand.h"
+#include "RotateTurretCommand.h"
+#include "DamageCommand.h"
+#include "MuteSoundCommand.h"
+#include "../Tron_BattleTanks/FileReader.h"
+#include "../Tron_BattleTanks/ShootCommand.h"
 
 namespace FML
 {
@@ -21,6 +28,10 @@ namespace FML
 
 		InitializeFirstTank();
 		InitializeSecondTank();
+
+		InitializeUI();
+
+		InitializeWalls();
 
 		InitializeInput();
 		InitializeSounds();
@@ -42,6 +53,13 @@ namespace FML
 			);
 		}
 		gameObjects.push_back(std::move(background));
+
+		float offset = 100.f;
+
+		auto bg = FindGameObjectByTag("Background");
+		bg->GetComponent<TransformComponent>()->SetSize((float)ConfigManager::Instance().GetWindowWidth(), (float)ConfigManager::Instance().GetWindowHeight() - offset);
+		bg->GetComponent<TransformComponent>()->SetPosition({ 0,offset });
+
 	}
 
 	void CoopScene::InitializeTitle(SDL_Renderer* renderer)
@@ -69,19 +87,12 @@ namespace FML
 
 		SDL_Color fpsColor = { 255, 255, 255, 255 };
 
-		auto titleTextComponent = std::make_unique<TextComponent>(
-			"FPS 0",
-			"data/fonts/tron-arcade.ttf",
-			22,
-			fpsColor,
-			renderer);
+		auto titleTextComponent = std::make_unique<TextComponent>("FPS 0", "data/fonts/tron-arcade.ttf", 10, fpsColor, renderer);
 		fpsGameObject->AddComponent(std::move(titleTextComponent));
-
 
 		auto fpsComponent = std::make_unique<FPSComponent>(renderer);
 		fpsGameObject->AddComponent(std::move(fpsComponent));
 		fpsGameObject->GetComponent<FPSComponent>()->Initialize();
-
 		fpsGameObject->GetComponent<TransformComponent>()->SetPosition({ 10, 10 });
 
 		gameObjects.push_back(std::move(fpsGameObject));
@@ -108,16 +119,82 @@ namespace FML
 			InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<MoveCommand>(tank, glm::vec2(0, 1), 100.f));
 			InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<MoveCommand>(tank, glm::vec2(-1, 0), 100.f));
 			InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 100.f));
+
+			InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<RotateTurretCommand>(tank->FindChildByTag("Turret"), 1.f));
+			InputHandler::Instance().BindCommand(SDLK_q, std::make_unique<RotateTurretCommand>(tank->FindChildByTag("Turret"), -1.f));
+
+			InputHandler::Instance().BindCommand(SDLK_r, std::make_unique<DamageCommand>(tank, 1), InputHandler::KeyAction::KeyUp);
+			InputHandler::Instance().BindCommand(SDLK_SPACE, std::make_unique<ShootCommand>(tank->FindChildByTag("Turret")), InputHandler::KeyAction::KeyUp);
 		}
 
 		tank = FindGameObjectByTag("Player2");
 		if (tank)
 		{
+			InputHandler::Instance().BindCommand(SDLK_UP, std::make_unique<MoveCommand>(tank, glm::vec2(0, -1), 100.f));
+			InputHandler::Instance().BindCommand(SDLK_DOWN, std::make_unique<MoveCommand>(tank, glm::vec2(0, 1), 100.f));
+			InputHandler::Instance().BindCommand(SDLK_LEFT, std::make_unique<MoveCommand>(tank, glm::vec2(-1, 0), 100.f));
+			InputHandler::Instance().BindCommand(SDLK_RIGHT, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 100.f));
+
+			InputHandler::Instance().BindCommand(SDLK_RIGHTBRACKET, std::make_unique<RotateTurretCommand>(tank->FindChildByTag("Turret"), 1.f));
+			InputHandler::Instance().BindCommand(SDLK_LEFTBRACKET, std::make_unique<RotateTurretCommand>(tank->FindChildByTag("Turret"), -1.f));
+
+			InputHandler::Instance().BindCommand(SDLK_p, std::make_unique<DamageCommand>(tank, 1), InputHandler::KeyAction::KeyUp);
+			InputHandler::Instance().BindCommand(SDLK_RCTRL, std::make_unique<ShootCommand>(tank->FindChildByTag("Turret")), InputHandler::KeyAction::KeyUp);
+
+
 			int controllerId = 0;
-			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<MoveCommand>(tank, glm::vec2(0, -1), 200.f));
-			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<MoveCommand>(tank, glm::vec2(0, 1), 200.f));
-			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<MoveCommand>(tank, glm::vec2(-1, 0), 200.f));
-			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 200.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_UP, std::make_unique<MoveCommand>(tank, glm::vec2(0, -1), 100.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, std::make_unique<MoveCommand>(tank, glm::vec2(0, 1), 100.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_LEFT, std::make_unique<MoveCommand>(tank, glm::vec2(-1, 0), 100.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_DPAD_RIGHT, std::make_unique<MoveCommand>(tank, glm::vec2(1, 0), 100.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_RIGHT_SHOULDER, std::make_unique<RotateTurretCommand>(tank->FindChildByTag("Turret"), 1.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_LEFT_SHOULDER, std::make_unique<RotateTurretCommand>(tank->FindChildByTag("Turret"), -1.f));
+			InputHandler::Instance().BindGamepadCommand(controllerId, XINPUT_GAMEPAD_A, std::make_unique<ShootCommand>(tank->FindChildByTag("Turret")), InputHandler::KeyAction::KeyUp);
+		}
+		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
+
+	}
+
+	void CoopScene::InitializeUI()
+	{
+		InitializeHealthUI();
+		InitializeScoreUI();
+	}
+
+	void CoopScene::InitializeHealthUI()
+	{
+		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, 3, "HealthUIPlayer1");
+		gameObjects.push_back(std::move(healthUIPlayer1));
+		auto healthUIPlayer2 = PrefabRegistry::Instance().CreateHealthUIForPlayer2({ 200,30 }, 3, "HealthUIPlayer2");
+		gameObjects.push_back(std::move(healthUIPlayer2));
+	}
+
+	void CoopScene::InitializeScoreUI()
+	{
+		auto highScoreUI = PrefabRegistry::Instance().CreateHighScoreUI({ 400,30 }, "HighScoreUI");
+		gameObjects.push_back(std::move(highScoreUI));
+
+		auto currentScoreUI = PrefabRegistry::Instance().CreateCurrentScoreUI({ 750,30 }, "CurrentScoreUI");
+		gameObjects.push_back(std::move(currentScoreUI));
+	}
+
+	void CoopScene::InitializeWalls()
+	{
+		FileReader reader("data/levels/level00C.txt");
+		auto walls = reader.ReadRectangles();
+
+		for (const auto& rect : walls) {
+			auto wall = std::make_unique<GameObject>("Wall");
+
+			SDL_Rect box = { rect.x, rect.y, rect.w, rect.h };
+
+			auto wallCollider = std::make_unique<BoxCollider>(box);
+			wallCollider->isStatic = true;
+			wall->AddComponent(std::move(wallCollider));
+
+			wall->GetComponent<TransformComponent>()->SetPosition({ rect.x, rect.y });
+
+			AddGameObject(std::move(wall));
 		}
 	}
 

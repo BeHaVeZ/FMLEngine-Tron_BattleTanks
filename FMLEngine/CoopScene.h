@@ -19,6 +19,13 @@ namespace FML
 		void InitializeSecondTank();
 		void InitializeInput() override;
 
+
+		void InitializeUI();
+		void InitializeHealthUI();
+		void InitializeScoreUI();
+
+		void InitializeWalls();
+
 		void InitializeSounds();
 
 		void HandleInput(SDL_Event& event) override;

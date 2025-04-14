@@ -30,8 +30,8 @@ namespace FML
 		InitializeFPSCounter(renderer);
 
 		InitializeFirstTank();
-		InitializeHealthUI();
-		InitializeScoreObjects();
+
+		InitializeUI();
 		InitializeWalls();
 
 		InitializeInput();
@@ -99,6 +99,12 @@ namespace FML
 		gameObjects.push_back(std::move(fpsGameObject));
 	}
 
+	void SoloScene::InitializeUI()
+	{
+		InitializeHealthUI();
+		InitializeScoreUI();
+	}
+
 	void SoloScene::InitializeHealthUI()
 	{
 		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, 3, "HealthUIPlayer1");
@@ -113,7 +119,7 @@ namespace FML
 		gameObjects.push_back(std::move(tank));
 	}
 
-	void SoloScene::InitializeScoreObjects()
+	void SoloScene::InitializeScoreUI()
 	{
 		auto highScoreUI = PrefabRegistry::Instance().CreateHighScoreUI({ 400,30 }, "HighScoreUI");
 		gameObjects.push_back(std::move(highScoreUI));

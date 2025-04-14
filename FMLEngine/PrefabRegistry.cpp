@@ -88,18 +88,32 @@ namespace FML
 		tank->AddComponent(std::move(tankTexture));
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
-		auto tankHealth = std::make_unique<HealthComponent>(3);
-		tank->GetSubject().AddObserver(tankHealth.get());
-		tank->AddComponent(std::move(tankHealth));
+		auto playerHealth = std::make_unique<HealthComponent>(3);
+		tank->GetSubject().AddObserver(playerHealth.get());
+		tank->AddComponent(std::move(playerHealth));
+
+		auto playerScore = std::make_unique<ScoreComponent>();
+		tank->GetSubject().AddObserver(playerScore.get());
+		tank->AddComponent(std::move(playerScore));
 
 		auto turret = std::make_unique<GameObject>("Turret");
 		auto turretTexture = std::make_unique<TextureComponent>("data/artassets/Yellow_Barrel.png", SceneManager::Instance().GetRenderer());
 		turret->GetComponent<TransformComponent>()->CentralizePivotOnTexture(turretTexture.get());
 		turret->AddComponent(std::move(turretTexture));
-		turret->GetComponent<TransformComponent>()->SetPosition({ 0, -6 });
+		//turret->GetComponent<TransformComponent>()->SetPosition({ 0, -6 });
 		//turret->GetComponent<TransformComponent>()->OffsetPivotPoint({ 0,9 });
 
+		float shootAllowanceRange = 30.f;
+
+		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, 0.f);
+		turret->AddComponent(std::move(shootComponent));
+
 		tank->AddChild(std::move(turret));
+
+		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth(),tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
+		auto playerCollider = std::make_unique<BoxCollider>(tankBox);
+		tank->AddComponent(std::move(playerCollider));
+
 		return tank;
 	}
 

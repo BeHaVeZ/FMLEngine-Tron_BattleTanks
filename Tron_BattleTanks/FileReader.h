@@ -5,6 +5,8 @@
 
 namespace FML
 {
+	//REASON FOR NOT BEING IN ENGINE PROJECT:
+	// This class is specific for the boxcolliders on the map for the tank game yk.
 	class FileReader {
 	public:
 		FileReader(const std::string& filename);

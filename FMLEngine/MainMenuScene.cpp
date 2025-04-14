@@ -50,7 +50,13 @@ namespace FML
 			InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<RotateCommand>(arrow, 180.0f));
 			InputHandler::Instance().BindCommand(SDLK_d, std::make_unique<RotateCommand>(arrow, 0.0f));
 
+			InputHandler::Instance().BindCommand(SDLK_UP, std::make_unique<RotateCommand>(arrow, 270.0f));
+			InputHandler::Instance().BindCommand(SDLK_DOWN, std::make_unique<RotateCommand>(arrow, 90.0f));
+			InputHandler::Instance().BindCommand(SDLK_LEFT, std::make_unique<RotateCommand>(arrow, 180.0f));
+			InputHandler::Instance().BindCommand(SDLK_RIGHT, std::make_unique<RotateCommand>(arrow, 0.0f));
+
 			InputHandler::Instance().BindCommand(SDLK_e, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
+			InputHandler::Instance().BindCommand(SDLK_RETURN, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
 			InputHandler::Instance().BindCommand(SDLK_SPACE, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
 			InputHandler::Instance().BindGamepadCommand(controllerID, XINPUT_GAMEPAD_A, std::make_unique<SelectMenuOptionCommand>(arrow), InputHandler::KeyAction::KeyUp);
 
@@ -71,11 +77,6 @@ namespace FML
 	void MainMenuScene::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
-
-		for (auto& option : menuOptions) 
-		{
-			option->Render(renderer);
-		}
 	}
 
 	void MainMenuScene::Cleanup()

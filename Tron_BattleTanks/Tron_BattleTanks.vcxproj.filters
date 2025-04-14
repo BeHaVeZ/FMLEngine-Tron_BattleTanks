@@ -50,14 +50,14 @@
     <ClCompile Include="..\FMLEngine\VersusScene.cpp">
       <Filter>Header Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="SoloScene.cpp">
-      <Filter>Header Files\Scenes</Filter>
-    </ClCompile>
     <ClCompile Include="FileReader.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
     <ClCompile Include="BlueTankKilledEvent.cpp">
       <Filter>Header Files\GameEvents</Filter>
+    </ClCompile>
+    <ClCompile Include="SoloScene.cpp">
+      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -100,9 +100,6 @@
     <ClInclude Include="..\FMLEngine\VersusScene.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="SoloScene.h">
-      <Filter>Header Files\Scenes</Filter>
-    </ClInclude>
     <ClInclude Include="FileReader.h">
       <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
@@ -126,6 +123,9 @@
     </ClInclude>
     <ClInclude Include="BlueTankKilledEvent.h">
       <Filter>Header Files\GameEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="SoloScene.h">
+      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
