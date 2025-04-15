@@ -160,7 +160,7 @@ namespace FML
 	void TestingScene::InitializeSounds()
 	{
 		ServiceLocator::GetSoundSystem().AddSound("AyoWhatV3.wav", 1, true);
-		ServiceLocator::GetSoundSystem().PlaySound(1, .0f);
+		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 
 

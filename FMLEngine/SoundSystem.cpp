@@ -1,4 +1,5 @@
 #include "SoundSystem.h"
+#include "SoundSystem.h"
 #include <SDL_mixer.h>
 #include "Logger.h"
 #include <thread>
@@ -89,6 +90,49 @@ namespace FML
 			m_Sounds.clear();
 		}
 
+		float GetCurrentVolume() const
+		{
+			return m_CurrentVolume;
+		}
+
+		void MuteSound()
+		{
+			if (!m_IsMuted)
+			{
+				Mix_Volume(-1, 0);
+				m_IsMuted = true;
+			}
+		}
+
+		void UnmuteSound()
+		{
+			if (m_IsMuted)
+			{
+				int sdlVolume = static_cast<int>(std::round(m_CurrentVolume * MIX_MAX_VOLUME));
+				sdlVolume = std::clamp(sdlVolume, 0, MIX_MAX_VOLUME);
+				Mix_Volume(-1, sdlVolume);
+				m_IsMuted = false;
+			}
+		}
+
+		void SetVolume(float newVolume)
+		{
+			if (newVolume < .0f || newVolume > 1.f) return;
+			m_CurrentVolume = newVolume;
+
+			if (!m_IsMuted)
+			{
+				int sdlVolume = static_cast<int>(std::round(m_CurrentVolume * MIX_MAX_VOLUME));
+				sdlVolume = std::clamp(sdlVolume, 0, MIX_MAX_VOLUME);
+				Mix_Volume(-1, sdlVolume);
+			}
+		}
+
+		bool IsMuted()
+		{
+			return m_IsMuted;
+		}
+
 	private:
 		struct PlayMessage
 		{
@@ -113,6 +157,8 @@ namespace FML
 		std::jthread m_UpdateThread;
 
 		bool m_IsShutdown{ true };
+		bool m_IsMuted{ false };
+		float m_CurrentVolume{ .5f };
 
 		void Update()
 		{
@@ -180,25 +226,31 @@ namespace FML
 	{
 		return m_pImpl->IsShutdown();
 	}
+	bool SDL_SoundSystem::IsMuted() const
+	{
+		return m_pImpl->IsMuted();
+	}
 	void SDL_SoundSystem::MuteSound()
 	{
-		if (!isMuted)
-		{
-			Mix_Volume(-1, 0);
-			isMuted = true;
-		}
+		m_pImpl->MuteSound();
 	}
 	void SDL_SoundSystem::UnmuteSound()
 	{
-		if (isMuted)
-		{
-			Mix_Volume(-1, MIX_MAX_VOLUME);
-			isMuted = false;
-		}
+		m_pImpl->UnmuteSound();
 	}
 	void SDL_SoundSystem::ClearSounds()
 	{
 		m_pImpl->ClearSounds();
+	}
+
+	float FML::SDL_SoundSystem::GetCurrentVolume() const
+	{
+		return m_pImpl->GetCurrentVolume();
+	}
+
+	void SDL_SoundSystem::SetVolume(float newVolume)
+	{
+		m_pImpl->SetVolume(newVolume);
 	}
 #pragma endregion
 

@@ -1,9 +1,6 @@
 #pragma once
 #include "Command.h"
-#include "GameObject.h"
-#include "TransformComponent.h"
 #include "SceneManager.h"
-#include <iostream>
 
 namespace FML
 {

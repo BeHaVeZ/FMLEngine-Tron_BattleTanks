@@ -12,6 +12,7 @@
 #include "RotateCommand.h"
 #include "SelectMenuOptionCommand.h"
 #include "MuteSoundCommand.h"
+#include "../Tron_BattleTanks/InputBindingHelper.h"
 
 namespace FML
 {
@@ -38,9 +39,9 @@ namespace FML
 
 	void MainMenuScene::InitializeInput() 
 	{
+		InputBindingHelper::BindGlobalCommands();
+
 		int controllerID = 0;
-		InputHandler::Instance().BindCommand(SDLK_m, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
-		InputHandler::Instance().BindGamepadCommand(controllerID, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
 
 		auto arrow = FindGameObjectByTag("SelectionArrow");
 		if (arrow) 
@@ -150,7 +151,7 @@ namespace FML
 	void MainMenuScene::InitializeSounds()
 	{
 		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
-		ServiceLocator::GetSoundSystem().PlaySound(1, 0.f);
+		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 
 

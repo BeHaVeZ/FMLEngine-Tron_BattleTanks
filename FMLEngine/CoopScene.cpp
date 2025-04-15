@@ -171,7 +171,8 @@ namespace FML
 	void CoopScene::InitializeSounds()
 	{
 		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
-		ServiceLocator::GetSoundSystem().PlaySound(1, 1.f);
+		ServiceLocator::GetSoundSystem().AddSound("Fire.wav", 2, false);
+		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 
 

@@ -8,6 +8,7 @@
 #include "DebugDraw.h"
 #include "CollisionManager.h"
 #include "PrefabRegistry.h"
+#include "ServiceLocator.h"
 
 namespace FML
 {
@@ -72,6 +73,7 @@ namespace FML
 			else 
 			{
 				Logger::Log(LogLevel::Debug, "Shooting from %s", gameObject->GetParent()->GetTag().c_str());
+				ServiceLocator::GetSoundSystem().PlaySound(2, ServiceLocator::GetSoundSystem().GetCurrentVolume() + .3f);
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateBulletPrefab({shootPoint},rayDirection,"Bullet"));
 				canShoot = false;
 				timeSinceLastShot = 0.0f;

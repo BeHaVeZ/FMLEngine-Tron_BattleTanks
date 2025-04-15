@@ -145,5 +145,8 @@
     <ClInclude Include="InputBindingHelper.h">
       <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
+    <ClInclude Include="ChangeVolumeCommand.h">
+      <Filter>Header Files\GameCommands</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

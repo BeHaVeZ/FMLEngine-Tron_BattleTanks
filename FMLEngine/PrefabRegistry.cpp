@@ -150,6 +150,7 @@ namespace FML
 
 		return bullet;
 	}
+	
 	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer1(glm::vec2 spawnPosition, int maxHealth, const std::string tag) const
 	{
 		int numberOffset = 30;

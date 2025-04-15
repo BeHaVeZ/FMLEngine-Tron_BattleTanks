@@ -3,6 +3,7 @@
 #include "RotateTurretCommand.h"
 #include "DamageCommand.h"
 #include "ShootCommand.h"
+#include "ChangeVolumeCommand.h"
 
 namespace FML
 {
@@ -10,6 +11,8 @@ namespace FML
 	{
 		InputHandler::Instance().BindCommand(SDLK_F2, std::make_unique<SkipLevelCommand>(), InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindCommand(SDLK_F5, std::make_unique<ReloadSceneCommand>(), InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindCommand(SDLK_MINUS, std::make_unique<ChangeVolumeCommand>(false), InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindCommand(SDLK_EQUALS, std::make_unique<ChangeVolumeCommand>(true), InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindCommand(SDLK_m, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
 	}

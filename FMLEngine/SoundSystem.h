@@ -17,11 +17,12 @@ namespace FML
 		virtual void StartUp() = 0;
 		virtual void Shutdown() = 0;
 		virtual bool IsShutdown() = 0;
+		virtual bool IsMuted() const = 0;
 		virtual void MuteSound() = 0;
 		virtual void UnmuteSound() = 0;
 		virtual void ClearSounds() = 0;
-
-		bool isMuted = false;
+		virtual float GetCurrentVolume() const = 0;
+		virtual void SetVolume(float newVolume) = 0;
 	};
 
 	class NullSoundSystem final : public SoundSystem
@@ -32,9 +33,12 @@ namespace FML
 		void StartUp() override { Logger::Log(LogLevel::Info, "Nullsystem has been initialized"); };
 		void Shutdown() override {};
 		bool IsShutdown() override { return false; };
+		virtual bool IsMuted() const { return false; };
 		virtual void MuteSound() override {};
 		virtual void UnmuteSound() override {};
 		virtual void ClearSounds() override {};
+		float GetCurrentVolume() const override { return 0.0f; }
+		void SetVolume(float) override {};
 	};
 
 	class SDL_SoundSystem final : public SoundSystem
@@ -48,9 +52,12 @@ namespace FML
 		void StartUp() override;
 		void Shutdown() override;
 		bool IsShutdown() override;
+		virtual bool IsMuted() const override;
 		virtual void MuteSound() override;
 		virtual void UnmuteSound() override;
 		virtual void ClearSounds() override;
+		float GetCurrentVolume() const override;
+		void SetVolume(float volume) override;
 
 	private:
 		class SDL_SoundSystemImpl;
@@ -67,6 +74,7 @@ namespace FML
 		void StartUp() override;
 		void Shutdown() override;
 		bool IsShutdown() override;
+		bool IsMuted() const override { return m_pSS->IsMuted(); };
 		virtual void MuteSound() override {};
 		virtual void UnmuteSound() override {};
 		virtual void ClearSounds() override {}

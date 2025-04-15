@@ -128,7 +128,10 @@ namespace FML
 	void SoloScene::InitializeSounds()
 	{
 		ServiceLocator::GetSoundSystem().AddSound("AyoWhatV3.wav", 1, true);
-		ServiceLocator::GetSoundSystem().PlaySound(1, .0f);
+		ServiceLocator::GetSoundSystem().AddSound("Fire.wav", 2, false);
+		ServiceLocator::GetSoundSystem().AddSound("Hit.wav", 3, false);
+		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		Logger::Log(LogLevel::Info, "%d", ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 
 	void SoloScene::InitializeWalls()

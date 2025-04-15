@@ -4,6 +4,7 @@
 #include "Collider.h"
 #include "GameObject.h"
 #include <string>
+#include "ServiceLocator.h"
 
 namespace FML
 {
@@ -38,6 +39,7 @@ namespace FML
 				auto healthComponent = otherGO->GetComponent<HealthComponent>();
 				if (healthComponent)
 				{
+					ServiceLocator::GetSoundSystem().PlaySound(3, ServiceLocator::GetSoundSystem().GetCurrentVolume() + .3f);
 					healthComponent->Damage(1);
 				}
 				self->Destroy();

@@ -10,7 +10,7 @@ namespace FML
 		void Execute() override 
 		{
 			auto& soundSystem = ServiceLocator::GetSoundSystem();
-			if (soundSystem.isMuted) {
+			if (soundSystem.IsMuted()) {
 				soundSystem.UnmuteSound();
 			}
 			else {
