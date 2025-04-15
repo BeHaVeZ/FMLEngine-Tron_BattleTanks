@@ -29,6 +29,16 @@ namespace FML
 		points.push_back({ position, color });
 	}
 
+	void DebugDraw::DrawForwardVector(SDL_Renderer* renderer, const glm::vec2& position, float rotationDegrees, float length)
+	{
+		float angleRad = glm::radians(rotationDegrees - 90);
+		glm::vec2 end = position + glm::vec2(cos(angleRad), sin(angleRad)) * length;
+
+		SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+		SDL_RenderDrawLine(renderer, static_cast<int>(position.x), static_cast<int>(position.y),
+			static_cast<int>(end.x), static_cast<int>(end.y));
+	}
+
 	void DebugDraw::Render(SDL_Renderer* renderer)
 	{
 		for (const auto& line : lines)

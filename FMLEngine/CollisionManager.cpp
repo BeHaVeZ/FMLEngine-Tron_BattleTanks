@@ -1,4 +1,5 @@
 #include "CollisionManager.h"
+#include "CollisionManager.h"
 #include <algorithm>
 #include "Logger.h"
 #include "TransformComponent.h"
@@ -146,6 +147,33 @@ namespace FML
 				Logger::Log(LogLevel::Debug, "Raycast hit detected with object: %s", colliderGameObject->GetTag().c_str());
 			}
 		}
+		return hitDetected;
+	}
+
+	bool CollisionManager::RaycastWithTag(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude, GameObject* excludeParent)
+	{
+		bool hitDetected = false;
+		glm::vec2 normalizedDirection = glm::normalize(direction);
+		glm::vec2 end = start + normalizedDirection * maxDistance;
+
+		for (auto* collider : colliders)
+		{
+			GameObject* colliderGO = collider->GetOwner();
+			if (!colliderGO || colliderGO == exclude || colliderGO == excludeParent)
+				continue;
+
+			if (colliderGO->GetTag() != tagToCheck)
+				continue;
+
+			SDL_Rect box = collider->GetBoundingBox();
+			if (IntersectRayWithRectangle(start, end, box))
+			{
+				hitDetected = true;
+				Logger::Log(LogLevel::Debug, "RaycastWithTag hit: [%s]", colliderGO->GetTag().c_str());
+				break;
+			}
+		}
+
 		return hitDetected;
 	}
 

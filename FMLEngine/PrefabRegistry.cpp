@@ -8,6 +8,7 @@
 #include "../Tron_BattleTanks/ShootComponent.h"
 #include "../Tron_BattleTanks/BulletMoveComponent.h"
 #include "../Tron_BattleTanks/BulletCollisionBehaviorComponent.h"
+#include "../Tron_BattleTanks/EnemyMovementComponent.h"
 #include "../Tron_BattleTanks/ScoreComponent.h"
 #include "../Tron_BattleTanks/ScoreUIComponent.h"
 
@@ -70,6 +71,9 @@ namespace FML
 		auto tankHealth = std::make_unique<HealthComponent>(1);
 		tank->GetSubject().AddObserver(tankHealth.get());
 		tank->AddComponent(std::move(tankHealth));
+
+		auto enemyMovement = std::make_unique<EnemyMovementComponent>(50.f);
+		tank->AddComponent(std::move(enemyMovement));
 
 		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth(),tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
 		auto playerCollider = std::make_unique<BoxCollider>(tankBox);

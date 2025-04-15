@@ -16,6 +16,9 @@ namespace FML
 		int GetDefaultWidth() const { return defaultWidth; }
 		int GetDefaultHeight() const { return defaultHeight; }
 
+		glm::vec2 GetWorldCenter() const;
+		glm::vec2 GetForwardVector() const;
+
 	private:
 		SDL_Texture* texture;
 		SDL_Rect destRect;

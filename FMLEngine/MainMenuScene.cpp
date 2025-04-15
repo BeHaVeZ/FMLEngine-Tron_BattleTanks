@@ -37,15 +37,15 @@ namespace FML
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void MainMenuScene::InitializeInput() 
+	void MainMenuScene::InitializeInput()
 	{
 		InputBindingHelper::BindGlobalCommands();
 
 		int controllerID = 0;
 
 		auto arrow = FindGameObjectByTag("SelectionArrow");
-		if (arrow) 
-{
+		if (arrow)
+		{
 			InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<RotateCommand>(arrow, 270.0f));
 			InputHandler::Instance().BindCommand(SDLK_s, std::make_unique<RotateCommand>(arrow, 90.0f));
 			InputHandler::Instance().BindCommand(SDLK_a, std::make_unique<RotateCommand>(arrow, 180.0f));
@@ -150,10 +150,9 @@ namespace FML
 
 	void MainMenuScene::InitializeSounds()
 	{
+		ServiceLocator::GetSoundSystem().SetVolume(.5f);
 		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
 		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
-
-
 }
 

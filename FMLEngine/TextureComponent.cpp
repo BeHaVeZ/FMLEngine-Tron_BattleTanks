@@ -1,4 +1,5 @@
 #include "TextureComponent.h"
+#include "TextureComponent.h"
 #include "TextureManager.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
@@ -52,6 +53,33 @@ namespace FML
 		}
 	}
 
+	glm::vec2 TextureComponent::GetWorldCenter() const
+	{
+		if (!gameObject) return { 0, 0 };
+
+		auto transform = gameObject->GetComponent<TransformComponent>();
+		if (!transform) return { 0, 0 };
+
+		float width = transform->IsSizeSet() ? transform->GetWidth() : defaultWidth;
+		float height = transform->IsSizeSet() ? transform->GetHeight() : defaultHeight;
+
+		glm::vec2 position = transform->GetWorldPosition();
+		return { position.x + width / 2.0f, position.y + height / 2.0f };
+	}
+
+	glm::vec2 TextureComponent::GetForwardVector() const
+	{
+		if (!gameObject) return { 0, -1 };
+
+		auto transform = gameObject->GetComponent<TransformComponent>();
+		if (!transform) return { 0, -1 };
+
+		float rotation = transform->GetWorldRotation();
+		float angleRadians = glm::radians(rotation - 90.0f);
+
+		glm::vec2 forward = glm::vec2(std::cos(angleRadians), std::sin(angleRadians));
+		return glm::normalize(forward);
+	}
 
 }
 

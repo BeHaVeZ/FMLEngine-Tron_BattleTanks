@@ -14,6 +14,7 @@ namespace FML
 		static void DrawCircle(const glm::vec2& center, float radius, const glm::vec4& color);
 		static void DrawRectangle(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color);
 		static void DrawPoint(const glm::vec2& position, const glm::vec4& color);
+		static void DrawForwardVector(SDL_Renderer* renderer, const glm::vec2& position, float rotationDegrees, float length = 25.0f);
 
 		static void Render(SDL_Renderer* renderer);
 

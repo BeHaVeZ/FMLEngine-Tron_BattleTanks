@@ -27,6 +27,8 @@ namespace FML
         void ResolveCollision(Collider* colliderA, Collider* colliderB);
 
         bool Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
+        bool RaycastWithTag(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
+
 
         bool IntersectRayWithRectangle(const glm::vec2& rayStart, const glm::vec2& rayEnd, const SDL_Rect& rect);
 
