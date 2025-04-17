@@ -167,18 +167,5 @@ namespace FML
 	void SoloScene::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
-		for (auto& gameobject : gameObjects)
-		{
-			auto transform = gameobject->GetComponent<TransformComponent>();
-			auto texture = gameobject->GetComponent<TextureComponent>();
-
-			if (!transform || !texture)
-				continue;
-
-			glm::vec2 worldPos = texture->GetWorldCenter();
-			float rotation = transform->GetWorldRotation();
-
-			DebugDraw::DrawForwardVector(renderer, worldPos, rotation);
-		}
 	}
 }

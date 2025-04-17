@@ -65,17 +65,41 @@ namespace FML
 
 		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/BlueTank.png", SceneManager::Instance().GetRenderer());
 		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
+		tank->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x - tankTexture.get()->GetDefaultWidth() / 2, spawnPosition.y - tankTexture.get()->GetDefaultHeight() / 2 });
 		tank->AddComponent(std::move(tankTexture));
-		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
 		auto tankHealth = std::make_unique<HealthComponent>(1);
 		tank->GetSubject().AddObserver(tankHealth.get());
 		tank->AddComponent(std::move(tankHealth));
 
-		auto enemyMovement = std::make_unique<EnemyMovementComponent>(50.f);
+		auto enemyMovement = std::make_unique<EnemyMovementComponent>(100.f);
 		tank->AddComponent(std::move(enemyMovement));
 
-		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth(),tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
+		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth() - 2,tank->GetComponent<TextureComponent>()->GetDefaultHeight()};
+		auto playerCollider = std::make_unique<BoxCollider>(tankBox);
+		//playerCollider->isStatic = true;
+		tank->AddComponent(std::move(playerCollider));
+
+		return tank;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreatePinkTankPrefab(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto tank = std::make_unique<GameObject>(tag);
+
+		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/PinkTank.png", SceneManager::Instance().GetRenderer());
+		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
+		tank->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x - tankTexture.get()->GetDefaultWidth() / 2, spawnPosition.y - tankTexture.get()->GetDefaultHeight() / 2 });
+		tank->AddComponent(std::move(tankTexture));
+
+		auto tankHealth = std::make_unique<HealthComponent>(1);
+		tank->GetSubject().AddObserver(tankHealth.get());
+		tank->AddComponent(std::move(tankHealth));
+
+		auto enemyMovement = std::make_unique<EnemyMovementComponent>(100.f);
+		tank->AddComponent(std::move(enemyMovement));
+
+		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth() - 2,tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
 		auto playerCollider = std::make_unique<BoxCollider>(tankBox);
 		//playerCollider->isStatic = true;
 		tank->AddComponent(std::move(playerCollider));
