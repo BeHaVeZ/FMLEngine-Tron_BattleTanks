@@ -86,6 +86,15 @@ namespace FML
 				Logger::Log(LogLevel::Info, "Spawning tank at: (%d, %d)", x, y);
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateBlueTankPrefab(clickPos, "Enemy"));
 			}
+			if (event.button.button == SDL_BUTTON_MIDDLE)
+			{
+				int x = event.button.x;
+				int y = event.button.y;
+				glm::vec2 clickPos = { x, y };
+
+				Logger::Log(LogLevel::Info, "Spawning tank at: (%d, %d)", x, y);
+				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreatePinkTankPrefab(clickPos, "Enemy"));
+			}
 		}
 
 		if (event.type == SDL_KEYDOWN)

@@ -144,7 +144,7 @@ namespace FML
 			if (IntersectRayWithRectangle(start, end, box))
 			{
 				hitDetected = true;
-				Logger::Log(LogLevel::Debug, "Raycast hit detected with object: %s", colliderGameObject->GetTag().c_str());
+				//Logger::Log(LogLevel::Debug, "Raycast hit detected with object: %s", colliderGameObject->GetTag().c_str());
 			}
 		}
 		return hitDetected;
@@ -169,12 +169,43 @@ namespace FML
 			if (IntersectRayWithRectangle(start, end, box))
 			{
 				hitDetected = true;
-				Logger::Log(LogLevel::Debug, "RaycastWithTag hit: [%s]", colliderGO->GetTag().c_str());
+				//Logger::Log(LogLevel::Debug, "RaycastWithTag hit: [%s]", colliderGO->GetTag().c_str());
 				break;
 			}
 		}
 
 		return hitDetected;
+	}
+
+	std::optional<CollisionManager::RaycastHit> CollisionManager::RaycastWithTagHit(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude, GameObject* excludeParent)
+	{
+		glm::vec2 normalizedDirection = glm::normalize(direction);
+		glm::vec2 end = start + normalizedDirection * maxDistance;
+
+		std::optional<RaycastHit> closestHit;
+		float closestDistance = std::numeric_limits<float>::max();
+
+		for (auto* collider : colliders)
+		{
+			GameObject* colliderGO = collider->GetOwner();
+			if (!colliderGO || colliderGO == exclude || colliderGO == excludeParent || colliderGO->GetTag() != tagToCheck)
+				continue;
+
+			SDL_Rect box = collider->GetBoundingBox();
+			if (IntersectRayWithRectangle(start, end, box))
+			{
+				glm::vec2 hitPoint = start + normalizedDirection * maxDistance; // optional: refine to exact point
+				float distance = glm::distance(start, hitPoint);
+
+				if (distance < closestDistance)
+				{
+					closestDistance = distance;
+					closestHit = RaycastHit{ colliderGO, hitPoint, distance };
+				}
+			}
+		}
+
+		return closestHit;
 	}
 
 	bool CollisionManager::IntersectRayWithRectangle(const glm::vec2& rayStart, const glm::vec2& rayEnd, const SDL_Rect& rect)

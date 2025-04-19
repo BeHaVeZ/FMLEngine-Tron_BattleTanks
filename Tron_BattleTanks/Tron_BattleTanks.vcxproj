@@ -234,6 +234,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="BulletMoveComponent.h" />
     <ClInclude Include="ChangeVolumeCommand.h" />
     <ClInclude Include="EnemyMovementComponent.h" />
+    <ClInclude Include="EnemyShootComponent.h" />
     <ClInclude Include="FileReader.h" />
     <ClInclude Include="InputBindingHelper.h" />
     <ClInclude Include="ReloadSceneCommand.h" />

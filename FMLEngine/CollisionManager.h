@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include "glm.hpp"
 #include <string>
+#include <optional>
 
 namespace FML
 {
@@ -15,6 +16,13 @@ namespace FML
             static CollisionManager instance;
             return instance;
         }
+
+        struct RaycastHit 
+        {
+            GameObject* hitObject;
+            glm::vec2 hitPoint;
+            float distance;
+        };
 
         CollisionManager(const CollisionManager&) = delete;
         CollisionManager& operator=(const CollisionManager&) = delete;
@@ -28,7 +36,7 @@ namespace FML
 
         bool Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
         bool RaycastWithTag(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
-
+        std::optional<RaycastHit> RaycastWithTagHit(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
 
         bool IntersectRayWithRectangle(const glm::vec2& rayStart, const glm::vec2& rayEnd, const SDL_Rect& rect);
 

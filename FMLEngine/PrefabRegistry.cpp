@@ -11,6 +11,7 @@
 #include "../Tron_BattleTanks/EnemyMovementComponent.h"
 #include "../Tron_BattleTanks/ScoreComponent.h"
 #include "../Tron_BattleTanks/ScoreUIComponent.h"
+#include "../Tron_BattleTanks/EnemyShootComponent.h"
 
 namespace FML
 {
@@ -75,10 +76,13 @@ namespace FML
 		auto enemyMovement = std::make_unique<EnemyMovementComponent>(100.f);
 		tank->AddComponent(std::move(enemyMovement));
 
-		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth() - 2,tank->GetComponent<TextureComponent>()->GetDefaultHeight()};
+		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth() - 2,tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
 		auto playerCollider = std::make_unique<BoxCollider>(tankBox);
 		//playerCollider->isStatic = true;
 		tank->AddComponent(std::move(playerCollider));
+
+		auto shootComponent = std::make_unique<EnemyShootComponent>();
+		tank->AddComponent(std::move(shootComponent));
 
 		return tank;
 	}
@@ -164,7 +168,7 @@ namespace FML
 		auto bulletBehavior = std::make_unique<BulletCollisionBehaviorComponent>();
 		bullet->AddComponent(std::move(bulletBehavior));
 
-		auto bulletCollider = std::make_unique<BoxCollider>(SDL_Rect{0, 0,bullet->GetComponent<TextureComponent>()->GetDefaultWidth(),bullet->GetComponent<TextureComponent>()->GetDefaultHeight()});
+		auto bulletCollider = std::make_unique<BoxCollider>(SDL_Rect{ 0, 0,bullet->GetComponent<TextureComponent>()->GetDefaultWidth(),bullet->GetComponent<TextureComponent>()->GetDefaultHeight() });
 
 		GameObject* bulletRaw = bullet.get();
 		bulletCollider->OnCollision = [bulletRaw](Collider* other)
@@ -178,7 +182,40 @@ namespace FML
 
 		return bullet;
 	}
-	
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateEnemyBulletPrefab(glm::vec2 spawnPosition, glm::vec2 moveDirection, const std::string tag) const
+	{
+		auto bullet = std::make_unique<GameObject>(tag);
+
+		auto bulletTexture = std::make_unique<TextureComponent>("data/artassets/EnemyBullet.png", SceneManager::Instance().GetRenderer());
+		auto bulletTransform = bullet->GetComponent<TransformComponent>();
+
+		bulletTransform->CentralizePivotOnTexture(bulletTexture.get());
+		bullet->AddComponent(std::move(bulletTexture));
+
+		bullet->GetComponent<TransformComponent>()->SetPosition(spawnPosition - bulletTransform->GetPivot());
+
+		auto bulletMoveComponent = std::make_unique<BulletMoveComponent>(moveDirection, 250.f);
+		bullet->AddComponent(std::move(bulletMoveComponent));
+
+		auto bulletBehavior = std::make_unique<BulletCollisionBehaviorComponent>();
+		bullet->AddComponent(std::move(bulletBehavior));
+
+		auto bulletCollider = std::make_unique<BoxCollider>(SDL_Rect{ 0, 0,bullet->GetComponent<TextureComponent>()->GetDefaultWidth(),bullet->GetComponent<TextureComponent>()->GetDefaultHeight() });
+
+		GameObject* bulletRaw = bullet.get();
+		bulletCollider->OnCollision = [bulletRaw](Collider* other)
+			{
+				auto behavior = bulletRaw->GetComponent<BulletCollisionBehaviorComponent>();
+				if (behavior)
+					behavior->OnCollision(bulletRaw, other);
+			};
+
+		bullet->AddComponent(std::move(bulletCollider));
+
+		return bullet;
+	}
+
 	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer1(glm::vec2 spawnPosition, int maxHealth, const std::string tag) const
 	{
 		int numberOffset = 30;
@@ -207,11 +244,11 @@ namespace FML
 		auto healthUITextComponent = std::make_unique<TextComponent>("Health P2", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,0,0,255 }, SceneManager::Instance().GetRenderer());
 
 		healthUI->AddComponent(std::move(healthUITextComponent));
-		healthUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y});
+		healthUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y });
 
 
 		auto healthUIPlayer2 = std::make_unique<GameObject>(tag);
-		auto healthUIComponent = std::make_unique<HealthUIComponent>(maxHealth,SDL_Color(255,0,0,255));
+		auto healthUIComponent = std::make_unique<HealthUIComponent>(maxHealth, SDL_Color(255, 0, 0, 255));
 		healthUIPlayer2->AddComponent(std::move(healthUIComponent));
 		healthUIPlayer2->GetComponent<HealthUIComponent>()->Initialize();
 		healthUIPlayer2->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });
@@ -221,11 +258,11 @@ namespace FML
 		return healthUI;
 	}
 
-	std::unique_ptr<GameObject> PrefabRegistry::CreateHighScoreUI(glm::vec2 spawnPosition, const std::string tag) const 
+	std::unique_ptr<GameObject> PrefabRegistry::CreateHighScoreUI(glm::vec2 spawnPosition, const std::string tag) const
 	{
 		int numberOffset = 30;
 		auto highScoreUIText = std::make_unique<GameObject>(tag);
-		auto highScoreTextComponent = std::make_unique<TextComponent>("Highscore", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,255,0,255 },SceneManager::Instance().GetRenderer());
+		auto highScoreTextComponent = std::make_unique<TextComponent>("Highscore", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,255,0,255 }, SceneManager::Instance().GetRenderer());
 
 		highScoreUIText->AddComponent(std::move(highScoreTextComponent));
 		highScoreUIText->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
