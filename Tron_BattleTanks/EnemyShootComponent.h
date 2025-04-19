@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Component.h"
 #include "PrefabRegistry.h"
 #include "CollisionManager.h"
@@ -14,17 +14,13 @@ namespace FML
 			cooldownTime(0.f),
 			timeBetweenShots(1.f),
 			shootingRange(1000.f)
-		{};
+		{
+		};
 		~EnemyShootComponent() {};
+
 		void Update(float deltaTime)
 		{
 			cooldownTime -= deltaTime;
-			Logger::Log(LogLevel::Warning, "%d",cooldownTime);
-			if (cooldownTime <= 0.f)
-			{
-				Shoot();
-				cooldownTime = timeBetweenShots;
-			}
 
 			auto transform = gameObject->GetComponent<TransformComponent>();
 			auto texture = gameObject->GetComponent<TextureComponent>();
@@ -46,27 +42,31 @@ namespace FML
 			glm::vec2 topLeft = center - right * halfWidth - up * halfHeight;
 			glm::vec2 topRight = center + right * halfWidth - up * halfHeight;
 
-			DebugDraw::DrawLine(topLeft, topLeft + up * -shootingRange, { 1, 0, 0, 1 });
-			DebugDraw::DrawLine(topRight, topRight + up * -shootingRange, { 1, 0, 0, 1 });
+			glm::vec2 shootDir = -up;
 
-			bool wallBlocking = CollisionManager::Instance().RaycastWithTag(topLeft, up, -shootingRange, "Wall", gameObject);
+			auto leftHit = CollisionManager::Instance()
+				.RaycastFirstHit(topLeft, shootDir, shootingRange, gameObject, nullptr);
+			auto rightHit = CollisionManager::Instance()
+				.RaycastFirstHit(topRight, shootDir, shootingRange, gameObject, nullptr);
 
-			bool playerAhead = //!wallBlocking &&
-				(CollisionManager::Instance().RaycastWithTag(topLeft, up, -shootingRange, "Player1", gameObject) ||
-					CollisionManager::Instance().RaycastWithTag(topLeft, up, -shootingRange, "Player2", gameObject));
-
-
-			if (playerAhead)
+			if (leftHit || rightHit)
 			{
-				Logger::Log(LogLevel::Error, "Player detected");
+				if (leftHit->hitObject->GetTag() == "Player1" || leftHit->hitObject->GetTag() == "Player2" || rightHit->hitObject->GetTag() == "Player1" || rightHit->hitObject->GetTag() == "Player2")
+				{
+					Shoot(*texture);
+				}
 			}
+
 		}
 
 	private:
-		void Shoot()
+		void Shoot(TextureComponent& texture)
 		{
-			PrefabRegistry::Instance().CreateEnemyBulletPrefab(gameObject->GetComponent<TransformComponent>()->GetWorldPosition(), gameObject->GetComponent<TextureComponent>()->GetForwardVector() + 15.f, "EnemyBullet");
+			if (cooldownTime > 0.f)
+				return;
 
+			SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(texture.GetWorldCenter() + texture.GetForwardVector() * 25.f,texture.GetForwardVector(),"EnemyBullet"));
+			cooldownTime = timeBetweenShots;
 		}
 
 	private:

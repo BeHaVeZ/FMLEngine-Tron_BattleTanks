@@ -5,6 +5,7 @@
 #include <thread>
 #include <condition_variable>
 #include <queue>
+#include <algorithm>
 #include <map>
 
 namespace FML

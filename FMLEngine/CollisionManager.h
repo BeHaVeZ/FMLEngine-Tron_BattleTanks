@@ -37,6 +37,15 @@ namespace FML
         bool Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
         bool RaycastWithTag(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
         std::optional<RaycastHit> RaycastWithTagHit(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
+        std::optional<RaycastHit> RaycastFirstHit(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude, GameObject* excludeParent);
+        bool IntersectRayWithRectangle(const glm::vec2& rayStart,
+            const glm::vec2& rayDirNorm,
+            float            maxDist,
+            const SDL_Rect& rect,
+            float& outDist);
+        
+
+
 
         bool IntersectRayWithRectangle(const glm::vec2& rayStart, const glm::vec2& rayEnd, const SDL_Rect& rect);
 

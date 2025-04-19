@@ -208,6 +208,80 @@ namespace FML
 		return closestHit;
 	}
 
+	std::optional<CollisionManager::RaycastHit> CollisionManager::RaycastFirstHit(
+		const glm::vec2& start,
+		const glm::vec2& direction,
+		float            maxDistance,
+		GameObject* exclude,
+		GameObject* excludeParent)
+	{
+		glm::vec2 dirNorm = glm::normalize(direction);
+		float     rayLength = std::abs(maxDistance);            
+		std::optional<RaycastHit> closest;
+		float closestDist = rayLength + 1.f;                    
+
+		for (auto* col : colliders)
+		{
+			GameObject* go = col->GetOwner();
+			if (!go || go == exclude || go == excludeParent)  continue;
+
+			float hitDist;
+			if (IntersectRayWithRectangle(start, dirNorm, rayLength, col->GetBoundingBox(), hitDist))
+			{
+				if (hitDist < closestDist)
+				{
+					closestDist = hitDist;
+					closest = RaycastHit{ go, start + dirNorm * hitDist, hitDist };
+				}
+			}
+		}
+		return closest;
+	}
+	bool CollisionManager::IntersectRayWithRectangle(const glm::vec2& rayStart,
+		const glm::vec2& rayDirNorm,
+		float            maxDist,
+		const SDL_Rect& rect,
+		float& outDist)
+	{
+		float tMin = 0.f;
+		float tMax = maxDist;
+
+		if (std::abs(rayDirNorm.x) < std::numeric_limits<float>::epsilon())
+		{
+			if (rayStart.x < rect.x || rayStart.x > rect.x + rect.w)
+				return false;
+		}
+		else
+		{
+			float invDx = 1.f / rayDirNorm.x;
+			float t1 = (rect.x - rayStart.x) * invDx;
+			float t2 = (rect.x + rect.w - rayStart.x) * invDx;
+			if (t1 > t2) std::swap(t1, t2);
+			tMin = std::max(tMin, t1);
+			tMax = std::min(tMax, t2);
+			if (tMin > tMax) return false;
+		}
+
+		if (std::abs(rayDirNorm.y) < std::numeric_limits<float>::epsilon())
+		{
+			if (rayStart.y < rect.y || rayStart.y > rect.y + rect.h)
+				return false;
+		}
+		else
+		{
+			float invDy = 1.f / rayDirNorm.y;
+			float t1 = (rect.y - rayStart.y) * invDy;
+			float t2 = (rect.y + rect.h - rayStart.y) * invDy;
+			if (t1 > t2) std::swap(t1, t2);
+			tMin = std::max(tMin, t1);
+			tMax = std::min(tMax, t2);
+			if (tMin > tMax) return false;
+		}
+
+		outDist = tMin;     
+		return outDist >= 0.f && outDist <= maxDist;
+	}
+
 	bool CollisionManager::IntersectRayWithRectangle(const glm::vec2& rayStart, const glm::vec2& rayEnd, const SDL_Rect& rect)
 	{
 		float t0 = 0.0f;

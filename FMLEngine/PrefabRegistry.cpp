@@ -73,7 +73,7 @@ namespace FML
 		tank->GetSubject().AddObserver(tankHealth.get());
 		tank->AddComponent(std::move(tankHealth));
 
-		auto enemyMovement = std::make_unique<EnemyMovementComponent>(100.f);
+		auto enemyMovement = std::make_unique<EnemyMovementComponent>(75.f);
 		tank->AddComponent(std::move(enemyMovement));
 
 		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth() - 2,tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
@@ -195,7 +195,7 @@ namespace FML
 
 		bullet->GetComponent<TransformComponent>()->SetPosition(spawnPosition - bulletTransform->GetPivot());
 
-		auto bulletMoveComponent = std::make_unique<BulletMoveComponent>(moveDirection, 250.f);
+		auto bulletMoveComponent = std::make_unique<BulletMoveComponent>(moveDirection, 250.f,0);
 		bullet->AddComponent(std::move(bulletMoveComponent));
 
 		auto bulletBehavior = std::make_unique<BulletCollisionBehaviorComponent>();

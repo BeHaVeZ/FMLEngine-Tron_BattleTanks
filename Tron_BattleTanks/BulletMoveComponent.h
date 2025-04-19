@@ -9,7 +9,7 @@ namespace FML
 	class BulletMoveComponent : public Component
 	{
 	public:
-		BulletMoveComponent(glm::vec2 moveDirection = {0,0}, float bulletSpeed = 30.f) : moveDirection(moveDirection), bulletSpeed(bulletSpeed), bounceCount(0),maxBounces(4) {};
+		BulletMoveComponent(glm::vec2 moveDirection = {0,0}, float bulletSpeed = 30.f, int maxBounces = 4) : moveDirection(moveDirection), bulletSpeed(bulletSpeed), bounceCount(0),maxBounces(maxBounces) {};
 
 		void Update(float deltaTime) override
 		{

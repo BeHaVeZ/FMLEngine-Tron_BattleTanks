@@ -54,12 +54,8 @@ namespace FML
 
 			turnCooldown -= deltaTime;
 
-			float shortRayLength = -5.f; // Ray length for immediate obstacle detection.
-			float longRayLength = checkDistance; // Ray length for detecting entities ahead.
-
-			//DebugDraw::DrawLine(topLeft, topLeft + up * shortRayLength, { 1, 0, 0, 1 });		// Red (Top-Left)
-			//DebugDraw::DrawLine(topRight, topRight + up * shortRayLength, { 0, 1, 0, 1 });	// Green (Top-Right)
-			//DebugDraw::DrawLine(center, center + forward * longRayLength, { 1, 1, 0, 1 }); // Yellow (Center Forward)
+			float shortRayLength = -5.f;
+			float longRayLength = checkDistance;
 
 			bool wallAheadTopLeft = CollisionManager::Instance().RaycastWithTag(topLeft, up, shortRayLength, "Wall");
 			bool wallAheadTopRight = CollisionManager::Instance().RaycastWithTag(topRight, up, shortRayLength, "Wall");
@@ -84,7 +80,6 @@ namespace FML
 			}
 		}
 
-		// Renders debug lines to visualize the raycasts used for side checks.
 		void Render(SDL_Renderer* renderer) override
 		{
 			auto transform = gameObject->GetComponent<TransformComponent>();
@@ -108,21 +103,8 @@ namespace FML
 			glm::vec2 bottomRight = center + right * halfWidth + up * halfHeight;
 			glm::vec2 topRight = center + right * halfWidth - up * halfHeight;
 
-			// Offset the starting point of the side-checking rays slightly forward.
 			glm::vec2 forwardOffset = up * offsetDistance;
 			float debugRayLength = checkDistance;
-
-			// Debug lines for left side checks.
-			//glm::vec2 leftTopStart = topLeft - forwardOffset;
-			//DebugDraw::DrawLine(leftTopStart, leftTopStart - right * debugRayLength, { 1, 0, 0, 1 });		// Red
-			//glm::vec2 leftBottomStart = bottomLeft + forwardOffset;
-			//DebugDraw::DrawLine(leftBottomStart, leftBottomStart - right * debugRayLength, { 0, 1, 0, 1 });	// Green
-
-			//// Debug lines for right side checks.
-			//glm::vec2 rightTopStart = topRight - forwardOffset;
-			//DebugDraw::DrawLine(rightTopStart, rightTopStart + right * debugRayLength, { 1, 1, 1, 1 });		// White
-			//glm::vec2 rightBottomStart = bottomRight + forwardOffset;
-			//DebugDraw::DrawLine(rightBottomStart, rightBottomStart + right * debugRayLength, { 0, 1, 1, 1 });	// Cyan
 		}
 
 	private:
@@ -134,7 +116,6 @@ namespace FML
 		std::mt19937 rng;			
 		std::uniform_int_distribution<int> flipCoinDistribution; 
 
-		// Rotates a 2D vector by a given angle in degrees.
 		glm::vec2 RotateVector(const glm::vec2& vec, float degrees)
 		{
 			float radians = glm::radians(degrees);
@@ -193,7 +174,7 @@ namespace FML
 			}
 			else
 			{
-				return false; // Not checking directly left or right.
+				return false;
 			}
 		}
 
@@ -208,7 +189,6 @@ namespace FML
 
 			if (isLeftClear && isRightClear)
 			{
-				// Randomly choose to turn left or right.
 				bool turnLeft = flipCoinDistribution(rng) == 0;
 				transform->SetRotation(currentRotationDegrees + (turnLeft ? 90.f : -90.f));
 				turnCooldown = turnCooldownTime;
@@ -250,7 +230,6 @@ namespace FML
 			}
 			else
 			{
-				// If neither left nor right is clear, turn around.
 				transform->SetRotation(currentRotationDegrees + 180.f);
 			}
 
