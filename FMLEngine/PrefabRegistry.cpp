@@ -12,6 +12,7 @@
 #include "../Tron_BattleTanks/ScoreComponent.h"
 #include "../Tron_BattleTanks/ScoreUIComponent.h"
 #include "../Tron_BattleTanks/EnemyShootComponent.h"
+#include "../Tron_BattleTanks/EnemyManagerComponent.h"
 
 namespace FML
 {
@@ -299,6 +300,16 @@ namespace FML
 		currentScoreUIText->AddChild(std::move(currentScoreUI));
 
 		return currentScoreUIText;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateEnemyManager(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto enemyManager = std::make_unique<GameObject>("EnemyManager");
+
+		auto managerComponent = std::make_unique<EnemyManagerComponent>();
+		enemyManager->AddComponent(std::move(managerComponent));
+
+		return enemyManager;
 	}
 
 }

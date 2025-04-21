@@ -21,6 +21,7 @@
 #include "SkipLevelCommand.h"
 #include "ReloadSceneCommand.h"
 #include "InputBindingHelper.h"
+#include "EnemyManagerComponent.h"
 
 namespace FML
 {
@@ -36,6 +37,8 @@ namespace FML
 
 		InitializeUI();
 		InitializeWalls();
+		InitializeManagers();
+
 
 		InitializeInput();
 		InitializeSounds();
@@ -56,7 +59,7 @@ namespace FML
 				static_cast<float>(ConfigManager::Instance().GetWindowHeight())
 			);
 		}
-		gameObjects.push_back(std::move(background));
+		AddGameObject(std::move(background));
 
 		float offset = 100.f;
 
@@ -81,7 +84,7 @@ namespace FML
 		fpsGameObject->GetComponent<FPSComponent>()->Initialize();
 		fpsGameObject->GetComponent<TransformComponent>()->SetPosition({ 10, 10 });
 
-		gameObjects.push_back(std::move(fpsGameObject));
+		AddGameObject(std::move(fpsGameObject));
 	}
 
 	void SoloScene::InitializeUI()
@@ -93,7 +96,7 @@ namespace FML
 	void SoloScene::InitializeHealthUI()
 	{
 		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, 3, "HealthUIPlayer1");
-		gameObjects.push_back(std::move(healthUIPlayer1));
+		AddGameObject(std::move(healthUIPlayer1));
 		//auto healthUIPlayer2 = PrefabRegistry::Instance().CreateHealthUIForPlayer2({ 200,30 }, 3, "HealthUIPlayer2");
 		//gameObjects.push_back(std::move(healthUIPlayer2));
 	}
@@ -101,16 +104,16 @@ namespace FML
 	void SoloScene::InitializeFirstTank()
 	{
 		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 57,118 }, "Player1");
-		gameObjects.push_back(std::move(tank));
+		AddGameObject(std::move(tank));
 	}
 
 	void SoloScene::InitializeScoreUI()
 	{
 		auto highScoreUI = PrefabRegistry::Instance().CreateHighScoreUI({ 400,30 }, "HighScoreUI");
-		gameObjects.push_back(std::move(highScoreUI));
+		AddGameObject(std::move(highScoreUI));
 
 		auto currentScoreUI = PrefabRegistry::Instance().CreateCurrentScoreUI({ 750,30 }, "CurrentScoreUI");
-		gameObjects.push_back(std::move(currentScoreUI));
+		AddGameObject(std::move(currentScoreUI));
 	}
 
 
@@ -152,6 +155,12 @@ namespace FML
 
 			AddGameObject(std::move(wall));
 		}
+	}
+
+	void SoloScene::InitializeManagers()
+	{
+		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
+		AddGameObject(std::move(enemyManager));
 	}
 
 

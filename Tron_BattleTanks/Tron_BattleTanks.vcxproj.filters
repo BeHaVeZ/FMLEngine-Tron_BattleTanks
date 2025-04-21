@@ -154,5 +154,8 @@
     <ClInclude Include="EnemyShootComponent.h">
       <Filter>Header Files\GameComponents</Filter>
     </ClInclude>
+    <ClInclude Include="EnemyManagerComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

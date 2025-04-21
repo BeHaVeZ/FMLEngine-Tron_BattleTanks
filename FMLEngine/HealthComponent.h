@@ -3,6 +3,7 @@
 #include "DamageEvent.h"
 #include "Logger.h"
 #include "SceneManager.h"
+#include "../Tron_BattleTanks/BlueTankKilledEvent.h"
 #include "../Tron_BattleTanks/ScoreComponent.h"
 
 namespace FML
@@ -20,7 +21,12 @@ namespace FML
 				{
 					if (gameObject->GetTag() == "Enemy")
 					{
-						SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1")->GetComponent<ScoreComponent>()->AddScore();
+						auto player = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1");
+						if (player)
+						{
+							player->GetComponent<ScoreComponent>()->AddScore();
+						}
+						gameObject->GetSubject().Notify(BlueTankKilledEvent());
 					}
 					gameObject->Destroy();
 					return;
