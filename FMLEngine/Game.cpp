@@ -17,6 +17,8 @@
 #include "DebugDraw.h"
 #include "../Tron_BattleTanks/SoloScene.h" //This is caused because scenes are being loaded from game but it should not be (GameEngine does not know what scenes any game will have -> abstract
 #include "../Tron_BattleTanks/SoloLevel2.h"
+#include "../Tron_BattleTanks/SoloHighscoreScene.h"
+#include "../Tron_BattleTanks/NameEntryScene.h"
 #include "CollisionManager.h"
 
 namespace FML
@@ -83,6 +85,8 @@ namespace FML
 		SceneManager::Instance().AddScene("Solo2", std::make_unique<SoloLevel2>());
 		SceneManager::Instance().AddScene("VersusScene", std::make_unique<VersusScene>());
 		SceneManager::Instance().AddScene("CoopScene", std::make_unique<CoopScene>());
+		SceneManager::Instance().AddScene("SoloHighscore", std::make_unique<SoloHighscoreScene>());
+		SceneManager::Instance().AddScene("NameEntry", std::make_unique<NameEntryScene>());
 
 		SceneManager::Instance().ChangeScene("MainMenu");
 

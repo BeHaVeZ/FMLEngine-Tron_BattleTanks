@@ -210,7 +210,10 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="..\FMLEngine\VersusScene.cpp" />
     <ClCompile Include="BlueTankKilledEvent.cpp" />
     <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="HighscoreManager.cpp" />
     <ClCompile Include="InputBindingHelper.cpp" />
+    <ClCompile Include="NameEntryScene.cpp" />
+    <ClCompile Include="SoloHighscoreScene.cpp" />
     <ClCompile Include="SoloLevel2.cpp" />
     <ClCompile Include="SoloScene.cpp" />
     <ClCompile Include="Tron_BattleTanks.cpp" />
@@ -237,13 +240,17 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="EnemyMovementComponent.h" />
     <ClInclude Include="EnemyShootComponent.h" />
     <ClInclude Include="FileReader.h" />
+    <ClInclude Include="GameData.h" />
+    <ClInclude Include="HighscoreManager.h" />
     <ClInclude Include="InputBindingHelper.h" />
+    <ClInclude Include="NameEntryScene.h" />
     <ClInclude Include="ReloadSceneCommand.h" />
     <ClInclude Include="ScoreComponent.h" />
     <ClInclude Include="ScoreUIComponent.h" />
     <ClInclude Include="ShootCommand.h" />
     <ClInclude Include="ShootComponent.h" />
     <ClInclude Include="SkipLevelCommand.h" />
+    <ClInclude Include="SoloHighscoreScene.h" />
     <ClInclude Include="SoloLevel2.h" />
     <ClInclude Include="SoloScene.h" />
   </ItemGroup>

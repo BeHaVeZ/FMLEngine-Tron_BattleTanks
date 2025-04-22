@@ -1,4 +1,5 @@
 #include "TextComponent.h"
+#include "TextComponent.h"
 #include "TransformComponent.h"
 #include <iostream>
 
@@ -37,6 +38,20 @@ namespace FML
 
 		texture = SDL_CreateTextureFromSurface(renderer, textSurface);
 		SDL_FreeSurface(textSurface);
+	}
+
+	void TextComponent::SetColor(SDL_Color newColor, SDL_Renderer* renderer)
+	{
+		if (newColor.r == color.r &&
+			newColor.g == color.g &&
+			newColor.b == color.b &&
+			newColor.a == color.a)
+		{
+			return; 
+		}
+
+		color = newColor;
+		SetText(text, renderer);
 	}
 
 	void TextComponent::Render(SDL_Renderer* renderer) {

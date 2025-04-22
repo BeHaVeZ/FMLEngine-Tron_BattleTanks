@@ -14,6 +14,8 @@ namespace FML
 
 		void SetText(const std::string& newText, SDL_Renderer* renderer);
 		std::string GetText() const { return text; }
+
+		void SetColor(SDL_Color newColor, SDL_Renderer* renderer);
 		void Render(SDL_Renderer* renderer) override;
 
 	private:

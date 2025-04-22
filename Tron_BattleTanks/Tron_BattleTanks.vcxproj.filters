@@ -65,6 +65,15 @@
     <ClCompile Include="InputBindingHelper.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
+    <ClCompile Include="SoloHighscoreScene.cpp">
+      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="HighscoreManager.cpp">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="NameEntryScene.cpp">
+      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FMLEngine\DamageEvent.h">
@@ -156,6 +165,18 @@
     </ClInclude>
     <ClInclude Include="EnemyManagerComponent.h">
       <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="SoloHighscoreScene.h">
+      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="HighscoreManager.h">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="NameEntryScene.h">
+      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameData.h">
+      <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
