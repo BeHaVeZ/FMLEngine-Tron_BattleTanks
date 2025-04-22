@@ -215,6 +215,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="NameEntryScene.cpp" />
     <ClCompile Include="SoloHighscoreScene.cpp" />
     <ClCompile Include="SoloLevel2.cpp" />
+    <ClCompile Include="SoloLevel3.cpp" />
     <ClCompile Include="SoloScene.cpp" />
     <ClCompile Include="Tron_BattleTanks.cpp" />
   </ItemGroup>
@@ -252,6 +253,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="SkipLevelCommand.h" />
     <ClInclude Include="SoloHighscoreScene.h" />
     <ClInclude Include="SoloLevel2.h" />
+    <ClInclude Include="SoloLevel3.h" />
     <ClInclude Include="SoloScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

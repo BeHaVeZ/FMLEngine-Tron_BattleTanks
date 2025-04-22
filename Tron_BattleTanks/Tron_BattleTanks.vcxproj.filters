@@ -74,6 +74,9 @@
     <ClCompile Include="NameEntryScene.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
     </ClCompile>
+    <ClCompile Include="SoloLevel3.cpp">
+      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FMLEngine\DamageEvent.h">
@@ -177,6 +180,9 @@
     </ClInclude>
     <ClInclude Include="GameData.h">
       <Filter>Header Files\GameManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="SoloLevel3.h">
+      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

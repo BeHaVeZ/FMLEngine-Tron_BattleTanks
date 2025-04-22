@@ -49,7 +49,7 @@ namespace FML
 
 		float shootAllowanceRange = 30.f;
 
-		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, 0.f);
+		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, .5f);
 		turret->AddComponent(std::move(shootComponent));
 
 		tank->AddChild(std::move(turret));
@@ -138,7 +138,7 @@ namespace FML
 
 		float shootAllowanceRange = 30.f;
 
-		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, 0.f);
+		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, .5f);
 		turret->AddComponent(std::move(shootComponent));
 
 		tank->AddChild(std::move(turret));
