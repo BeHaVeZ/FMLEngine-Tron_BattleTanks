@@ -1,4 +1,9 @@
 # Tron Battle Tanks
+![Made With](https://img.shields.io/badge/Made%20With-C%2B%2B-blue) ![Engine](https://img.shields.io/badge/Engine-Custom%20Engine-orange)
+![Gameplay](https://img.shields.io/badge/Gameplay-2D--Platformer-orange)
+![Input](https://img.shields.io/badge/input-Keyboard%20%2B%20Controller/XINPUT-lightgrey)
+![Status](https://img.shields.io/badge/Status-WIP-darkblue)
+
 
 An in-progress 2D game engine built using **C++** and **SDL2**, featuring a modular **component-based architecture**, game object hierarchy, command-pattern-based input system, and prefab creation.
 
