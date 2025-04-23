@@ -17,6 +17,46 @@ namespace FML
 		}
 	}
 
+	void XInputGamepadHandlerImpl::BindGamepadFunction(int controllerId, int button, std::function<void()> func, InputHandler::KeyAction action)
+	{
+		if (action == InputHandler::KeyAction::KeyDown)
+		{
+			gamepadFunctions[controllerId].downFunctions[button] = std::move(func);
+		}
+		else
+		{
+			gamepadFunctions[controllerId].upFunctions[button] = std::move(func);
+		}
+	}
+
+	void XInputGamepadHandlerImpl::UnbindGamepadCommand(int controllerId, int button, InputHandler::KeyAction action)
+	{
+		if (action == InputHandler::KeyAction::KeyDown)
+		{
+			auto& map = gamepadCommands[controllerId].downCommands;
+			if (map.count(button)) map.erase(button);
+		}
+		else
+		{
+			auto& map = gamepadCommands[controllerId].upCommands;
+			if (map.count(button)) map.erase(button);
+		}
+	}
+
+	void XInputGamepadHandlerImpl::UnbindGamepadFunction(int controllerId, int button, InputHandler::KeyAction action)
+	{
+		if (action == InputHandler::KeyAction::KeyDown)
+		{
+			auto& map = gamepadFunctions[controllerId].downFunctions;
+			if (map.count(button)) map.erase(button);
+		}
+		else
+		{
+			auto& map = gamepadFunctions[controllerId].upFunctions;
+			if (map.count(button)) map.erase(button);
+		}
+	}
+
 	void XInputGamepadHandlerImpl::UpdateGamepadStates()
 	{
 		commandsCleared = false;
@@ -33,6 +73,12 @@ namespace FML
 			commands.downCommands.clear();
 			commands.upCommands.clear();
 		}
+
+		for (auto& [controllerId, functions] : gamepadFunctions)
+		{
+			functions.downFunctions.clear();
+			functions.upFunctions.clear();
+		}
 		for (DWORD i = 0; i < XUSER_MAX_COUNT; ++i)
 		{
 			ZeroMemory(&gamepadStates[i], sizeof(XINPUT_STATE));
@@ -43,21 +89,19 @@ namespace FML
 	{
 		XINPUT_STATE newState;
 		ZeroMemory(&newState, sizeof(XINPUT_STATE));
+
 		if (XInputGetState(dwUserIndex, &newState) == ERROR_SUCCESS)
 		{
 			auto& commands = gamepadCommands[dwUserIndex];
+			auto& functions = gamepadFunctions[dwUserIndex];
 
 			for (const auto& [button, command] : commands.downCommands)
 			{
 				bool isPressed = (newState.Gamepad.wButtons & button) != 0;
-
-				if (isPressed)
+				if (isPressed && command)
 				{
 					command->Execute();
-					if (commandsCleared)
-					{
-						break;
-					}
+					if (commandsCleared) return;
 				}
 			}
 
@@ -66,15 +110,35 @@ namespace FML
 				bool wasPressed = (gamepadStates[dwUserIndex].Gamepad.wButtons & button) != 0;
 				bool isPressed = (newState.Gamepad.wButtons & button) != 0;
 
-				if (wasPressed && !isPressed)
+				if (wasPressed && !isPressed && command)
 				{
 					command->Execute();
-					if (commandsCleared)
-					{
-						break;
-					}
+					if (commandsCleared) return;
 				}
 			}
+
+			for (const auto& [button, func] : functions.downFunctions)
+			{
+				bool isPressed = (newState.Gamepad.wButtons & button) != 0;
+				if (isPressed && func)
+				{
+					func();
+					if (commandsCleared) return;
+				}
+			}
+
+			for (const auto& [button, func] : functions.upFunctions)
+			{
+				bool wasPressed = (gamepadStates[dwUserIndex].Gamepad.wButtons & button) != 0;
+				bool isPressed = (newState.Gamepad.wButtons & button) != 0;
+
+				if (wasPressed && !isPressed && func)
+				{
+					func();
+					if (commandsCleared) return;
+				}
+			}
+
 			gamepadStates[dwUserIndex] = newState;
 		}
 	}

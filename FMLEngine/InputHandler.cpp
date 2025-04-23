@@ -29,6 +29,61 @@ namespace FML
 		gamepadHandler->BindGamepadCommand(controllerId, button, std::move(command), action);
 	}
 
+	void InputHandler::BindFunction(SDL_Keycode key, std::function<void()> func, KeyAction action)
+	{
+		if (action == KeyAction::KeyDown)
+			keyDownFunctions[key] = std::move(func);
+		else
+			keyUpFunctions[key] = std::move(func);
+	}
+
+	void InputHandler::UnbindCommand(SDL_Keycode key, KeyAction action)
+	{
+		if (action == KeyAction::KeyDown)
+		{
+			auto it = keyDownCommands.find(key);
+			if (it != keyDownCommands.end())
+				keyDownCommands.erase(it);
+		}
+		else
+		{
+			auto it = keyUpCommands.find(key);
+			if (it != keyUpCommands.end())
+				keyUpCommands.erase(it);
+		}
+	}
+
+	void InputHandler::UnbindFunction(SDL_Keycode key, KeyAction action)
+	{
+		if (action == KeyAction::KeyDown)
+		{
+			auto it = keyDownFunctions.find(key);
+			if (it != keyDownFunctions.end())
+				keyDownFunctions.erase(it);
+		}
+		else
+		{
+			auto it = keyUpFunctions.find(key);
+			if (it != keyUpFunctions.end())
+				keyUpFunctions.erase(it);
+		}
+	}
+
+	void InputHandler::BindGamepadFunction(int controllerId, int button, std::function<void()> func, KeyAction action)
+	{
+		gamepadHandler->BindGamepadFunction(controllerId, button, func, action);
+	}
+
+	void InputHandler::UnbindGamepadCommand(int controllerId, int button, KeyAction action)
+	{
+		gamepadHandler->UnbindGamepadCommand(controllerId, button, action);
+	}
+
+	void InputHandler::UnbindGamepadFunction(int controllerId, int button, KeyAction action)
+	{
+		gamepadHandler->UnbindGamepadFunction(controllerId, button, action);
+	}
+
 	void InputHandler::Update()
 	{
 		for (auto& [key, isPressed] : keyStates)
@@ -51,7 +106,7 @@ namespace FML
 		gamepadHandler->ClearBindings();
 	}
 
-	glm::vec2 firstClick; 
+	glm::vec2 firstClick;
 	glm::vec2 secondClick;
 	bool isFirstClick = true;
 
@@ -104,9 +159,10 @@ namespace FML
 				keyStates[event.key.keysym.sym] = true;
 				auto it = keyDownCommands.find(event.key.keysym.sym);
 				if (it != keyDownCommands.end() && it->second)
-				{
 					it->second->Execute();
-				}
+
+				if (auto ite = keyDownFunctions.find(event.key.keysym.sym); ite != keyDownFunctions.end())
+					ite->second();
 			}
 		}
 		else if (event.type == SDL_KEYUP)
@@ -114,9 +170,10 @@ namespace FML
 			keyStates[event.key.keysym.sym] = false;
 			auto it = keyUpCommands.find(event.key.keysym.sym);
 			if (it != keyUpCommands.end() && it->second)
-			{
 				it->second->Execute();
-			}
+
+			if (auto ite = keyUpFunctions.find(event.key.keysym.sym); ite != keyUpFunctions.end())
+				ite->second();
 		}
 	}
 }

@@ -12,8 +12,9 @@ namespace FML
 	bool NameEntryScene::Initialize(SDL_Renderer* renderer)
 	{
 		this->storedRenderer = renderer;
-		GameData::CurrentScore = 500;
 		scoreToSubmit = GameData::CurrentScore;
+
+		InitializeInput();
 
 		{
 			auto gameOverTitle = std::make_unique<GameObject>("GameOverTitle");
@@ -78,16 +79,25 @@ namespace FML
 	}
 	void NameEntryScene::InitializeInput()
 	{
+		int controllerId = 0;
+
 		InputBindingHelper::BindGlobalCommands();
+
+		InputHandler::Instance().BindFunction(SDLK_UP, [this]() { MoveUp(); },InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_DOWN, [this]() { MoveDown(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_LEFT, [this]() { MoveLeft(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_RIGHT, [this]() { MoveRight(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_RETURN, [this]() { SubmitScore(); }, InputHandler::KeyAction::KeyUp);
+
+		InputHandler::Instance().BindGamepadFunction(controllerId, XINPUT_GAMEPAD_DPAD_UP, [this]() { MoveUp(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindGamepadFunction(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, [this]() { MoveDown(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindGamepadFunction(controllerId, XINPUT_GAMEPAD_DPAD_LEFT, [this]() { MoveLeft(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindGamepadFunction(controllerId, XINPUT_GAMEPAD_DPAD_RIGHT, [this]() { MoveRight(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindGamepadFunction(controllerId, XINPUT_GAMEPAD_A, [this]() { SubmitScore(); }, InputHandler::KeyAction::KeyUp);
 	}
 	void NameEntryScene::HandleInput(SDL_Event& event)
 	{
 		InputHandler::Instance().HandleInput(event);
-		if (event.key.keysym.sym == SDLK_UP) MoveUp();
-		if (event.key.keysym.sym == SDLK_DOWN) MoveDown();
-		if (event.key.keysym.sym == SDLK_LEFT) MoveLeft();
-		if (event.key.keysym.sym == SDLK_RIGHT) MoveRight();
-		if (event.key.keysym.sym == SDLK_RETURN) SubmitScore();
 	}
 	void NameEntryScene::Update(float deltaTime)
 	{

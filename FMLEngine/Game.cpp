@@ -90,7 +90,7 @@ namespace FML
 		SceneManager::Instance().AddScene("SoloHighscore", std::make_unique<SoloHighscoreScene>());
 		SceneManager::Instance().AddScene("NameEntry", std::make_unique<NameEntryScene>());
 
-		SceneManager::Instance().ChangeScene("MainMenu");
+		SceneManager::Instance().ChangeScene("NameEntry");
 
 		GameStateManager::Instance().SetRunning(true);
 		return true;
