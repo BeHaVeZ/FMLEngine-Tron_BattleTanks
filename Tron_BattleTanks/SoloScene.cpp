@@ -22,6 +22,7 @@
 #include "ReloadSceneCommand.h"
 #include "InputBindingHelper.h"
 #include "EnemyManagerComponent.h"
+#include "GameData.h"
 
 namespace FML
 {
@@ -30,6 +31,7 @@ namespace FML
 
 	bool SoloScene::Initialize(SDL_Renderer* renderer)
 	{
+		GameData::CurrentGameMode = GameData::GameMode::Solo;
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
 

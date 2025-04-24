@@ -13,6 +13,8 @@
 #include "../Tron_BattleTanks/ScoreUIComponent.h"
 #include "../Tron_BattleTanks/EnemyShootComponent.h"
 #include "../Tron_BattleTanks/EnemyManagerComponent.h"
+#include "../Tron_BattleTanks/TankObserver.h"
+#include "../Tron_BattleTanks/GameAdmin.h"
 
 namespace FML
 {
@@ -26,6 +28,11 @@ namespace FML
 	std::unique_ptr<GameObject> PrefabRegistry::CreateRedTankPrefab(glm::vec2 spawnPosition, const std::string tag) const
 	{
 		auto tank = std::make_unique<GameObject>(tag);
+		GameAdmin::Instance().RegisterPlayer(tank.get());
+
+		auto observer = std::make_unique<TankObserver>();
+		tank->GetSubject().AddObserver(observer.get());
+		tank->AddComponent(std::move(observer));
 
 		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/RedTank.png", SceneManager::Instance().GetRenderer());
 		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
@@ -64,6 +71,10 @@ namespace FML
 	std::unique_ptr<GameObject> PrefabRegistry::CreateBlueTankPrefab(glm::vec2 spawnPosition, const std::string tag) const
 	{
 		auto tank = std::make_unique<GameObject>(tag);
+
+		auto observer = std::make_unique<TankObserver>();
+		tank->GetSubject().AddObserver(observer.get());
+		tank->AddComponent(std::move(observer));
 
 		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/BlueTank.png", SceneManager::Instance().GetRenderer());
 		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());

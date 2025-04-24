@@ -65,6 +65,8 @@ namespace FML
 	void SoloHighscoreScene::InitializeInput()
 	{
 		//InputBindingHelper::BindGlobalCommands();
+		InputHandler::Instance().BindFunction(SDLK_RETURN, [this]() { RestartGame(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindGamepadFunction(0, XINPUT_GAMEPAD_A, [this]() { RestartGame(); }, InputHandler::KeyAction::KeyUp);
 	}
 
 
@@ -93,6 +95,11 @@ namespace FML
 			);
 		}
 		gameObjects.push_back(std::move(background));
+	}
+
+	void SoloHighscoreScene::RestartGame()
+	{
+		SceneManager::Instance().QueueSceneChange("MainMenu");
 	}
 
 	void SoloHighscoreScene::InitializeSounds()

@@ -210,6 +210,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="..\FMLEngine\VersusScene.cpp" />
     <ClCompile Include="BlueTankKilledEvent.cpp" />
     <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="GameAdmin.cpp" />
     <ClCompile Include="HighscoreManager.cpp" />
     <ClCompile Include="InputBindingHelper.cpp" />
     <ClCompile Include="NameEntryScene.cpp" />
@@ -241,6 +242,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="EnemyMovementComponent.h" />
     <ClInclude Include="EnemyShootComponent.h" />
     <ClInclude Include="FileReader.h" />
+    <ClInclude Include="GameAdmin.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="HighscoreManager.h" />
     <ClInclude Include="InputBindingHelper.h" />
@@ -255,6 +257,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="SoloLevel2.h" />
     <ClInclude Include="SoloLevel3.h" />
     <ClInclude Include="SoloScene.h" />
+    <ClInclude Include="TankObserver.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

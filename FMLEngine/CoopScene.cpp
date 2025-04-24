@@ -18,14 +18,16 @@
 #include "../Tron_BattleTanks/ShootCommand.h"
 #include "../Tron_BattleTanks/SkipLevelCommand.h"
 #include "../Tron_BattleTanks/InputBindingHelper.h"
+#include "../Tron_BattleTanks/GameData.h"
 #include "TestCommand.h"
 
 namespace FML
 {
-
 	const std::string backgroundImagePath = "data/levels/level00.png";
 
-	bool CoopScene::Initialize(SDL_Renderer* renderer) {
+	bool CoopScene::Initialize(SDL_Renderer* renderer) 
+	{
+		GameData::CurrentGameMode = GameData::GameMode::Coop;
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
 

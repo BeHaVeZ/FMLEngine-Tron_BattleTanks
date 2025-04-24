@@ -103,6 +103,8 @@ namespace FML
 	{
 		keyDownCommands.clear();
 		keyUpCommands.clear();
+		keyDownFunctions.clear();
+		keyUpFunctions.clear();
 		gamepadHandler->ClearBindings();
 	}
 

@@ -168,7 +168,7 @@ namespace FML
 		}
 		else
 		{
-			SceneManager::Instance().ChangeScene("SoloHighscore");
+			SceneManager::Instance().QueueSceneChange("SoloHighscore");
 		}
 	}
 
@@ -225,6 +225,6 @@ namespace FML
 		file.flush();
 		file.close();
 
-		SceneManager::Instance().ChangeScene("SoloHighscore");
+		SceneManager::Instance().QueueSceneChange("SoloHighscore");
 	}
 }

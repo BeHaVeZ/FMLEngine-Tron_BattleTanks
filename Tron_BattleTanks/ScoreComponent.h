@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "BlueTankKilledEvent.h"
+#include "GameData.h"
 
 namespace FML
 {
@@ -20,7 +21,8 @@ namespace FML
 			if (const BlueTankKilledEvent* blueTankKilledEvent = dynamic_cast<const BlueTankKilledEvent*>(&event))
 			{
 				currentScore += blueTankKilledEvent->GetScore();
-				Logger::Log(LogLevel::Info, "ScoreComponent Score updated to %d", currentScore);
+				GameData::CurrentScore = currentScore;
+				Logger::Log(LogLevel::Info, "ScoreComponent Score updated to %d", GameData::CurrentScore);
 			}
 		}
 

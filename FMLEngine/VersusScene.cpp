@@ -19,6 +19,7 @@
 #include "../Tron_BattleTanks/ShootCommand.h"
 #include "../Tron_BattleTanks/SkipLevelCommand.h"
 #include "../Tron_BattleTanks/InputBindingHelper.h"
+#include "../Tron_BattleTanks/GameData.h"
 #include <TestCommand.h>
 
 namespace FML
@@ -28,6 +29,7 @@ namespace FML
 
 	bool VersusScene::Initialize(SDL_Renderer* renderer)
 	{
+		GameData::CurrentGameMode = GameData::GameMode::Versus;
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
 

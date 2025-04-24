@@ -17,16 +17,16 @@ namespace FML
 				switch ((int)transform->GetLocalRotation())
 				{
 				case 0:
-					SceneManager::Instance().ChangeScene("VersusScene");
+					SceneManager::Instance().QueueSceneChange("VersusScene");
 					break;
 				case 90:
 					GameStateManager::Instance().SetRunning(false);
 					break;
 				case 180:
-					SceneManager::Instance().ChangeScene("CoopScene");
+					SceneManager::Instance().QueueSceneChange("CoopScene");
 					break;
 				case 270:
-					SceneManager::Instance().ChangeScene("Solo");
+					SceneManager::Instance().QueueSceneChange("Solo");
 					break;
 
 				default:

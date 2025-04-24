@@ -12,6 +12,7 @@ namespace FML
 	}
 
 	void SceneManager::ChangeScene(const std::string& sceneName) {
+		assert(!isInsideSceneUpdate && "You must queue scene changes inside Update()");
 		auto it = scenes.find(sceneName);
 		if (it != scenes.end()) {
 			InputHandler::Instance().ClearBindings();
@@ -25,6 +26,11 @@ namespace FML
 			currentScene = it->second.get();
 			currentScene->Initialize(localRenderer);
 		}
+	}
+
+	void SceneManager::QueueSceneChange(const std::string& name) 
+	{
+		queuedSceneChange = name;
 	}
 
 	void SceneManager::RemoveScene(const std::string& name) {
@@ -76,11 +82,11 @@ namespace FML
 		auto nameIt = std::find(sceneOrder.begin(), sceneOrder.end(), currentIt->first);
 		if (nameIt != sceneOrder.end() && (nameIt + 1) != sceneOrder.end()) {
 			std::string nextSceneName = *(nameIt + 1);
-			ChangeScene(nextSceneName);
+			QueueSceneChange(nextSceneName);
 		}
 		else {
 			std::cout << "No next scene. Looping to first.\n";
-			ChangeScene(sceneOrder.front());
+			QueueSceneChange(sceneOrder.front());
 		}
 	}
 
@@ -90,10 +96,16 @@ namespace FML
 		}
 	}
 
-	void SceneManager::Update(float deltaTime) {
-		if (currentScene) 
+	void SceneManager::Update(float deltaTime) 
+	{
+		isInsideSceneUpdate = true;
+		if (currentScene) currentScene->Update(deltaTime);
+		isInsideSceneUpdate = false;
+
+		if (!queuedSceneChange.empty()) 
 		{
-			currentScene->Update(deltaTime);
+			ChangeScene(queuedSceneChange);
+			queuedSceneChange.clear();
 		}
 	}
 

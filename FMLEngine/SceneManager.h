@@ -16,6 +16,7 @@ namespace FML
 
 		void AddScene(const std::string& name, std::unique_ptr<Scene> scene);
 		void ChangeScene(const std::string& sceneName);
+		void QueueSceneChange(const std::string& name);
 		void RemoveScene(const std::string& name);
 		Scene* GetCurrentScene() const;
 		void ReloadScene();
@@ -32,11 +33,14 @@ namespace FML
 		SDL_Renderer* GetRenderer() const;
 
 	private:
-		SceneManager() : localRenderer(nullptr), currentScene(nullptr) {}
+		SceneManager() : localRenderer(nullptr), currentScene(nullptr),isInsideSceneUpdate(false),queuedSceneChange("") {}
 
 		std::map<std::string, std::unique_ptr<Scene>> scenes;
+		std::string queuedSceneChange;
 		std::vector<std::string> sceneOrder;
 		Scene* currentScene = nullptr;
+
+		bool isInsideSceneUpdate;
 
 		SDL_Renderer* localRenderer = nullptr;
 	};

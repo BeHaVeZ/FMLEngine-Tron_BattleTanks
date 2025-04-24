@@ -13,12 +13,15 @@
 #include "SelectMenuOptionCommand.h"
 #include "MuteSoundCommand.h"
 #include "../Tron_BattleTanks/InputBindingHelper.h"
+#include "../Tron_BattleTanks/GameData.h"
 
 namespace FML
 {
 
 	bool MainMenuScene::Initialize(SDL_Renderer* renderer)
 	{
+		GameData::CurrentGameMode = GameData::GameMode::None;
+		GameData::CurrentScore = 0;
 		this->storedRenderer = renderer;
 		selectedIndex = 0;
 

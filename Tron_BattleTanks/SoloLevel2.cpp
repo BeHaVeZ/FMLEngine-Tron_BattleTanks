@@ -20,6 +20,7 @@
 #include "ShootCommand.h"
 #include "SkipLevelCommand.h"
 #include "InputBindingHelper.h"
+#include "GameData.h"
 
 
 namespace FML

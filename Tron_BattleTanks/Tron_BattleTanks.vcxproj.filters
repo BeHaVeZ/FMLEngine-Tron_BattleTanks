@@ -30,6 +30,9 @@
     <Filter Include="Header Files\Scenes\SoloModeScenes">
       <UniqueIdentifier>{84b185d2-69e7-4f1d-8c9b-d3afe85e5378}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Scenes\SoloModeScenes\Levels">
+      <UniqueIdentifier>{88f23a96-f9f1-4dcf-ae17-95cb3d9a5763}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tron_BattleTanks.cpp">
@@ -56,12 +59,6 @@
     <ClCompile Include="BlueTankKilledEvent.cpp">
       <Filter>Header Files\GameEvents</Filter>
     </ClCompile>
-    <ClCompile Include="SoloScene.cpp">
-      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
-    </ClCompile>
-    <ClCompile Include="SoloLevel2.cpp">
-      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
-    </ClCompile>
     <ClCompile Include="InputBindingHelper.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
@@ -74,8 +71,17 @@
     <ClCompile Include="NameEntryScene.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
     </ClCompile>
+    <ClCompile Include="GameAdmin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SoloLevel2.cpp">
+      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
+    </ClCompile>
     <ClCompile Include="SoloLevel3.cpp">
-      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="SoloScene.cpp">
+      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -142,12 +148,6 @@
     <ClInclude Include="BlueTankKilledEvent.h">
       <Filter>Header Files\GameEvents</Filter>
     </ClInclude>
-    <ClInclude Include="SoloScene.h">
-      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
-    </ClInclude>
-    <ClInclude Include="SoloLevel2.h">
-      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
-    </ClInclude>
     <ClInclude Include="SkipLevelCommand.h">
       <Filter>Header Files\GameCommands</Filter>
     </ClInclude>
@@ -181,8 +181,20 @@
     <ClInclude Include="GameData.h">
       <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
+    <ClInclude Include="TankObserver.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="GameAdmin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SoloLevel2.h">
+      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
+    </ClInclude>
     <ClInclude Include="SoloLevel3.h">
-      <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="SoloScene.h">
+      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -109,6 +109,9 @@
     <ClCompile Include="CollisionManager.cpp">
       <Filter>Engine\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="GameObjectDestroyedEvent.cpp">
+      <Filter>Engine\Event</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -200,6 +203,9 @@
     </ClInclude>
     <ClInclude Include="CollisionManager.h">
       <Filter>Engine\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjectDestroyedEvent.h">
+      <Filter>Engine\Event</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

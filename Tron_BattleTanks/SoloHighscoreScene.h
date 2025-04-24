@@ -18,6 +18,8 @@ namespace FML
 
 		void InitializeBackground(SDL_Renderer* renderer);
 
+		void RestartGame();
+
 		void InitializeSounds();
 
 

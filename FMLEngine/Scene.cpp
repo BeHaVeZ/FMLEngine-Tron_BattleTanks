@@ -2,6 +2,7 @@
 #include "TransformComponent.h"
 #include "CollisionManager.h"
 #include "InputHandler.h"
+#include "GameObjectDestroyedEvent.h"
 
 namespace FML
 {
@@ -75,6 +76,7 @@ namespace FML
 		{
 			if (gameObject->IsMarkedForDestruction())
 			{
+				gameObject->GetSubject().Notify(GameObjectDestroyedEvent(gameObject.get()));
 				auto collider = gameObject->GetComponent<Collider>();
 				if (collider && gameObject)
 					CollisionManager::Instance().UnregisterCollider(collider);

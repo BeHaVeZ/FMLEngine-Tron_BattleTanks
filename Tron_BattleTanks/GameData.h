@@ -1,6 +1,15 @@
 #pragma once
 
-struct GameData 
+namespace GameData 
 {
-    inline static int CurrentScore = 0;
+    enum class GameMode
+    {
+        None = -1,
+        Solo,
+        Coop,
+        Versus,
+    };
+
+    inline GameMode CurrentGameMode = GameMode::None;
+    inline int CurrentScore = 0;
 };
