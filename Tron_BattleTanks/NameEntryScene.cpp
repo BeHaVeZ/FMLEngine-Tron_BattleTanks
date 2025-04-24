@@ -15,7 +15,7 @@ namespace FML
 		scoreToSubmit = GameData::CurrentScore;
 
 		InitializeInput();
-
+		InitializeSounds();
 		{
 			auto gameOverTitle = std::make_unique<GameObject>("GameOverTitle");
 			auto gameOverText = std::make_unique<TextComponent>("Game Over",
@@ -95,6 +95,12 @@ namespace FML
 		InputHandler::Instance().BindGamepadFunction(controllerId, XINPUT_GAMEPAD_DPAD_RIGHT, [this]() { MoveRight(); }, InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindGamepadFunction(controllerId, XINPUT_GAMEPAD_A, [this]() { SubmitScore(); }, InputHandler::KeyAction::KeyUp);
 	}
+	void NameEntryScene::InitializeSounds()
+	{
+		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
+		ServiceLocator::GetSoundSystem().AddSound("blunk.wav", 2, false);
+		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+	}
 	void NameEntryScene::HandleInput(SDL_Event& event)
 	{
 		InputHandler::Instance().HandleInput(event);
@@ -109,6 +115,7 @@ namespace FML
 	}
 	void NameEntryScene::MoveUp()
 	{
+		ServiceLocator::GetSoundSystem().PlaySound(2, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 		charIndices[currentSlot] = (charIndices[currentSlot] + 1) % allowedChars.size();
 		auto* textComp = FindGameObjectByTag("Letter" + std::to_string(currentSlot))->GetComponent<TextComponent>();
 		textComp->SetText(std::string(1, allowedChars[charIndices[currentSlot]]), SceneManager::Instance().GetRenderer());
@@ -116,17 +123,20 @@ namespace FML
 
 	void NameEntryScene::MoveDown()
 	{
+		ServiceLocator::GetSoundSystem().PlaySound(2, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 		charIndices[currentSlot] = (charIndices[currentSlot] - 1 + allowedChars.size()) % allowedChars.size();
 		auto* textComp = FindGameObjectByTag("Letter" + std::to_string(currentSlot))->GetComponent<TextComponent>();
 		textComp->SetText(std::string(1, allowedChars[charIndices[currentSlot]]), SceneManager::Instance().GetRenderer());
 	}
 	void NameEntryScene::MoveLeft()
 	{
+		ServiceLocator::GetSoundSystem().PlaySound(2, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 		if (currentSlot > 0) --currentSlot;
 		UpdateArrowHighlight();
 	}
 	void NameEntryScene::MoveRight()
 	{
+		ServiceLocator::GetSoundSystem().PlaySound(2, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 		if (currentSlot < 2) ++currentSlot;
 		UpdateArrowHighlight();
 	}

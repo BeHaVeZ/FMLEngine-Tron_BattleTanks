@@ -1,6 +1,7 @@
 #pragma once
 #include "Command.h"
 #include "SceneManager.h"
+#include "GameAdmin.h"
 
 namespace FML
 {

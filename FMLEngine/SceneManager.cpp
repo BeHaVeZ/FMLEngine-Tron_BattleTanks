@@ -20,6 +20,7 @@ namespace FML
 
 			if (currentScene) 
 			{
+				currentScene->OnExit();
 				currentScene->Cleanup();
 			}
 

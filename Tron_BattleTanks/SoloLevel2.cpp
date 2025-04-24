@@ -37,6 +37,7 @@ namespace FML
 
 		InitializeUI();
 		InitializeWalls();
+		InitializeManagers();
 
 		InitializeInput();
 		InitializeSounds();
@@ -170,6 +171,11 @@ namespace FML
 		}
 	}
 
+	void SoloLevel2::InitializeManagers()
+	{
+		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
+		AddGameObject(std::move(enemyManager));
+	}
 
 	void SoloLevel2::HandleInput(SDL_Event& event) {
 		InputHandler::Instance().HandleInput(event);
@@ -183,5 +189,9 @@ namespace FML
 	void SoloLevel2::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
+	}
+	void SoloLevel2::OnExit()
+	{
+		GameAdmin::Instance().ResetPlayers();
 	}
 }

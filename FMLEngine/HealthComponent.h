@@ -19,15 +19,6 @@ namespace FML
 				health -= damageEvent->GetDamage();
 				if (health <= 0)
 				{
-					if (gameObject->GetTag() == "Enemy")
-					{
-						auto player = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1");
-						if (player)
-						{
-							player->GetComponent<ScoreComponent>()->AddScore();
-						}
-						gameObject->GetSubject().Notify(BlueTankKilledEvent());
-					}
 					gameObject->Destroy();
 					return;
 				}

@@ -31,6 +31,8 @@ namespace FML
 
 		void Update(float deltaTime) override;
 		void Render(SDL_Renderer* renderer) override;
+
+		void OnExit() override;
 	};
 
 }

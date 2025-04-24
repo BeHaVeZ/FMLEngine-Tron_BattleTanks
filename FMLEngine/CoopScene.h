@@ -27,6 +27,7 @@ namespace FML
 		void InitializeWalls();
 
 		void InitializeSounds();
+		void InitializeManagers();
 
 		void HandleInput(SDL_Event& event) override;
 

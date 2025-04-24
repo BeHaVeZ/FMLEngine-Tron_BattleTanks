@@ -36,6 +36,8 @@ namespace FML
 
 		InitializeUI();
 		InitializeWalls();
+		InitializeManagers();
+
 
 		InitializeInput();
 		InitializeSounds();
@@ -147,7 +149,12 @@ namespace FML
 		ServiceLocator::GetSoundSystem().AddSound("Fire.wav", 2, false);
 		ServiceLocator::GetSoundSystem().AddSound("Hit.wav", 3, false);
 		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
-		ServiceLocator::GetSoundSystem().SetVolume(0.f);
+	}
+
+	void SoloLevel3::InitializeManagers()
+	{
+		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
+		AddGameObject(std::move(enemyManager));
 	}
 
 	void SoloLevel3::InitializeWalls()
@@ -171,7 +178,8 @@ namespace FML
 	}
 
 
-	void SoloLevel3::HandleInput(SDL_Event& event) {
+	void SoloLevel3::HandleInput(SDL_Event& event) 
+	{
 		InputHandler::Instance().HandleInput(event);
 	}
 

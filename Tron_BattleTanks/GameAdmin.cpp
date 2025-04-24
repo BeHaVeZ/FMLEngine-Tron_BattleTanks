@@ -4,22 +4,49 @@
 
 namespace FML
 {
-    void GameAdmin::UnregisterPlayer(GameObject* player)
-    {
-        players.erase(std::remove(players.begin(), players.end(), player), players.end());
-    }
+	void GameAdmin::RegisterPlayer(GameObject* player)
+	{
+		players.push_back(player);
+	}
+	void GameAdmin::UnregisterPlayer(GameObject* player)
+	{
+		players.erase(std::remove(players.begin(), players.end(), player), players.end());
+	}
 
-    void GameAdmin::OnPlayerDestroyed(GameObject* player)
-    {
-        UnregisterPlayer(player);
-        CheckForGameOver();
-    }
+	void GameAdmin::ResetPlayers()
+	{
+		players.clear();
+	}
 
-    void GameAdmin::CheckForGameOver()
-    {
-        if (players.empty() && GameData::CurrentGameMode == GameData::GameMode::Solo)
-        {
-            SceneManager::Instance().QueueSceneChange("NameEntry");
-        }
-    }
+	void GameAdmin::OnPlayerDestroyed(GameObject* player)
+	{
+		UnregisterPlayer(player);
+		CheckForGameOver();
+	}
+
+	void GameAdmin::CheckForGameOver()
+	{
+		switch (GameData::CurrentGameMode)
+		{
+		case GameData::GameMode::Solo:
+			if (players.empty())
+			{
+				SceneManager::Instance().QueueSceneChange("NameEntry");
+			}
+			break;
+		case GameData::GameMode::Coop:
+			if (players.empty())
+			{
+				SceneManager::Instance().QueueSceneChange("MainMenu");
+				//Game over screen and show score WIP
+			}
+			break;
+		case GameData::GameMode::Versus:
+			//WIP
+			SceneManager::Instance().QueueSceneChange("MainMenu");
+			break;
+		default:
+			break;
+		}
+	}
 }

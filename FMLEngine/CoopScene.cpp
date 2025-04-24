@@ -37,6 +37,7 @@ namespace FML
 		InitializeUI();
 
 		InitializeWalls();
+		InitializeManagers();
 
 		InitializeInput();
 		InitializeSounds();
@@ -172,11 +173,16 @@ namespace FML
 
 	void CoopScene::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
+		ServiceLocator::GetSoundSystem().AddSound("AyoWhatV3.wav", 1, true);
 		ServiceLocator::GetSoundSystem().AddSound("Fire.wav", 2, false);
 		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 
+	void CoopScene::InitializeManagers()
+	{
+		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
+		AddGameObject(std::move(enemyManager));
+	}
 
 	void CoopScene::HandleInput(SDL_Event& event) {
 		InputHandler::Instance().HandleInput(event);

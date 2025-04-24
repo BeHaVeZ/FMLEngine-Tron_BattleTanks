@@ -99,8 +99,6 @@ namespace FML
 	{
 		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, 3, "HealthUIPlayer1");
 		AddGameObject(std::move(healthUIPlayer1));
-		//auto healthUIPlayer2 = PrefabRegistry::Instance().CreateHealthUIForPlayer2({ 200,30 }, 3, "HealthUIPlayer2");
-		//gameObjects.push_back(std::move(healthUIPlayer2));
 	}
 
 	void SoloScene::InitializeFirstTank()
@@ -178,5 +176,9 @@ namespace FML
 	void SoloScene::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
+	}
+	void SoloScene::OnExit()
+	{
+		GameAdmin::Instance().ResetPlayers();
 	}
 }

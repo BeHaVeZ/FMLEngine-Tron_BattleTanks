@@ -126,6 +126,11 @@ namespace FML
 	std::unique_ptr<GameObject> PrefabRegistry::CreateYellowTankPrefab(glm::vec2 spawnPosition, const std::string tag) const
 	{
 		auto tank = std::make_unique<GameObject>(tag);
+		GameAdmin::Instance().RegisterPlayer(tank.get());
+
+		auto observer = std::make_unique<TankObserver>();
+		tank->GetSubject().AddObserver(observer.get());
+		tank->AddComponent(std::move(observer));
 
 		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/YellowTank.png", SceneManager::Instance().GetRenderer());
 		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());

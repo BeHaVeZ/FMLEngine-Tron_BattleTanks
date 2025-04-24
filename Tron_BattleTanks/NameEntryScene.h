@@ -12,6 +12,7 @@ namespace FML
 	public:
 		bool Initialize(SDL_Renderer* renderer) override;
 		void InitializeInput() override;
+		void InitializeSounds();
 		void HandleInput(SDL_Event& event) override;
 		void Update(float deltaTime) override;
 		void Render(SDL_Renderer* renderer) override;

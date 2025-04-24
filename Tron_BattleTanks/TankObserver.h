@@ -7,7 +7,7 @@
 
 namespace FML
 {
-	class TankObserver : public Component ,public Observer
+	class TankObserver : public Component, public Observer
 	{
 	public:
 		void HandleEvent(const Event& event) override
@@ -19,6 +19,13 @@ namespace FML
 			GameObject* destroyed = destroyEvent->GetDestroyedObject();
 			if (destroyed->GetTag() == "Enemy")
 			{
+				auto player = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1");
+				if (player)
+				{
+					player->GetComponent<ScoreComponent>()->AddScore();
+				}
+				gameObject->GetSubject().Notify(BlueTankKilledEvent());
+
 				Logger::Log(LogLevel::Error, "Enemy destroyed: Spawning explosion.");
 			}
 			else 	if (destroyed->GetTag() == "Player1" || destroyed->GetTag() == "Player2")

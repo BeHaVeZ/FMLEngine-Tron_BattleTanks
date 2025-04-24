@@ -13,8 +13,9 @@ namespace FML
             return instance;
         }
 
-        void RegisterPlayer(GameObject* player) { players.push_back(player); }
+        void RegisterPlayer(GameObject* player);
         void UnregisterPlayer(GameObject* player);
+        void ResetPlayers();
 
         void OnPlayerDestroyed(GameObject* player);
         void CheckForGameOver();
