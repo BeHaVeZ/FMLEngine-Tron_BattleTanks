@@ -71,9 +71,6 @@
     <ClCompile Include="NameEntryScene.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
     </ClCompile>
-    <ClCompile Include="GameAdmin.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SoloLevel2.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
     </ClCompile>
@@ -82,6 +79,9 @@
     </ClCompile>
     <ClCompile Include="SoloScene.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="GameAdmin.cpp">
+      <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,9 +184,6 @@
     <ClInclude Include="TankObserver.h">
       <Filter>Header Files\GameComponents</Filter>
     </ClInclude>
-    <ClInclude Include="GameAdmin.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SoloLevel2.h">
       <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
     </ClInclude>
@@ -195,6 +192,9 @@
     </ClInclude>
     <ClInclude Include="SoloScene.h">
       <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="GameAdmin.h">
+      <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

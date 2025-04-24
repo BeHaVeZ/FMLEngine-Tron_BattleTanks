@@ -27,7 +27,6 @@ namespace FML
 
 	bool CoopScene::Initialize(SDL_Renderer* renderer) 
 	{
-		GameData::CurrentGameMode = GameData::GameMode::Coop;
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
 
@@ -196,6 +195,10 @@ namespace FML
 	void CoopScene::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
+	}
+	void CoopScene::OnExit()
+	{
+		GameAdmin::Instance().ResetPlayers();
 	}
 }
 

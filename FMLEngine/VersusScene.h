@@ -9,6 +9,7 @@ namespace FML
 
 	class VersusScene final : public Scene {
 	public:
+		VersusScene() : Scene("Versus") {}
 		bool Initialize(SDL_Renderer* renderer) override;
 
 
@@ -32,6 +33,8 @@ namespace FML
 
 		void Update(float deltaTime) override;
 		void Render(SDL_Renderer* renderer) override;
+
+		void OnExit() override;
 	};
 
 }

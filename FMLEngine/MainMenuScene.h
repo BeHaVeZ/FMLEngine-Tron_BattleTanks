@@ -8,7 +8,8 @@ namespace FML
 
 	class MainMenuScene : public Scene {
 	public:
-		MainMenuScene() : storedRenderer(nullptr), selectedIndex(0) {}
+		MainMenuScene() : Scene("MainMenu"), 
+			storedRenderer(nullptr), selectedIndex(0) {}
 
 		bool Initialize(SDL_Renderer* renderer) override;
 		void HandleInput(SDL_Event& event) override;

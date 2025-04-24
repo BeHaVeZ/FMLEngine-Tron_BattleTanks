@@ -9,6 +9,7 @@ namespace FML
 
 	class SoloLevel3 final : public Scene {
 	public:
+		SoloLevel3() : Scene("Solo3") {}
 		bool Initialize(SDL_Renderer* renderer) override;
 
 		void InitializeBackground(SDL_Renderer* renderer);
@@ -30,5 +31,7 @@ namespace FML
 
 		void Update(float deltaTime) override;
 		void Render(SDL_Renderer* renderer) override;
+
+		void OnExit() override;
 	};
 }

@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "TransformComponent.h"
 #include "SceneManager.h"
+#include "../Tron_BattleTanks/GameData.h"
 #include "Logger.h"
 
 namespace FML
@@ -17,15 +18,18 @@ namespace FML
 				switch ((int)transform->GetLocalRotation())
 				{
 				case 0:
-					SceneManager::Instance().QueueSceneChange("VersusScene");
+					GameData::CurrentGameMode = GameData::GameMode::Versus;
+					SceneManager::Instance().QueueSceneChange("Versus");
 					break;
 				case 90:
 					GameStateManager::Instance().SetRunning(false);
 					break;
 				case 180:
-					SceneManager::Instance().QueueSceneChange("CoopScene");
+					GameData::CurrentGameMode = GameData::GameMode::Coop;
+					SceneManager::Instance().QueueSceneChange("Coop");
 					break;
 				case 270:
+					GameData::CurrentGameMode = GameData::GameMode::Solo;
 					SceneManager::Instance().QueueSceneChange("Solo");
 					break;
 

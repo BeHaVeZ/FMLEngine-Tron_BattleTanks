@@ -9,6 +9,8 @@ namespace FML
 
 	class CoopScene final : public Scene {
 	public:
+		CoopScene() : Scene("Coop") {}
+
 		bool Initialize(SDL_Renderer* renderer) override;
 
 
@@ -33,6 +35,8 @@ namespace FML
 
 		void Update(float deltaTime) override;
 		void Render(SDL_Renderer* renderer) override;
+
+		void OnExit() override;
 	};
 
 }

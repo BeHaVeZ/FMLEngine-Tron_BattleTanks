@@ -9,6 +9,8 @@ namespace FML
 
 	class SoloLevel2 final : public Scene {
 	public:
+		SoloLevel2() : Scene("Solo2") {}
+
 		bool Initialize(SDL_Renderer* renderer) override;
 
 

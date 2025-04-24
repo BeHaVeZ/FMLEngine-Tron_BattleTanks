@@ -8,7 +8,8 @@ namespace FML
 
 	class SoloHighscoreScene : public Scene {
 	public:
-		SoloHighscoreScene() : storedRenderer(nullptr) {}
+		SoloHighscoreScene() : Scene("SoloHighScore"),
+			storedRenderer(nullptr) {}
 
 		bool Initialize(SDL_Renderer* renderer) override;
 		void HandleInput(SDL_Event& event) override;

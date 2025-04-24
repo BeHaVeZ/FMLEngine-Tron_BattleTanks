@@ -30,6 +30,7 @@ namespace FML
 
 	bool SoloLevel2::Initialize(SDL_Renderer* renderer)
 	{
+		Logger::Log(LogLevel::Error, "Score at start of SoloScene2: %d", GameData::CurrentScore);
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
 

@@ -9,18 +9,22 @@ namespace FML
 
 	class SceneManager {
 	public:
-		static SceneManager& Instance() {
+		static SceneManager& Instance() 
+		{
 			static SceneManager instance;
 			return instance;
 		}
 
-		void AddScene(const std::string& name, std::unique_ptr<Scene> scene);
+		void AddScene(std::unique_ptr<Scene> scene);
 		void ChangeScene(const std::string& sceneName);
 		void QueueSceneChange(const std::string& name);
 		void RemoveScene(const std::string& name);
+		const std::string& GetSceneName() const;
 		Scene* GetCurrentScene() const;
-		void ReloadScene();
+		Scene* GetNextScene() const;
+		Scene* GetPreviousScene() const;
 		void GoToNextScene();
+		void ReloadScene();
 
 		void HandleInput(SDL_Event& event);
 		void Update(float deltaTime);

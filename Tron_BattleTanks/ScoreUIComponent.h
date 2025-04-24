@@ -9,7 +9,7 @@ namespace FML
 	class ScoreUIComponent : public Component, public Observer
 	{
 	public:
-		ScoreUIComponent() : text(nullptr),currentScore(0)
+		ScoreUIComponent(int score = 0) : text(nullptr), currentScore(score)
 		{
 			textComponent = std::make_unique<TextComponent>(std::to_string(currentScore), "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,255,0,255 }, SceneManager::Instance().GetRenderer());
 		}

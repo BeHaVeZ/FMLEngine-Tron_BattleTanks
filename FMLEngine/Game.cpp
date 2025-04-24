@@ -81,16 +81,16 @@ namespace FML
 
 		ServiceLocator::GetSoundSystem().StartUp();
 
-		SceneManager::Instance().AddScene("MainMenu", std::make_unique<MainMenuScene>());
-		SceneManager::Instance().AddScene("Solo", std::make_unique<SoloScene>());
-		SceneManager::Instance().AddScene("Solo2", std::make_unique<SoloLevel2>());
-		SceneManager::Instance().AddScene("Solo3", std::make_unique<SoloLevel3>());
-		SceneManager::Instance().AddScene("VersusScene", std::make_unique<VersusScene>());
-		SceneManager::Instance().AddScene("CoopScene", std::make_unique<CoopScene>());
-		SceneManager::Instance().AddScene("SoloHighscore", std::make_unique<SoloHighscoreScene>());
-		SceneManager::Instance().AddScene("NameEntry", std::make_unique<NameEntryScene>());
+		SceneManager::Instance().AddScene(std::make_unique<MainMenuScene>());
+		SceneManager::Instance().AddScene(std::make_unique<SoloScene>());
+		SceneManager::Instance().AddScene(std::make_unique<SoloLevel2>());
+		SceneManager::Instance().AddScene(std::make_unique<SoloLevel3>());
+		SceneManager::Instance().AddScene(std::make_unique<VersusScene>());
+		SceneManager::Instance().AddScene(std::make_unique<CoopScene>());
+		SceneManager::Instance().AddScene(std::make_unique<NameEntryScene>());
+		SceneManager::Instance().AddScene(std::make_unique<SoloHighscoreScene>());
 
-		SceneManager::Instance().ChangeScene("MainMenu");
+		SceneManager::Instance().QueueSceneChange("MainMenu");
 
 		GameStateManager::Instance().SetRunning(true);
 		return true;

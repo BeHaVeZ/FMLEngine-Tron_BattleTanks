@@ -15,6 +15,7 @@
 #include "../Tron_BattleTanks/EnemyManagerComponent.h"
 #include "../Tron_BattleTanks/TankObserver.h"
 #include "../Tron_BattleTanks/GameAdmin.h"
+#include "../Tron_BattleTanks/HighscoreManager.h"
 
 namespace FML
 {
@@ -286,7 +287,7 @@ namespace FML
 
 
 		auto highScoreUI = std::make_unique<GameObject>(tag);
-		auto highScoreUITextComponent = std::make_unique<ScoreUIComponent>();
+		auto highScoreUITextComponent = std::make_unique<ScoreUIComponent>(HighscoreManager("data/highscores.txt").GetHighestScore());
 		highScoreUI->AddComponent(std::move(highScoreUITextComponent));
 		highScoreUI->GetComponent<ScoreUIComponent>()->Initialize();
 		highScoreUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });
@@ -307,7 +308,7 @@ namespace FML
 
 
 		auto currentScoreUI = std::make_unique<GameObject>(tag);
-		auto currentScoreUITextComponent = std::make_unique<ScoreUIComponent>();
+		auto currentScoreUITextComponent = std::make_unique<ScoreUIComponent>(GameData::CurrentScore);
 		currentScoreUI->AddComponent(std::move(currentScoreUITextComponent));
 		currentScoreUI->GetComponent<ScoreUIComponent>()->Initialize();
 		currentScoreUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });

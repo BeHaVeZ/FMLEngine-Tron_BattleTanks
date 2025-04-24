@@ -18,13 +18,15 @@ namespace FML
 		EnemyManagerComponent() :
 			maxEnemies(5),
 			currentEnemies(0),
+			enemiesToKillForTheNextLevel(5),
 			spawnCooldown(0.f),
-			spawnCooldownTime(2.5f)
+			spawnCooldownTime(2.5f),
+			visibilityTolerance(20.f)
 		{
 			std::random_device rd;
 			rng = std::mt19937(rd());
 
-			spawnPositions = 
+			spawnPositions =
 			{
 				{956,133},
 				{958,719},
@@ -52,14 +54,14 @@ namespace FML
 
 		void SpawnEnemy(GameObject* player)
 		{
-			if (currentEnemies >= maxEnemies)      
+			if (currentEnemies >= maxEnemies)
 				return;
 
 			glm::vec2 pos = ChooseSpawnPosition(player);
 			auto enemy = PrefabRegistry::Instance().CreateBlueTankPrefab(pos);
 
-			GameObject* rawEnemy = enemy.get();         
-			rawEnemy->GetSubject().AddObserver(this);  
+			GameObject* rawEnemy = enemy.get();
+			rawEnemy->GetSubject().AddObserver(this);
 
 			SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(enemy));
 			++currentEnemies;
@@ -95,16 +97,29 @@ namespace FML
 			if (const BlueTankKilledEvent* blueTankKilledEvent = dynamic_cast<const BlueTankKilledEvent*>(&event))
 			{
 				currentEnemies--;
+				enemiesToKillForTheNextLevel--;
 				Logger::Log(LogLevel::Warning, "CurrentEnemies is %d", currentEnemies);
+			}
+
+			if (enemiesToKillForTheNextLevel <= 0 && GameData::CurrentGameMode == GameData::GameMode::Solo)
+			{
+				auto& nextSceneName = SceneManager::Instance().GetNextScene()->GetName();
+				if (nextSceneName == "Coop" || nextSceneName == "Versus")
+				{
+					SceneManager::Instance().QueueSceneChange("Solo");
+				}
+				else
+					SceneManager::Instance().QueueSceneChange(SceneManager::Instance().GetNextScene()->GetName());
 			}
 		};
 
 	private:
 		std::vector<glm::vec2> spawnPositions;
-		float visibilityTolerance = 20.f;
+		float visibilityTolerance;
 		std::mt19937 rng;
 		int maxEnemies;
 		int currentEnemies;
+		int enemiesToKillForTheNextLevel;
 		float spawnCooldown;
 		float spawnCooldownTime;
 	};

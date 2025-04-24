@@ -34,4 +34,23 @@ namespace FML
 
         return entries;
     }
+    int HighscoreManager::GetHighestScore() const
+    {
+        std::ifstream file(filePath);
+        int maxScore = std::numeric_limits<int>::min();
+
+        std::string line;
+        while (std::getline(file, line))
+        {
+            std::istringstream iss(line);
+            std::string name;
+            int score;
+            if (iss >> name >> score)
+            {
+                maxScore = std::max(maxScore, score);
+            }
+        }
+
+        return maxScore == std::numeric_limits<int>::min() ? 0 : maxScore;
+    }
 }

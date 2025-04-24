@@ -10,6 +10,7 @@ namespace FML
 	class NameEntryScene : public Scene
 	{
 	public:
+		NameEntryScene() : Scene("NameEntry") {}
 		bool Initialize(SDL_Renderer* renderer) override;
 		void InitializeInput() override;
 		void InitializeSounds();

@@ -29,6 +29,7 @@ namespace FML
 
 	bool SoloLevel3::Initialize(SDL_Renderer* renderer)
 	{
+		Logger::Log(LogLevel::Error, "Score at start of SoloScene3: %d", GameData::CurrentScore);
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
 
@@ -191,5 +192,10 @@ namespace FML
 	void SoloLevel3::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
+	}
+
+	void SoloLevel3::OnExit()
+	{
+		GameAdmin::Instance().ResetPlayers();
 	}
 }

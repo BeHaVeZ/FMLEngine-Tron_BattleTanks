@@ -8,7 +8,7 @@ namespace FML
 	class ScoreComponent : public Component , public Observer
 	{
 	public:
-		ScoreComponent() : currentScore(0)
+		ScoreComponent() : currentScore(GameData::CurrentScore)
 		{
 		}
 
@@ -20,8 +20,8 @@ namespace FML
 		{
 			if (const BlueTankKilledEvent* blueTankKilledEvent = dynamic_cast<const BlueTankKilledEvent*>(&event))
 			{
-				currentScore += blueTankKilledEvent->GetScore();
-				GameData::CurrentScore = currentScore;
+				GameData::CurrentScore += blueTankKilledEvent->GetScore();
+				currentScore = GameData::CurrentScore;
 				Logger::Log(LogLevel::Info, "ScoreComponent Score updated to %d", GameData::CurrentScore);
 			}
 		}

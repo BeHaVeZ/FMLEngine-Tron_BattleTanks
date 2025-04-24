@@ -4,7 +4,7 @@
 
 namespace FML
 {
-    struct HighscoreEntry 
+    struct HighscoreEntry
     {
         std::string name;
         int score;
@@ -16,6 +16,8 @@ namespace FML
         explicit HighscoreManager(const std::string& filePath);
 
         std::vector<HighscoreEntry> GetTopScores(size_t maxCount = 10);
+        int GetHighestScore() const;
+
         void SetCurrentScore(int score) { currentScore = score; }
 
     private:

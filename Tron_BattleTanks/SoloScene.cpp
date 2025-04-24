@@ -31,7 +31,7 @@ namespace FML
 
 	bool SoloScene::Initialize(SDL_Renderer* renderer)
 	{
-		GameData::CurrentGameMode = GameData::GameMode::Solo;
+		Logger::Log(LogLevel::Error, "Score at start of SoloScene1: %d", GameData::CurrentScore);
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
 

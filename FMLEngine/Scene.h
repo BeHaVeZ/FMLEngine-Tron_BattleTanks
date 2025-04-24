@@ -4,6 +4,7 @@
 #include <memory>
 #include <glm.hpp>
 #include "GameObject.h"
+#include <string>
 
 namespace FML 
 {
@@ -11,7 +12,12 @@ namespace FML
     class Scene 
     {
     public:
+        Scene(const std::string& name = "") : sceneName(name) {}
         virtual ~Scene() {}
+        Scene& operator=(const Scene&) = delete;
+        Scene& operator=(Scene&&) = delete;
+
+        const std::string& GetName() const { return sceneName; }
 
         virtual bool Initialize(SDL_Renderer* renderer) = 0;
         virtual void HandleInput(SDL_Event& event) = 0;
@@ -28,6 +34,7 @@ namespace FML
 
     protected:
         std::vector<std::unique_ptr<GameObject>> gameObjects;
+        const std::string sceneName;
 
         void UpdateGameObjects(float deltaTime);
         void RenderGameObjects(SDL_Renderer* renderer);

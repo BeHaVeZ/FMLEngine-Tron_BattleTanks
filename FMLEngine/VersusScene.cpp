@@ -12,7 +12,6 @@
 #include "RotateTurretCommand.h"
 #include "BoxCollider.h"
 #include "RotateCommand.h"
-#include "RotateTurretCommand.h"
 #include "DamageCommand.h"
 #include "MuteSoundCommand.h"
 #include "../Tron_BattleTanks/FileReader.h"
@@ -29,7 +28,6 @@ namespace FML
 
 	bool VersusScene::Initialize(SDL_Renderer* renderer)
 	{
-		GameData::CurrentGameMode = GameData::GameMode::Versus;
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
 
@@ -171,6 +169,10 @@ namespace FML
 	void VersusScene::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
+	}
+	void VersusScene::OnExit()
+	{
+		GameAdmin::Instance().ResetPlayers();
 	}
 }
 
