@@ -233,6 +233,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="..\FMLEngine\RotateCommand.h" />
     <ClInclude Include="..\FMLEngine\RotateTurretCommand.h" />
     <ClInclude Include="..\FMLEngine\SelectMenuOptionCommand.h" />
+    <ClInclude Include="..\FMLEngine\SoundHelper.h" />
     <ClInclude Include="..\FMLEngine\VersusScene.h" />
     <ClInclude Include="BlueTankKilledEvent.h" />
     <ClInclude Include="BulletCollisionBehaviorComponent.h" />

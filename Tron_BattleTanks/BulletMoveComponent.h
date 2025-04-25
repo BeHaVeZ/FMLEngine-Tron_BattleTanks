@@ -2,6 +2,7 @@
 #include "Component.h"
 #include <glm.hpp>
 #include "TransformComponent.h"
+#include "SoundHelper.h"
 
 
 namespace FML
@@ -28,6 +29,7 @@ namespace FML
 				gameObject->Destroy();
 				return;
 			}
+			SoundHelper::PlayRandomSound({ 2,3,4 }, .3f);
 			moveDirection = glm::reflect(moveDirection, glm::normalize(normal));
 			++bounceCount;
 		}

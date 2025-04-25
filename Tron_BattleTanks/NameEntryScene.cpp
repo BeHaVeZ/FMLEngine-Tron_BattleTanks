@@ -4,6 +4,7 @@
 #include "TextComponent.h"
 #include "SceneManager.h"
 #include "Logger.h"
+#include "SoundHelper.h"
 #include <sstream>
 #include <fstream>
 
@@ -98,7 +99,9 @@ namespace FML
 	void NameEntryScene::InitializeSounds()
 	{
 		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
-		ServiceLocator::GetSoundSystem().AddSound("blunk.wav", 2, false);
+		ServiceLocator::GetSoundSystem().AddSound("blunk_1.wav", 15, false);
+		ServiceLocator::GetSoundSystem().AddSound("blunk_2.wav", 16, false);
+		ServiceLocator::GetSoundSystem().AddSound("blunk_3.wav", 17, false);
 		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 	void NameEntryScene::HandleInput(SDL_Event& event)
@@ -115,7 +118,7 @@ namespace FML
 	}
 	void NameEntryScene::MoveUp()
 	{
-		ServiceLocator::GetSoundSystem().PlaySound(2, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		SoundHelper::PlayRandomSound({ 15 });
 		charIndices[currentSlot] = (charIndices[currentSlot] + 1) % allowedChars.size();
 		auto* textComp = FindGameObjectByTag("Letter" + std::to_string(currentSlot))->GetComponent<TextComponent>();
 		textComp->SetText(std::string(1, allowedChars[charIndices[currentSlot]]), SceneManager::Instance().GetRenderer());
@@ -123,20 +126,20 @@ namespace FML
 
 	void NameEntryScene::MoveDown()
 	{
-		ServiceLocator::GetSoundSystem().PlaySound(2, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		SoundHelper::PlayRandomSound({ 15 });
 		charIndices[currentSlot] = (charIndices[currentSlot] - 1 + allowedChars.size()) % allowedChars.size();
 		auto* textComp = FindGameObjectByTag("Letter" + std::to_string(currentSlot))->GetComponent<TextComponent>();
 		textComp->SetText(std::string(1, allowedChars[charIndices[currentSlot]]), SceneManager::Instance().GetRenderer());
 	}
 	void NameEntryScene::MoveLeft()
 	{
-		ServiceLocator::GetSoundSystem().PlaySound(2, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		SoundHelper::PlayRandomSound({ 16 });
 		if (currentSlot > 0) --currentSlot;
 		UpdateArrowHighlight();
 	}
 	void NameEntryScene::MoveRight()
 	{
-		ServiceLocator::GetSoundSystem().PlaySound(2, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		SoundHelper::PlayRandomSound({ 16 });
 		if (currentSlot < 2) ++currentSlot;
 		UpdateArrowHighlight();
 	}

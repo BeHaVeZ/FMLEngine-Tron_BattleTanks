@@ -4,6 +4,7 @@
 #include "CollisionManager.h"
 #include "Logger.h"
 #include "DebugDraw.h"
+#include "SoundHelper.h"
 
 namespace FML
 {
@@ -64,7 +65,7 @@ namespace FML
 		{
 			if (cooldownTime > 0.f)
 				return;
-
+			SoundHelper::PlayRandomSound({ 10,11,12,13 }, .3f);
 			SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(texture.GetWorldCenter() + texture.GetForwardVector() * 25.f,texture.GetForwardVector(),"EnemyBullet"));
 			cooldownTime = timeBetweenShots;
 		}

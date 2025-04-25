@@ -146,9 +146,10 @@ namespace FML
 
 	void SoloLevel2::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("AyoWhatV3.wav", 1, true);
-		ServiceLocator::GetSoundSystem().AddSound("Fire.wav", 2, false);
-		ServiceLocator::GetSoundSystem().AddSound("Hit.wav", 3, false);
+		ServiceLocator::GetSoundSystem().AddSound("AyoWhatV2.wav", 1, true);
+
+		SoundHelper::LoadSharedSounds();
+
 		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 

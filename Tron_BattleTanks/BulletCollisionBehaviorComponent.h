@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include <string>
 #include "ServiceLocator.h"
+#include "SoundHelper.h"
 
 namespace FML
 {
@@ -39,12 +40,12 @@ namespace FML
 				auto healthComponent = otherGO->GetComponent<HealthComponent>();
 				if (healthComponent)
 				{
-					ServiceLocator::GetSoundSystem().PlaySound(3, ServiceLocator::GetSoundSystem().GetCurrentVolume() + .3f);
+					SoundHelper::PlayRandomSound({ 5,6,7 }, .3f);
 					healthComponent->Damage(1);
 				}
 				self->Destroy();
 			}
-			else if (tag == "Wall" || tag == "Bullet")
+			else if (tag == "Wall")
 			{
 				auto bulletCollider = self->GetComponent<Collider>();
 				auto wallCollider = otherGO->GetComponent<Collider>();
@@ -58,7 +59,7 @@ namespace FML
 					self->GetComponent<BulletMoveComponent>()->Bounce(normal);
 				}
 			}
-			else if (tag == "EnemyBullet")
+			else if (tag == "EnemyBullet" || tag == "Bullet")
 			{
 				self->Destroy();
 				other->GetOwner()->Destroy();

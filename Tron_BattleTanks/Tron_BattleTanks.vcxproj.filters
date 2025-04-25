@@ -196,5 +196,8 @@
     <ClInclude Include="GameAdmin.h">
       <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
+    <ClInclude Include="..\FMLEngine\SoundHelper.h">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

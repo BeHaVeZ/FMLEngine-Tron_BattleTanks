@@ -31,7 +31,9 @@ namespace FML
 		Cleanup();
 	}
 
-	bool Game::Initialize() {
+	bool Game::Initialize() 
+	{
+		std::srand(static_cast<unsigned>(std::time(nullptr)));
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		{
 			Logger::Log(LogLevel::Error, "SDL could not initialize! SDL_Error: %s", SDL_GetError());
