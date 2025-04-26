@@ -24,6 +24,7 @@ namespace FML
 		if (it != scenes.end()) {
 			InputHandler::Instance().ClearBindings();
 			ServiceLocator::GetSoundSystem().ClearSounds();
+			ServiceLocator::GetSoundSystem().ClearQueue();
 
 			if (currentScene) 
 			{

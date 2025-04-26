@@ -65,6 +65,10 @@ namespace FML
 
 			m_IsShutdown = true;
 
+			ClearQueue();
+
+			Mix_HaltChannel(-1);
+
 			for (auto& sound : m_Sounds)
 			{
 				if (sound.second.isLoaded)
@@ -127,6 +131,13 @@ namespace FML
 				sdlVolume = std::clamp(sdlVolume, 0, MIX_MAX_VOLUME);
 				Mix_Volume(-1, sdlVolume);
 			}
+		}
+
+		void ClearQueue()
+		{
+			std::lock_guard<std::mutex> lk(m_CvMutex);
+			std::queue<PlayMessage> empty;
+			std::swap(m_Pending, empty);
 		}
 
 		bool IsMuted()
@@ -252,6 +263,10 @@ namespace FML
 	void SDL_SoundSystem::SetVolume(float newVolume)
 	{
 		m_pImpl->SetVolume(newVolume);
+	}
+	void SDL_SoundSystem::ClearQueue()
+	{
+		m_pImpl->ClearQueue();
 	}
 #pragma endregion
 

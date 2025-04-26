@@ -23,6 +23,7 @@ namespace FML
 		virtual void ClearSounds() = 0;
 		virtual float GetCurrentVolume() const = 0;
 		virtual void SetVolume(float newVolume) = 0;
+		virtual void ClearQueue() = 0;
 	};
 
 	class NullSoundSystem final : public SoundSystem
@@ -37,8 +38,9 @@ namespace FML
 		virtual void MuteSound() override {};
 		virtual void UnmuteSound() override {};
 		virtual void ClearSounds() override {};
-		float GetCurrentVolume() const override { return 0.0f; }
-		void SetVolume(float) override {};
+		virtual float GetCurrentVolume() const override { return 0.0f; }
+		virtual void SetVolume(float) override {};
+		virtual void ClearQueue() override {};
 	};
 
 	class SDL_SoundSystem final : public SoundSystem
@@ -47,17 +49,18 @@ namespace FML
 		explicit SDL_SoundSystem();
 		~SDL_SoundSystem() = default;
 
-		void PlaySound(const SoundId id, const float volume) override;
-		void AddSound(const std::string& path, const SoundId id, bool doLoop = false) override;
-		void StartUp() override;
-		void Shutdown() override;
-		bool IsShutdown() override;
+		virtual void PlaySound(const SoundId id, const float volume) override;
+		virtual void AddSound(const std::string& path, const SoundId id, bool doLoop = false) override;
+		virtual void StartUp() override;
+		virtual void Shutdown() override;
+		virtual bool IsShutdown() override;
 		virtual bool IsMuted() const override;
 		virtual void MuteSound() override;
 		virtual void UnmuteSound() override;
 		virtual void ClearSounds() override;
-		float GetCurrentVolume() const override;
-		void SetVolume(float volume) override;
+		virtual float GetCurrentVolume() const override;
+		virtual void SetVolume(float volume) override;
+		virtual void ClearQueue() override;
 
 	private:
 		class SDL_SoundSystemImpl;
@@ -69,15 +72,16 @@ namespace FML
 	public:
 		Logging_SoundSystem(SoundSystem* ss) : m_pSS(ss) {};
 
-		void PlaySound(const SoundId id, const float volume) override;
-		void AddSound(const std::string& path, const SoundId id, bool doLoop = false) override;
-		void StartUp() override;
-		void Shutdown() override;
-		bool IsShutdown() override;
-		bool IsMuted() const override { return m_pSS->IsMuted(); };
+		virtual void PlaySound(const SoundId id, const float volume) override;
+		virtual void AddSound(const std::string& path, const SoundId id, bool doLoop = false) override;
+		virtual void StartUp() override;
+		virtual void Shutdown() override;
+		virtual bool IsShutdown() override;
+		virtual bool IsMuted() const override { return m_pSS->IsMuted(); };
 		virtual void MuteSound() override {};
 		virtual void UnmuteSound() override {};
 		virtual void ClearSounds() override {}
+		virtual void ClearQueue() override {};
 
 	private:
 		std::unique_ptr<SoundSystem> m_pSS;
