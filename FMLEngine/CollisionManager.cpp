@@ -29,25 +29,36 @@ namespace FML
 		{
 			for (size_t j = i + 1; j < colliders.size(); ++j)
 			{
-				SDL_Rect boxA = colliders[i]->GetBoundingBox();
-				SDL_Rect boxB = colliders[j]->GetBoundingBox();
+				Collider* colA = colliders[i];
+				Collider* colB = colliders[j];
+
+				if (!colA || !colB) continue;
+
+				SDL_Rect boxA = colA->GetBoundingBox();
+				SDL_Rect boxB = colB->GetBoundingBox();
 
 				if (SDL_HasIntersection(&boxA, &boxB))
 				{
-					GameObject* objA = colliders[i]->GetOwner();
-					GameObject* objB = colliders[j]->GetOwner();
+					GameObject* objA = colA->GetOwner();
+					GameObject* objB = colB->GetOwner();
 
 					if (!objA || !objB || objA->IsMarkedForDestruction() || objB->IsMarkedForDestruction())
 						continue;
 
-					collisionPairs.emplace_back(colliders[i], colliders[j]);
-					Logger::Log(LogLevel::Debug, "Collision detected between %s and %s at position(%d,%d)", objA->GetTag().c_str(), objB->GetTag().c_str(), boxA.x, boxA.y);
+					if (colA->isTrigger || colB->isTrigger)
+					{
+						if (colA->OnTrigger) colA->OnTrigger(colB);
+						if (colB->OnTrigger) colB->OnTrigger(colA);
+					}
+					else
+					{
+						collisionPairs.emplace_back(colA, colB);
 
-					if (colliders[i]->OnCollision)
-						colliders[i]->OnCollision(colliders[j]);
-
-					if (objB && !objB->IsMarkedForDestruction() && colliders[j]->OnCollision)
-						colliders[j]->OnCollision(colliders[i]);
+						if (colA->OnCollision)
+							colA->OnCollision(colB);
+						if (objB && !objB->IsMarkedForDestruction() && colB->OnCollision)
+							colB->OnCollision(colA);
+					}
 				}
 			}
 		}
@@ -194,7 +205,7 @@ namespace FML
 			SDL_Rect box = collider->GetBoundingBox();
 			if (IntersectRayWithRectangle(start, end, box))
 			{
-				glm::vec2 hitPoint = start + normalizedDirection * maxDistance; // optional: refine to exact point
+				glm::vec2 hitPoint = start + normalizedDirection * maxDistance;
 				float distance = glm::distance(start, hitPoint);
 
 				if (distance < closestDistance)
@@ -216,9 +227,9 @@ namespace FML
 		GameObject* excludeParent)
 	{
 		glm::vec2 dirNorm = glm::normalize(direction);
-		float     rayLength = std::abs(maxDistance);            
+		float     rayLength = std::abs(maxDistance);
 		std::optional<RaycastHit> closest;
-		float closestDist = rayLength + 1.f;                    
+		float closestDist = rayLength + 1.f;
 
 		for (auto* col : colliders)
 		{
@@ -278,7 +289,7 @@ namespace FML
 			if (tMin > tMax) return false;
 		}
 
-		outDist = tMin;     
+		outDist = tMin;
 		return outDist >= 0.f && outDist <= maxDist;
 	}
 

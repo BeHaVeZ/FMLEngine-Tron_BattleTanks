@@ -213,7 +213,7 @@ namespace FML
 
 		bullet->GetComponent<TransformComponent>()->SetPosition(spawnPosition - bulletTransform->GetPivot());
 
-		auto bulletMoveComponent = std::make_unique<BulletMoveComponent>(moveDirection, 250.f,0);
+		auto bulletMoveComponent = std::make_unique<BulletMoveComponent>(moveDirection, 250.f, 0);
 		bullet->AddComponent(std::move(bulletMoveComponent));
 
 		auto bulletBehavior = std::make_unique<BulletCollisionBehaviorComponent>();
@@ -232,6 +232,35 @@ namespace FML
 		bullet->AddComponent(std::move(bulletCollider));
 
 		return bullet;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateTeleportCenterPrefab(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto tpCenter = std::make_unique<GameObject>(tag);
+		spawnPosition = { 478,394 };
+		tpCenter->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+		int tpBoxWidth = 68;
+		int tpBoxHeight = 66;
+
+		auto centerTrigger = std::make_unique<BoxCollider>(SDL_Rect{ 0, 0,tpBoxWidth,tpBoxHeight});
+		centerTrigger->isTrigger = true;
+
+		GameObject* centerRaw = tpCenter.get();
+		centerTrigger->OnTrigger = [centerRaw](Collider* other)
+			{
+				const std::string& tag = other->GetOwner()->GetTag();
+
+				if (tag == "Player2" || tag == "Player1")
+				{
+					other->GetOwner()->GetComponent<TransformComponent>()->SetPosition({ 100,100 });
+					Logger::Log(LogLevel::Warning, "tp player here");
+				}
+
+			};
+		tpCenter->AddComponent(std::move(centerTrigger));
+
+		return tpCenter;
 	}
 
 	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer1(glm::vec2 spawnPosition, int maxHealth, const std::string tag) const

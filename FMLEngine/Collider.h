@@ -4,19 +4,22 @@
 #include <memory>
 #include <functional>
 
-namespace FML 
+namespace FML
 {
-    class CollisionManager;
+	class CollisionManager;
 
-    class Collider : public Component 
-    {
-    public:
-        Collider();
-        virtual ~Collider();
-        virtual SDL_Rect GetBoundingBox() const = 0;
+	class Collider : public Component
+	{
+	public:
+		Collider();
+		virtual ~Collider();
+		virtual SDL_Rect GetBoundingBox() const = 0;
 
 
-        std::function<void(Collider* other)> OnCollision;
-        bool isStatic;
-    };
+		std::function<void(Collider* other)> OnCollision;
+		std::function<void(Collider* other)> OnTrigger;
+
+		bool isStatic;
+		bool isTrigger;
+	};
 }

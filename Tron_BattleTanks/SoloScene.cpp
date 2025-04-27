@@ -156,6 +156,9 @@ namespace FML
 
 			AddGameObject(std::move(wall));
 		}
+
+		auto centerTP = PrefabRegistry::Instance().CreateTeleportCenterPrefab();
+		AddGameObject(std::move(centerTP));
 	}
 
 	void SoloScene::InitializeManagers()
