@@ -24,6 +24,7 @@ namespace FML
 		void InitializeInput() override;
 		void InitializeSounds();
 		void InitializeManagers();
+		void InitializeCenterTP();
 
 		void InitializeWalls();
 

@@ -1,0 +1,37 @@
+#pragma once
+#include "Component.h"
+#include "Collider.h"
+
+namespace FML
+{
+    class TeleportTriggerComponent : public Component
+    {
+    public:
+        void Update(float deltaTime) override {}
+        void Render(SDL_Renderer* renderer) override {}
+
+        void Initialize(Collider* collider)
+        {
+            if (!collider)
+                return;
+
+            collider->OnTrigger = [this](Collider* other)
+                {
+                    if (!other) return;
+
+                    const std::string& tag = other->GetOwner()->GetTag();
+                    if (tag == "Player1" || tag == "Player2")
+                    {
+                        glm::vec2 randomPosition = TeleportManager::Instance().GetRandomTeleportPosition();
+
+                        auto* transform = other->GetOwner()->GetComponent<TransformComponent>();
+                        if (transform)
+                        {
+                            transform->SetPosition(randomPosition);
+                            ServiceLocator::GetSoundSystem().PlaySound(15, ServiceLocator::GetSoundSystem().GetCurrentVolume() + .3f);
+                        }
+                    }
+                };
+        };
+    };
+}

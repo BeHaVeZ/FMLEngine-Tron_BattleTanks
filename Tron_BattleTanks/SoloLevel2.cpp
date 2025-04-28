@@ -39,6 +39,7 @@ namespace FML
 		InitializeUI();
 		InitializeWalls();
 		InitializeManagers();
+		InitializeCenterTP();
 
 		InitializeInput();
 		InitializeSounds();
@@ -151,6 +152,12 @@ namespace FML
 		SoundHelper::LoadSharedSounds();
 
 		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+	}
+
+	void SoloLevel2::InitializeCenterTP()
+	{
+		auto centerTP = PrefabRegistry::Instance().CreateTeleportCenterPrefab();
+		AddGameObject(std::move(centerTP));
 	}
 
 	void SoloLevel2::InitializeWalls()

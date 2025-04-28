@@ -16,6 +16,8 @@
 #include "../Tron_BattleTanks/TankObserver.h"
 #include "../Tron_BattleTanks/GameAdmin.h"
 #include "../Tron_BattleTanks/HighscoreManager.h"
+#include "../Tron_BattleTanks/TeleportManager.h"
+#include "../Tron_BattleTanks/TeleportTriggerComponent.h"
 
 namespace FML
 {
@@ -243,22 +245,15 @@ namespace FML
 		int tpBoxWidth = 68;
 		int tpBoxHeight = 66;
 
-		auto centerTrigger = std::make_unique<BoxCollider>(SDL_Rect{ 0, 0,tpBoxWidth,tpBoxHeight});
+		auto centerTrigger = std::make_unique<BoxCollider>(SDL_Rect{ 0, 0, tpBoxWidth, tpBoxHeight });
 		centerTrigger->isTrigger = true;
 
-		GameObject* centerRaw = tpCenter.get();
-		centerTrigger->OnTrigger = [centerRaw](Collider* other)
-			{
-				const std::string& tag = other->GetOwner()->GetTag();
+		auto teleportComponent = std::make_unique<TeleportTriggerComponent>();
 
-				if (tag == "Player2" || tag == "Player1")
-				{
-					other->GetOwner()->GetComponent<TransformComponent>()->SetPosition({ 100,100 });
-					Logger::Log(LogLevel::Warning, "tp player here");
-				}
+		teleportComponent->Initialize(centerTrigger.get());
 
-			};
 		tpCenter->AddComponent(std::move(centerTrigger));
+		tpCenter->AddComponent(std::move(teleportComponent));
 
 		return tpCenter;
 	}

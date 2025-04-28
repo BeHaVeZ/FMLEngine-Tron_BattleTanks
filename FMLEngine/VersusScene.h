@@ -23,6 +23,7 @@ namespace FML
 		void InitializeUI();
 		void InitializeHealthUI();
 		void InitializeScoreUI();
+		void InitializeCenterTP();
 
 		void InitializeWalls();
 

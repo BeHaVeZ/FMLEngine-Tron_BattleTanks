@@ -40,6 +40,7 @@ namespace FML
 		InitializeUI();
 		InitializeWalls();
 		InitializeManagers();
+		InitializeCenterTP();
 
 
 		InitializeInput();
@@ -156,15 +157,18 @@ namespace FML
 
 			AddGameObject(std::move(wall));
 		}
-
-		auto centerTP = PrefabRegistry::Instance().CreateTeleportCenterPrefab();
-		AddGameObject(std::move(centerTP));
 	}
 
 	void SoloScene::InitializeManagers()
 	{
 		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
 		AddGameObject(std::move(enemyManager));
+	}
+
+	void SoloScene::InitializeCenterTP()
+	{
+		auto centerTP = PrefabRegistry::Instance().CreateTeleportCenterPrefab();
+		AddGameObject(std::move(centerTP));
 	}
 
 

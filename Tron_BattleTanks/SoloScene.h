@@ -29,6 +29,8 @@ namespace FML
 		void InitializeWalls();
 		void InitializeManagers();
 
+		void InitializeCenterTP();
+
 		void HandleInput(SDL_Event& event) override;
 
 		void Update(float deltaTime) override;

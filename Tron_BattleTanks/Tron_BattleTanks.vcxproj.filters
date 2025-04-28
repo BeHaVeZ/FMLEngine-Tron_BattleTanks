@@ -83,6 +83,9 @@
     <ClCompile Include="GameAdmin.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
+    <ClCompile Include="TeleportManager.cpp">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FMLEngine\DamageEvent.h">
@@ -198,6 +201,12 @@
     </ClInclude>
     <ClInclude Include="..\FMLEngine\SoundHelper.h">
       <Filter>Header Files\GameManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="TeleportManager.h">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="TeleportTriggerComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

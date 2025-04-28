@@ -18,7 +18,7 @@ namespace FML
 		EnemyManagerComponent() :
 			maxEnemies(5),
 			currentEnemies(0),
-			enemiesToKillForTheNextLevel(5),
+			enemiesToKillForTheNextLevel(10),
 			spawnCooldown(0.f),
 			spawnCooldownTime(2.5f),
 			visibilityTolerance(20.f)

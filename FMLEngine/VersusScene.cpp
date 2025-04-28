@@ -37,6 +37,7 @@ namespace FML
 		InitializeUI();
 
 		InitializeWalls();
+		InitializeCenterTP();
 
 		InitializeInput();
 		InitializeSounds();
@@ -125,6 +126,12 @@ namespace FML
 	void VersusScene::InitializeScoreUI()
 	{
 		//VERSUS TODO WHAT SHOULD THIS BE?
+	}
+
+	void VersusScene::InitializeCenterTP()
+	{
+		auto centerTP = PrefabRegistry::Instance().CreateTeleportCenterPrefab();
+		AddGameObject(std::move(centerTP));
 	}
 
 	void VersusScene::InitializeWalls()

@@ -37,6 +37,7 @@ namespace FML
 
 		InitializeWalls();
 		InitializeManagers();
+		InitializeCenterTP();
 
 		InitializeInput();
 		InitializeSounds();
@@ -148,6 +149,12 @@ namespace FML
 
 		auto currentScoreUI = PrefabRegistry::Instance().CreateCurrentScoreUI({ 750,30 }, "CurrentScoreUI");
 		gameObjects.push_back(std::move(currentScoreUI));
+	}
+
+	void CoopScene::InitializeCenterTP()
+	{
+		auto centerTP = PrefabRegistry::Instance().CreateTeleportCenterPrefab();
+		AddGameObject(std::move(centerTP));
 	}
 
 	void CoopScene::InitializeWalls()
