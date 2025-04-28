@@ -9,6 +9,7 @@ namespace FML
 
 	class TestingScene final : public Scene {
 	public:
+		TestingScene() : Scene("Testing") {}
 		bool Initialize(SDL_Renderer* renderer) override;
 
 

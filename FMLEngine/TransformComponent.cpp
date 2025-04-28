@@ -1,13 +1,15 @@
 #include "TransformComponent.h"
 #include "TextureComponent.h"
+#include "DebugDraw.h"
 #include <cmath>
-#include <iostream>
 
 namespace FML
 {
 
 	TransformComponent::TransformComponent(glm::vec2 position, float rotation, glm::vec2 pivot)
-		: localPosition(position), localRotation(rotation), pivot(pivot), width(0), height(0), worldPosition(position), worldRotation(rotation), isDirty(true),isMoving(false)
+		: localPosition(position), localRotation(rotation), pivot(pivot),
+		width(0), height(0), isDirty(true), isMoving(false),
+		localMatrix(1.0f), worldMatrix(1.0f)
 	{
 	}
 
@@ -21,23 +23,10 @@ namespace FML
 		}
 	}
 
-	void TransformComponent::SetSize(float newWidth, float newHeight)
-	{
-		width = newWidth;
-		height = newHeight;
-	}
-
-	void TransformComponent::CentralizePivotOnTexture(TextureComponent* texture)
-	{
-		if (texture)
-		{
-			SetPivot({ texture->GetDefaultWidth() / 2, texture->GetDefaultHeight() / 2 });
-		}
-	}
-
 	void TransformComponent::SetRotation(float newRotation)
 	{
-		if (newRotation != localRotation) {
+		if (newRotation != localRotation) 
+		{
 			localRotation = newRotation;
 			MarkDirty();
 		}
@@ -57,6 +46,40 @@ namespace FML
 		SetPivot(pivot + offset);
 	}
 
+	void TransformComponent::SetSize(float newWidth, float newHeight)
+	{
+		width = newWidth;
+		height = newHeight;
+	}
+
+	void TransformComponent::CentralizePivotOnTexture(TextureComponent* texture)
+	{
+		if (texture)
+		{
+			SetSize((float)texture->GetDefaultWidth(), (float)texture->GetDefaultHeight());
+			SetPivot({ 0.5f, 0.5f }); // <-- normalized pivot (0.5,0.5)
+		}
+	}
+
+	void FML::TransformComponent::Render(SDL_Renderer*)
+	{
+		glm::vec2 pos = GetWorldPosition();
+
+		glm::vec2 right = { worldMatrix[0][0], worldMatrix[0][1] };
+		glm::vec2 up = { -worldMatrix[1][0], -worldMatrix[1][1] };
+
+		float lineLength = 30.0f;
+
+		glm::vec2 endRight = pos + right * lineLength;
+		glm::vec2 endUp = pos + up * lineLength;
+
+		DebugDraw::DrawLine(pos, endRight, { 1.0f, 0.0f, 0.0f, 1.0f }); 
+
+		DebugDraw::DrawLine(pos, endUp, { 0.0f, 1.0f, 0.0f, 1.0f }); 
+
+		DebugDraw::DrawCircle(pos, 4.0f, { 0.0f, 0.0f, 1.0f, 1.0f }); 
+	}
+
 	void TransformComponent::Update(float)
 	{
 		if (isDirty)
@@ -72,29 +95,48 @@ namespace FML
 
 	void TransformComponent::UpdateWorldPosition()
 	{
-		if (gameObject->HasParent()) {
-			auto parentTransform = gameObject->GetParent()->GetComponent<TransformComponent>();
+		glm::mat3 P(1.0f); // move -pivot to origin
+		glm::mat3 R(1.0f); // rotate
+		glm::mat3 T(1.0f); // move to localPosition
+
+		// 1. Move -pivot
+		P[2] = glm::vec3(-pivot, 1.0f);
+
+		// 2. Rotate
+		float radians = glm::radians(localRotation);
+		R[0][0] = cos(radians); R[0][1] = -sin(radians);
+		R[1][0] = sin(radians); R[1][1] = cos(radians);
+
+		// 3. Move to position
+		T[2] = glm::vec3(localPosition, 1.0f);
+
+		// 4. Combine correctly
+		localMatrix = T * R * P;
+
+		// 5. Combine with parent
+		if (gameObject->HasParent())
+		{
+			auto* parentTransform = gameObject->GetParent()->GetComponent<TransformComponent>();
 			if (parentTransform)
 			{
-				glm::vec2 pivotOffset = glm::vec2(width * pivot.x, height * pivot.y);
-				glm::vec2 positionOffset = localPosition - pivotOffset;
-
-				float rotationRadians = parentTransform->localRotation * (float)M_PI / 180;
-				glm::vec2 rotatedPositionOffset = glm::vec2
-				(
-					positionOffset.x * cos(rotationRadians) - positionOffset.y * sin(rotationRadians),
-					positionOffset.x * sin(rotationRadians) + positionOffset.y * cos(rotationRadians)
-				);
-
-				worldPosition = parentTransform->worldPosition + rotatedPositionOffset + pivotOffset;
-				worldRotation = parentTransform->worldRotation + localRotation;
+				worldMatrix = parentTransform->worldMatrix * localMatrix;
 			}
 		}
 		else
 		{
-			worldPosition = localPosition;
-			worldRotation = localRotation;
+			worldMatrix = localMatrix;
 		}
+	}
+
+	glm::vec2 TransformComponent::GetWorldPosition() const
+	{
+		return glm::vec2(worldMatrix[2][0], worldMatrix[2][1]);
+	}
+
+	float TransformComponent::GetWorldRotation() const
+	{
+		float radians = atan2(worldMatrix[0][1], worldMatrix[0][0]);
+		return glm::degrees(radians);
 	}
 
 	void TransformComponent::MarkDirty()
@@ -102,7 +144,7 @@ namespace FML
 		isDirty = true;
 		for (auto& child : gameObject->GetChildren())
 		{
-			auto childTransform = child->GetComponent<TransformComponent>();
+			auto* childTransform = child->GetComponent<TransformComponent>();
 			if (childTransform)
 			{
 				childTransform->MarkDirty();
@@ -110,7 +152,7 @@ namespace FML
 		}
 	}
 
-	void TransformComponent::MarkMoving(bool moving) 
+	void TransformComponent::MarkMoving(bool moving)
 	{
 		isMoving = moving;
 	}
@@ -119,5 +161,5 @@ namespace FML
 	{
 		return width > 0.0f && height > 0.0f;
 	}
-}
 
+}

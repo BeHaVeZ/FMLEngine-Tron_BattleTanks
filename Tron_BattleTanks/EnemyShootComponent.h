@@ -32,7 +32,7 @@ namespace FML
 			float halfWidth = texture->GetDefaultWidth() / 2.f;
 			float halfHeight = texture->GetDefaultHeight() / 2.f;
 
-			glm::vec2 center = texture->GetWorldCenter();
+			glm::vec2 center = transform->GetPivot();
 
 			float worldRotationDegrees = transform->GetWorldRotation();
 			float rotationRadians = glm::radians(worldRotationDegrees + 90.f);

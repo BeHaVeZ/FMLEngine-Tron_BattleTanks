@@ -91,7 +91,7 @@ namespace FML
 
 		auto backgroundTransform = background->GetComponent<TransformComponent>();
 		if (backgroundTransform) {
-			backgroundTransform->SetPosition({ 0,0 });
+			backgroundTransform->SetPosition({ ConfigManager::Instance().GetWindowWidth()/2, ConfigManager::Instance().GetWindowHeight() / 2 });
 			backgroundTransform->SetSize(
 				static_cast<float>(ConfigManager::Instance().GetWindowWidth()),
 				static_cast<float>(ConfigManager::Instance().GetWindowHeight())

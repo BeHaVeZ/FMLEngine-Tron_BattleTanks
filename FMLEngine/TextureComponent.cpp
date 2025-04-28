@@ -28,27 +28,21 @@ namespace FML
 		if (texture) {
 			auto transform = gameObject->GetComponent<TransformComponent>();
 			if (transform) {
-				destRect.x = static_cast<int>(transform->GetWorldPosition().x);
-				destRect.y = static_cast<int>(transform->GetWorldPosition().y);
-
 				destRect.w = static_cast<int>(transform->IsSizeSet() ? transform->GetWidth() : defaultWidth);
 				destRect.h = static_cast<int>(transform->IsSizeSet() ? transform->GetHeight() : defaultHeight);
 
-				SDL_Point center{ static_cast<int>(transform->GetPivot().x),static_cast<int>(transform->GetPivot().y) };
+				// pivot is normalized, convert to pixel pivot inside destRect
+				SDL_Point center{
+					static_cast<int>(transform->GetPivot().x * destRect.w),
+					static_cast<int>(transform->GetPivot().y * destRect.h)
+				};
 
-				SDL_RenderCopyEx(renderer, texture, NULL, &destRect,
+				// Subtract pivot from world position
+				destRect.x = static_cast<int>(transform->GetWorldPosition().x - center.x);
+				destRect.y = static_cast<int>(transform->GetWorldPosition().y - center.y);
+
+				SDL_RenderCopyEx(renderer, texture, nullptr, &destRect,
 					transform->GetWorldRotation(), &center, SDL_FLIP_NONE);
-
-				//FOR PIVOT POINT UNCOMMENT THIS
-				//SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-				//SDL_Rect pivotRect = {
-				//	static_cast<int>(destRect.x + center.x - 2),
-				//	static_cast<int>(destRect.y + center.y - 2),
-				//	4,
-				//	4
-				//};
-				//SDL_RenderFillRect(renderer, &pivotRect);
-				//SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 			}
 		}
 	}

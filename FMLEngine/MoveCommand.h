@@ -4,32 +4,33 @@
 #include "TransformComponent.h"
 #include "Timer.h"
 #include <iostream>
-#include <glm.hpp>
 
 namespace FML
 {
-	class MoveCommand : public Command 
+	class MoveCommand : public Command
 	{
 	public:
 		MoveCommand(GameObject* object, glm::vec2 direction, float distance)
-			: gameObject(object), direction(glm::normalize(direction)), moveDistance(distance) 
+			: gameObject(object), direction(glm::normalize(direction)), moveDistance(distance)
 		{
 		}
 
-		void Execute() override 
+		void Execute() override
 		{
-			if (gameObject) 
+			if (gameObject)
 			{
 				auto transform = gameObject->GetComponent<TransformComponent>();
-				if (transform && transform->IsMoving() == false) 
+				if (transform && !transform->IsMoving())
 				{
 					glm::vec2 newPosition = transform->GetLocalPosition() + direction * moveDistance * Timer::Instance().GetDeltaTime();
 					transform->SetPosition(newPosition);
 
-					float angleRadians = atan2(-direction.y, -direction.x);
-					float angleDegrees = glm::degrees(angleRadians);
-
-					transform->SetRotation(angleDegrees - 90);
+					if (glm::length(direction) > 0.0f)
+					{
+						float angleRadians = atan2(-direction.y, direction.x); 
+						float angleDegrees = glm::degrees(angleRadians);
+						transform->SetRotation(angleDegrees - 90.0f);
+					}
 				}
 			}
 		}
@@ -40,5 +41,3 @@ namespace FML
 		float moveDistance;
 	};
 }
-
-

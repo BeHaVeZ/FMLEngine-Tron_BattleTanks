@@ -69,74 +69,51 @@ namespace FML
 		}
 	}
 
-	void CollisionManager::ResolveCollision(Collider* colliderA, Collider* colliderB)
+	void CollisionManager::ResolveCollision(Collider* a, Collider* b)
 	{
-		GameObject* gameObjectA = colliderA->GetOwner();
-		GameObject* gameObjectB = colliderB->GetOwner();
-
-		if (!gameObjectA || !gameObjectB)
-		{
-			Logger::Log(LogLevel::Error, "ResolveCollision: GameObject is null");
+		// Skip if both colliders are static or triggers
+		if ((a->isStatic && b->isStatic) || a->isTrigger || b->isTrigger)
 			return;
-		}
 
-		auto transformA = gameObjectA->GetComponent<TransformComponent>();
-		auto transformB = gameObjectB->GetComponent<TransformComponent>();
+		auto* goA = a->GetOwner();
+		auto* goB = b->GetOwner();
+		if (!goA || !goB) return;
 
-		if (!transformA || !transformB)
-		{
-			Logger::Log(LogLevel::Error, "ResolveCollision: TransformComponent is null");
-			return;
-		}
+		auto* tA = goA->GetComponent<TransformComponent>();
+		auto* tB = goB->GetComponent<TransformComponent>();
+		if (!tA || !tB) return;
 
-		SDL_Rect boxA = colliderA->GetBoundingBox();
-		SDL_Rect boxB = colliderB->GetBoundingBox();
-
-		int overlapLeft = boxA.x + boxA.w - boxB.x;
-		int overlapRight = boxB.x + boxB.w - boxA.x;
-		int overlapTop = boxA.y + boxA.h - boxB.y;
-		int overlapBottom = boxB.y + boxB.h - boxA.y;
-
-		int minOverlap = std::min({ overlapLeft, overlapRight, overlapTop, overlapBottom });
-
-		if (minOverlap == overlapLeft)
-		{
-			if (!colliderA->isStatic) {
-				transformA->SetPosition({ boxA.x - minOverlap, boxA.y });
-			}
-			if (!colliderB->isStatic) {
-				transformB->SetPosition({ boxB.x + minOverlap, boxB.y });
-			}
-		}
-		else if (minOverlap == overlapRight)
-		{
-			if (!colliderA->isStatic) {
-				transformA->SetPosition({ boxA.x + minOverlap, boxA.y });
-			}
-			if (!colliderB->isStatic) {
-				transformB->SetPosition({ boxB.x - minOverlap, boxB.y });
-			}
-		}
-		else if (minOverlap == overlapTop)
-		{
-			if (!colliderA->isStatic)
+		// --- convert each rect to centre & half-extents --------------------------
+		const auto toInfo = [](const SDL_Rect& r)
 			{
-				transformA->SetPosition({ boxA.x, boxA.y - minOverlap });
-			}
-			if (!colliderB->isStatic)
-			{
-				transformB->SetPosition({ boxB.x, boxB.y + minOverlap });
-			}
-		}
-		else {
-			if (!colliderA->isStatic) {
-				transformA->SetPosition({ boxA.x, boxA.y + minOverlap });
-			}
-			if (!colliderB->isStatic) {
-				transformB->SetPosition({ boxB.x, boxB.y - minOverlap });
-			}
-		}
+				glm::vec2 c{ r.x + r.w * 0.5f,  r.y + r.h * 0.5f };
+				glm::vec2 h{ r.w * 0.5f,        r.h * 0.5f };
+				return std::pair<glm::vec2, glm::vec2>(c, h);   // { centre, halfSize }
+			};
+
+		auto [cA, hA] = toInfo(a->GetBoundingBox());
+		auto [cB, hB] = toInfo(b->GetBoundingBox());
+
+		// --- signed overlap ------------------------------------------------------
+		glm::vec2 delta = cA - cB;
+		glm::vec2 overlap = hA + hB - glm::abs(delta);
+		if (overlap.x <= 0.f || overlap.y <= 0.f) return;   // no longer intersecting
+
+		// --- choose axis with the smallest penetration --------------------------
+		glm::vec2 push{};
+		if (overlap.x < overlap.y)
+			push.x = (delta.x < 0.f ? -overlap.x : overlap.x);
+		else
+			push.y = (delta.y < 0.f ? -overlap.y : overlap.y);
+
+		// --- apply to the non-static collider(s) --------------------------------
+		if (!a->isStatic)
+			tA->SetPosition(tA->GetLocalPosition() + push);
+
+		if (!b->isStatic)
+			tB->SetPosition(tB->GetLocalPosition() - push);
 	}
+
 	bool CollisionManager::Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude, GameObject* excludeParent)
 	{
 		bool hitDetected = false;

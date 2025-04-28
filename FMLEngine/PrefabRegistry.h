@@ -13,8 +13,9 @@ namespace FML
 	public:
 		static PrefabRegistry& Instance();
 		std::unique_ptr<GameObject> CreateRedTankPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "") const;
-		std::unique_ptr<GameObject> CreateBlueTankPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "Enemy") const;
 		std::unique_ptr<GameObject> CreatePinkTankPrefab(glm::vec2 spawnPosition, const std::string tag) const;
+		std::unique_ptr<GameObject> CreateGreenTankPrefab(glm::vec2 spawnPosition, const std::string tag) const;
+		std::unique_ptr<GameObject> CreateBlueTankPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "Enemy") const;
 		std::unique_ptr<GameObject> CreateYellowTankPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "") const;
 		std::unique_ptr<GameObject> CreateBulletPrefab(glm::vec2 spawnPosition = { 0,0 }, glm::vec2 moveDirection = { 0,-1 }, const std::string tag = "") const;
 		std::unique_ptr<GameObject> CreateEnemyBulletPrefab(glm::vec2 spawnPosition = { 0,0 }, glm::vec2 moveDirection = { 0,-1 }, const std::string tag = "EnemyBullet") const;

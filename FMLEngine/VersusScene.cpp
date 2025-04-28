@@ -53,7 +53,8 @@ namespace FML
 
 		auto backgroundTransform = background->GetComponent<TransformComponent>();
 		if (backgroundTransform) {
-			backgroundTransform->SetPosition({ 0, 0 });
+			backgroundTransform->SetPosition({ ConfigManager::Instance().GetWindowWidth() , ConfigManager::Instance().GetWindowHeight() });
+			backgroundTransform->SetPivot({ 0.f, 0.f });
 			backgroundTransform->SetSize(
 				static_cast<float>(ConfigManager::Instance().GetWindowWidth()),
 				static_cast<float>(ConfigManager::Instance().GetWindowHeight())
@@ -149,6 +150,8 @@ namespace FML
 			wall->AddComponent(std::move(wallCollider));
 
 			wall->GetComponent<TransformComponent>()->SetPosition({ rect.x, rect.y });
+			wall->GetComponent<TransformComponent>()->SetPivot({0,0});
+			
 
 			AddGameObject(std::move(wall));
 		}

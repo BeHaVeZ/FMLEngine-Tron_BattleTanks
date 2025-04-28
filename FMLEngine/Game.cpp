@@ -91,6 +91,7 @@ namespace FML
 		SceneManager::Instance().AddScene(std::make_unique<CoopScene>());
 		SceneManager::Instance().AddScene(std::make_unique<NameEntryScene>());
 		SceneManager::Instance().AddScene(std::make_unique<SoloHighscoreScene>());
+		SceneManager::Instance().AddScene(std::make_unique<TestingScene>());
 
 		SceneManager::Instance().QueueSceneChange("MainMenu");
 

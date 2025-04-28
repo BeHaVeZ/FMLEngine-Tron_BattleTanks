@@ -2,17 +2,16 @@
 #include "Component.h"
 #include "GameObject.h"
 #include <glm.hpp>
-#include <SDL.h>
 
 namespace FML
 {
 
 	class TextureComponent;
 
-
 	class TransformComponent final : public Component {
 	public:
-		TransformComponent(glm::vec2 position = {}, float rotation = 0.0f, glm::vec2 pivot = { .5f,.5f });
+		TransformComponent(glm::vec2 position = {}, float rotation = 0.0f, glm::vec2 pivot = { .5f, .5f });
+
 		void SetPosition(glm::vec2 newPosition);
 		void SetRotation(float newRotation);
 		void SetPivot(glm::vec2 newPivot);
@@ -21,30 +20,32 @@ namespace FML
 
 		void CentralizePivotOnTexture(TextureComponent* texture);
 
+
+		void Render(SDL_Renderer*) override;
 		void Update(float deltaTime) override;
 		void UpdateWorldPosition();
 		void MarkDirty();
 		void MarkMoving(bool moving);
 
 		bool IsMoving() const { return isMoving; }
-
 		bool IsSizeSet() const;
 
-		glm::vec2  GetWorldPosition() const { return worldPosition; }
+		glm::vec2 GetWorldPosition() const;
 		glm::vec2 GetLocalPosition() const { return localPosition; }
 		glm::vec2 GetPivot() const { return pivot; }
-		float GetWorldRotation() const { return worldRotation; }
+		float GetWorldRotation() const;
 		float GetLocalRotation() const { return localRotation; }
 		float GetWidth() const { return width; }
 		float GetHeight() const { return height; }
 
 	private:
-		glm::vec2 localPosition, worldPosition, pivot;
-		float localRotation, worldRotation;
+		glm::vec2 localPosition, pivot;
+		float localRotation;
 		float width, height;
-		bool isDirty,isMoving;
+		bool isDirty, isMoving;
+
+		glm::mat3 localMatrix;
+		glm::mat3 worldMatrix;
 	};
 
-
 }
-
