@@ -85,7 +85,7 @@ namespace FML
 
 		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/BlueTank.png", SceneManager::Instance().GetRenderer());
 		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
-		tank->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x - tankTexture.get()->GetDefaultWidth() / 2, spawnPosition.y - tankTexture.get()->GetDefaultHeight() / 2 });
+		tank->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y });
 		tank->AddComponent(std::move(tankTexture));
 
 		auto tankHealth = std::make_unique<HealthComponent>(1);
@@ -112,7 +112,7 @@ namespace FML
 
 		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/PinkTank.png", SceneManager::Instance().GetRenderer());
 		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
-		tank->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x - tankTexture.get()->GetDefaultWidth() / 2, spawnPosition.y - tankTexture.get()->GetDefaultHeight() / 2 });
+		tank->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y});
 		tank->AddComponent(std::move(tankTexture));
 
 		auto tankHealth = std::make_unique<HealthComponent>(1);
@@ -241,13 +241,15 @@ namespace FML
 		bullet->AddComponent(std::move(bulletBehavior));
 
 		auto bulletCollider = std::make_unique<BoxCollider>(SDL_Rect{ 0, 0,bullet->GetComponent<TextureComponent>()->GetDefaultWidth(),bullet->GetComponent<TextureComponent>()->GetDefaultHeight() });
+		bulletCollider->isTrigger = true;
+
 
 		GameObject* bulletRaw = bullet.get();
-		bulletCollider->OnCollision = [bulletRaw](Collider* other)
+		bulletCollider->OnTrigger = [bulletRaw](Collider* other)
 			{
 				auto behavior = bulletRaw->GetComponent<BulletCollisionBehaviorComponent>();
 				if (behavior)
-					behavior->OnCollision(bulletRaw, other);
+					behavior->OnTrigger(bulletRaw, other);
 			};
 
 		bullet->AddComponent(std::move(bulletCollider));
@@ -274,13 +276,14 @@ namespace FML
 		bullet->AddComponent(std::move(bulletBehavior));
 
 		auto bulletCollider = std::make_unique<BoxCollider>(SDL_Rect{ 0, 0,bullet->GetComponent<TextureComponent>()->GetDefaultWidth(),bullet->GetComponent<TextureComponent>()->GetDefaultHeight() });
+		bulletCollider->isTrigger = true;
 
 		GameObject* bulletRaw = bullet.get();
-		bulletCollider->OnCollision = [bulletRaw](Collider* other)
+		bulletCollider->OnTrigger = [bulletRaw](Collider* other)
 			{
 				auto behavior = bulletRaw->GetComponent<BulletCollisionBehaviorComponent>();
 				if (behavior)
-					behavior->OnCollision(bulletRaw, other);
+					behavior->OnTrigger(bulletRaw, other);
 			};
 
 		bullet->AddComponent(std::move(bulletCollider));

@@ -31,13 +31,11 @@ namespace FML
 				destRect.w = static_cast<int>(transform->IsSizeSet() ? transform->GetWidth() : defaultWidth);
 				destRect.h = static_cast<int>(transform->IsSizeSet() ? transform->GetHeight() : defaultHeight);
 
-				// pivot is normalized, convert to pixel pivot inside destRect
 				SDL_Point center{
 					static_cast<int>(transform->GetPivot().x * destRect.w),
 					static_cast<int>(transform->GetPivot().y * destRect.h)
 				};
 
-				// Subtract pivot from world position
 				destRect.x = static_cast<int>(transform->GetWorldPosition().x - center.x);
 				destRect.y = static_cast<int>(transform->GetWorldPosition().y - center.y);
 

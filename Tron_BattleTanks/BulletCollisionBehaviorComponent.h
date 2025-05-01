@@ -9,6 +9,28 @@
 
 namespace FML
 {
+
+	struct Separation
+	{
+		glm::vec2 normal;  
+		float     depth;   
+	};
+
+	static Separation GetSeparation(const SDL_Rect& a, const SDL_Rect& b)
+	{
+		int dL = a.x + a.w - b.x;        
+		int dR = b.x + b.w - a.x;       
+		int dT = a.y + a.h - b.y;        
+		int dB = b.y + b.h - a.y;        
+
+		int minPen = std::min({ dL, dR, dT, dB });
+
+		if (minPen == dL) return { {-1, 0}, (float)dL };
+		if (minPen == dR) return { { 1, 0}, (float)dR };
+		if (minPen == dT) return { { 0,-1}, (float)dT };
+		return               { { 0, 1}, (float)dB };
+	}
+
 	class BulletCollisionBehaviorComponent : public Component
 	{
 	public:
@@ -22,13 +44,13 @@ namespace FML
 
 			int minOverlap = std::min({ overlapLeft, overlapRight, overlapTop, overlapBottom });
 
-			if (minOverlap == overlapLeft)       return glm::vec2(-1, 0);
+			if (minOverlap == overlapLeft)			 return glm::vec2(-1, 0);
 			else if (minOverlap == overlapRight) return glm::vec2(1, 0);
 			else if (minOverlap == overlapTop)   return glm::vec2(0, -1);
-			else                                 return glm::vec2(0, 1);
+			else													return glm::vec2(0, 1);
 		}
 
-		void OnCollision(GameObject* self, Collider* other)
+		void OnTrigger(GameObject* self, Collider* other)
 		{
 			GameObject* otherGO = other->GetOwner();
 			if (!otherGO) return;
@@ -47,22 +69,23 @@ namespace FML
 			}
 			else if (tag == "Wall")
 			{
-				auto bulletCollider = self->GetComponent<Collider>();
-				auto wallCollider = otherGO->GetComponent<Collider>();
+				auto* bulletCol = self->GetComponent<Collider>();
+				auto* wallCol = otherGO->GetComponent<Collider>();
+				if (!bulletCol || !wallCol) return;
 
-				if (bulletCollider && wallCollider)
-				{
-					SDL_Rect bulletBox = bulletCollider->GetBoundingBox();
-					SDL_Rect wallBox = wallCollider->GetBoundingBox();
+				Separation sep = GetSeparation(bulletCol->GetBoundingBox(),
+					wallCol->GetBoundingBox());
 
-					glm::vec2 normal = CalculateCollisionNormal(bulletBox, wallBox);
-					self->GetComponent<BulletMoveComponent>()->Bounce(normal);
-				}
+				if (auto* move = self->GetComponent<BulletMoveComponent>())
+					move->Bounce(sep.normal);
+
+				auto* tr = self->GetComponent<TransformComponent>();
+				tr->SetPosition(tr->GetLocalPosition() + sep.normal * (sep.depth + 1.5f));
 			}
 			else if (tag == "EnemyBullet" || tag == "Bullet")
 			{
 				self->Destroy();
-				other->GetOwner()->Destroy();
+				otherGO->Destroy();
 			}
 		}
 	};

@@ -57,7 +57,7 @@ namespace FML
 		if (texture)
 		{
 			SetSize((float)texture->GetDefaultWidth(), (float)texture->GetDefaultHeight());
-			SetPivot({ 0.5f, 0.5f }); // <-- normalized pivot (0.5,0.5)
+			SetPivot({ 0.5f, 0.5f });
 		}
 	}
 
@@ -95,25 +95,20 @@ namespace FML
 
 	void TransformComponent::UpdateWorldPosition()
 	{
-		glm::mat3 P(1.0f); // move -pivot to origin
-		glm::mat3 R(1.0f); // rotate
-		glm::mat3 T(1.0f); // move to localPosition
+		glm::mat3 P(1.0f); 
+		glm::mat3 R(1.0f); 
+		glm::mat3 T(1.0f);
 
-		// 1. Move -pivot
 		P[2] = glm::vec3(-pivot, 1.0f);
 
-		// 2. Rotate
 		float radians = glm::radians(localRotation);
 		R[0][0] = cos(radians); R[0][1] = -sin(radians);
 		R[1][0] = sin(radians); R[1][1] = cos(radians);
 
-		// 3. Move to position
 		T[2] = glm::vec3(localPosition, 1.0f);
 
-		// 4. Combine correctly
 		localMatrix = T * R * P;
 
-		// 5. Combine with parent
 		if (gameObject->HasParent())
 		{
 			auto* parentTransform = gameObject->GetParent()->GetComponent<TransformComponent>();

@@ -71,7 +71,6 @@ namespace FML
 
 	void CollisionManager::ResolveCollision(Collider* a, Collider* b)
 	{
-		// Skip if both colliders are static or triggers
 		if ((a->isStatic && b->isStatic) || a->isTrigger || b->isTrigger)
 			return;
 
@@ -83,30 +82,26 @@ namespace FML
 		auto* tB = goB->GetComponent<TransformComponent>();
 		if (!tA || !tB) return;
 
-		// --- convert each rect to centre & half-extents --------------------------
 		const auto toInfo = [](const SDL_Rect& r)
 			{
 				glm::vec2 c{ r.x + r.w * 0.5f,  r.y + r.h * 0.5f };
 				glm::vec2 h{ r.w * 0.5f,        r.h * 0.5f };
-				return std::pair<glm::vec2, glm::vec2>(c, h);   // { centre, halfSize }
+				return std::pair<glm::vec2, glm::vec2>(c, h);
 			};
 
 		auto [cA, hA] = toInfo(a->GetBoundingBox());
 		auto [cB, hB] = toInfo(b->GetBoundingBox());
 
-		// --- signed overlap ------------------------------------------------------
 		glm::vec2 delta = cA - cB;
 		glm::vec2 overlap = hA + hB - glm::abs(delta);
-		if (overlap.x <= 0.f || overlap.y <= 0.f) return;   // no longer intersecting
+		if (overlap.x <= 0.f || overlap.y <= 0.f) return; 
 
-		// --- choose axis with the smallest penetration --------------------------
 		glm::vec2 push{};
 		if (overlap.x < overlap.y)
 			push.x = (delta.x < 0.f ? -overlap.x : overlap.x);
 		else
 			push.y = (delta.y < 0.f ? -overlap.y : overlap.y);
 
-		// --- apply to the non-static collider(s) --------------------------------
 		if (!a->isStatic)
 			tA->SetPosition(tA->GetLocalPosition() + push);
 
