@@ -39,7 +39,7 @@ namespace FML
 
 		InitializeUI();
 		InitializeWalls();
-		InitializeManagers();
+		//InitializeManagers();
 		InitializeCenterTP();
 
 
@@ -136,7 +136,7 @@ namespace FML
 
 		SoundHelper::LoadSharedSounds();
 
-		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		//ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 		Logger::Log(LogLevel::Info, "%d", ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 

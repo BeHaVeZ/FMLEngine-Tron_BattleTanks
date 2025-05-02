@@ -63,21 +63,21 @@ namespace FML
 
 	void FML::TransformComponent::Render(SDL_Renderer*)
 	{
-		glm::vec2 pos = GetWorldPosition();
+		//glm::vec2 pos = GetWorldPosition();
 
-		glm::vec2 right = { worldMatrix[0][0], worldMatrix[0][1] };
-		glm::vec2 up = { -worldMatrix[1][0], -worldMatrix[1][1] };
+		//glm::vec2 right = { worldMatrix[0][0], worldMatrix[0][1] };
+		//glm::vec2 up = { -worldMatrix[1][0], -worldMatrix[1][1] };
 
-		float lineLength = 30.0f;
+		//float lineLength = 30.0f;
 
-		glm::vec2 endRight = pos + right * lineLength;
-		glm::vec2 endUp = pos + up * lineLength;
+		//glm::vec2 endRight = pos + right * lineLength;
+		//glm::vec2 endUp = pos + up * lineLength;
 
-		DebugDraw::DrawLine(pos, endRight, { 1.0f, 0.0f, 0.0f, 1.0f }); 
+		//DebugDraw::DrawLine(pos, endRight, { 1.0f, 0.0f, 0.0f, 1.0f }); 
 
-		DebugDraw::DrawLine(pos, endUp, { 0.0f, 1.0f, 0.0f, 1.0f }); 
+		//DebugDraw::DrawLine(pos, endUp, { 0.0f, 1.0f, 0.0f, 1.0f }); 
 
-		DebugDraw::DrawCircle(pos, 4.0f, { 0.0f, 0.0f, 1.0f, 1.0f }); 
+		//DebugDraw::DrawCircle(pos, 4.0f, { 0.0f, 0.0f, 1.0f, 1.0f }); 
 	}
 
 	void TransformComponent::Update(float)

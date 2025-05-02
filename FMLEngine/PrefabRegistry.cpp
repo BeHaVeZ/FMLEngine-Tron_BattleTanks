@@ -92,16 +92,16 @@ namespace FML
 		tank->GetSubject().AddObserver(tankHealth.get());
 		tank->AddComponent(std::move(tankHealth));
 
-		//auto enemyMovement = std::make_unique<EnemyMovementComponent>(75.f);
-		//tank->AddComponent(std::move(enemyMovement));
+		auto enemyMovement = std::make_unique<EnemyMovementComponent>(75.f);
+		tank->AddComponent(std::move(enemyMovement));
 
 		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth() - 2,tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
 		auto playerCollider = std::make_unique<BoxCollider>(tankBox);
 		//playerCollider->isStatic = true;
 		tank->AddComponent(std::move(playerCollider));
 
-		auto shootComponent = std::make_unique<EnemyShootComponent>();
-		tank->AddComponent(std::move(shootComponent));
+		//auto shootComponent = std::make_unique<EnemyShootComponent>();
+		//tank->AddComponent(std::move(shootComponent));
 
 		return tank;
 	}
