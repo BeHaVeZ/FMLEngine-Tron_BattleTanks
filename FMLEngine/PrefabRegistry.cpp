@@ -100,8 +100,8 @@ namespace FML
 		//playerCollider->isStatic = true;
 		tank->AddComponent(std::move(playerCollider));
 
-		//auto shootComponent = std::make_unique<EnemyShootComponent>();
-		//tank->AddComponent(std::move(shootComponent));
+		auto shootComponent = std::make_unique<EnemyShootComponent>();
+		tank->AddComponent(std::move(shootComponent));
 
 		return tank;
 	}

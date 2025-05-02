@@ -5,6 +5,7 @@
 #include "SceneManager.h"
 #include "../Tron_BattleTanks/BlueTankKilledEvent.h"
 #include "../Tron_BattleTanks/ScoreComponent.h"
+#include "../Tron_BattleTanks/TeleportManager.h"
 
 namespace FML
 {
@@ -17,6 +18,10 @@ namespace FML
 		{
 			if (const auto* damageEvent = dynamic_cast<const DamageEvent*>(&event)) {
 				health -= damageEvent->GetDamage();
+				if (gameObject && gameObject->GetTag() == "Player1" || gameObject && gameObject->GetTag() == "Player2")
+				{
+					gameObject->GetComponent<TransformComponent>()->SetPosition(TeleportManager::Instance().GetRandomTeleportPosition());
+				}
 				if (health <= 0)
 				{
 					gameObject->Destroy();

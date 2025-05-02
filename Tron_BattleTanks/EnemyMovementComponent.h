@@ -102,11 +102,6 @@ namespace FML
 
 		void MoveUp()
 		{
-			Logger::Log(LogLevel::Info,
-				"Rot=%.0f°  Up=(%.1f,%.1f)  Pos=(%.1f,%.1f)",
-				gameObject->GetComponent<TransformComponent>()->GetWorldRotation(),
-				up.x, up.y,
-				center.x, center.y);
 
 			auto* transform = gameObject->GetComponent<TransformComponent>();
 			if (!transform) return;
@@ -146,6 +141,12 @@ namespace FML
 
 		void DrawDebug()
 		{
+			Logger::Log(LogLevel::Info,
+				"Rot=%.0f°  Up=(%.1f,%.1f)  Pos=(%.1f,%.1f)",
+				gameObject->GetComponent<TransformComponent>()->GetWorldRotation(),
+				up.x, up.y,
+				center.x, center.y);
+
 			DebugDraw::DrawLine(center, center + up * checkDistance, { 1,1,1,1 });
 			//LEFT
 			DebugDraw::DrawLine(topLeft - off, topLeft - off - right * checkDistance, { 1,0,0,1 });

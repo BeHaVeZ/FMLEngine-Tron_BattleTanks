@@ -24,12 +24,12 @@ namespace FML
 
 		void Bounce(const glm::vec2& normal)
 		{
+			SoundHelper::PlayRandomSound({ 2,3,4 }, .3f);
 			if (bounceCount == maxBounces)
 			{
 				gameObject->Destroy();
 				return;
 			}
-			SoundHelper::PlayRandomSound({ 2,3,4 }, .3f);
 			moveDirection = glm::reflect(moveDirection, glm::normalize(normal));
 			++bounceCount;
 		}
