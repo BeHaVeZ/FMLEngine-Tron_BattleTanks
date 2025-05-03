@@ -90,6 +90,19 @@ namespace FML
 		parent = newParent;
 	}
 
+	void GameObject::Initialize()
+	{
+		for (auto& component : components)
+		{
+			component->Initialize();
+		}
+
+		for (auto& child : children)
+		{
+			child->Initialize();
+		}
+	}
+
 	void GameObject::Update(float deltaTime)
 	{
 		if (isMarkedForDestruction) return;

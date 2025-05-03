@@ -14,6 +14,7 @@
 #include "MuteSoundCommand.h"
 #include "../Tron_BattleTanks/InputBindingHelper.h"
 #include "../Tron_BattleTanks/GameData.h"
+#include "SpriteAnimatorComponent.h"
 
 namespace FML
 {
@@ -30,6 +31,28 @@ namespace FML
 		InitializeSelectionArrow(renderer);
 		InitializeInput();
 		InitializeSounds();
+
+		auto explosion = std::make_unique<GameObject>("Explosion");
+		auto tex = std::make_unique<TextureComponent>("data/artassets/explosion_ss.png", renderer);
+		explosion->AddComponent(std::move(tex));
+
+		auto anim = std::make_unique<SpriteAnimatorComponent>(
+			48, 
+			48,  
+			7,   
+			0.05f 
+		);
+		explosion->AddComponent(std::move(anim));
+
+		explosion->Initialize();
+
+		explosion->GetComponent<SpriteAnimatorComponent>()->SetLooping(true);
+		explosion->GetComponent<TransformComponent>()->SetPosition({ 100,100 });
+		explosion->GetComponent<SpriteAnimatorComponent>()->Play();
+
+		AddGameObject(std::move(explosion));
+
+
 
 		return true;
 	}

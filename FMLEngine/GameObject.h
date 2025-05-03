@@ -33,6 +33,8 @@ namespace FML
 		GameObject* FindChildByTag(const std::string& tag) const;
 		void Reparent(GameObject* newParent);
 
+
+		void Initialize();
 		void Update(float deltaTime);
 		void Render(SDL_Renderer* renderer);
 

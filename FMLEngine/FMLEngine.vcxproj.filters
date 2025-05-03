@@ -112,6 +112,9 @@
     <ClCompile Include="GameObjectDestroyedEvent.cpp">
       <Filter>Engine\Event</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteAnimatorComponent.cpp">
+      <Filter>Engine\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -206,6 +209,9 @@
     </ClInclude>
     <ClInclude Include="GameObjectDestroyedEvent.h">
       <Filter>Engine\Event</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteAnimatorComponent.h">
+      <Filter>Engine\Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

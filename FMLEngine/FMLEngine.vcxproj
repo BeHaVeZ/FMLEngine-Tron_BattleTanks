@@ -229,6 +229,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="GameObjectDestroyedEvent.cpp" />
+    <ClCompile Include="SpriteAnimatorComponent.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="XInputGamepadHandlerImpl.cpp" />
     <ClCompile Include="ServiceLocator.cpp" />
@@ -258,6 +259,7 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClInclude Include="Observer.h" />
     <ClInclude Include="ServiceLocator.h" />
     <ClInclude Include="SoundSystem.h" />
+    <ClInclude Include="SpriteAnimatorComponent.h" />
     <ClInclude Include="Subject.h" />
     <ClInclude Include="TestCommand.h" />
     <ClInclude Include="TestingScene.h" />

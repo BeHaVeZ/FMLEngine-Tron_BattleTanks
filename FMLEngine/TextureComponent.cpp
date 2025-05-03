@@ -22,6 +22,7 @@ namespace FML
 		defaultHeight = height;
 
 		destRect = { 0, 0, width, height };
+		srcRect = { 0, 0, defaultWidth, defaultHeight };
 	}
 
 	void TextureComponent::Render(SDL_Renderer* renderer) {
@@ -39,10 +40,20 @@ namespace FML
 				destRect.x = static_cast<int>(transform->GetWorldPosition().x - center.x);
 				destRect.y = static_cast<int>(transform->GetWorldPosition().y - center.y);
 
-				SDL_RenderCopyEx(renderer, texture, nullptr, &destRect,
+				SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect,
 					transform->GetWorldRotation(), &center, SDL_FLIP_NONE);
 			}
 		}
+	}
+
+	void TextureComponent::SetSourceRect(const SDL_Rect& rect)
+	{
+		srcRect = rect;
+	}
+
+	SDL_Rect TextureComponent::GetSourceRect() const
+	{
+		return srcRect;
 	}
 
 	glm::vec2 TextureComponent::GetWorldCenter() const
