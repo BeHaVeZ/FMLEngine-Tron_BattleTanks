@@ -19,6 +19,7 @@
 #include "../Tron_BattleTanks/SkipLevelCommand.h"
 #include "../Tron_BattleTanks/InputBindingHelper.h"
 #include "../Tron_BattleTanks/GameData.h"
+#include "../Tron_BattleTanks/EnemyManagerComponent.h"
 #include "TestCommand.h"
 
 namespace FML
@@ -192,6 +193,9 @@ namespace FML
 	void CoopScene::InitializeManagers()
 	{
 		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
+		enemyManager->GetComponent<EnemyManagerComponent>()->SetMaxBlueTanks(4);
+		enemyManager->GetComponent<EnemyManagerComponent>()->SetMaxPinkTanks(3);
+		enemyManager->GetComponent<EnemyManagerComponent>()->SetMaxRecognizers(2);
 		AddGameObject(std::move(enemyManager));
 	}
 

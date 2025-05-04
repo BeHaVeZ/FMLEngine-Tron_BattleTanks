@@ -14,7 +14,8 @@ namespace FML
 		explicit EnemyShootComponent() :
 			cooldownTime(0.f),
 			timeBetweenShots(1.f),
-			shootingRange(1000.f)
+			shootingRange(1000.f),
+			bulletSpeed(250.f)
 		{
 		};
 		~EnemyShootComponent() {};
@@ -60,6 +61,8 @@ namespace FML
 
 		}
 
+		void SetBulletSpeed(float speed) { bulletSpeed = speed; }
+
 	private:
 		void Shoot(TextureComponent& texture)
 		{
@@ -68,10 +71,10 @@ namespace FML
 			SoundHelper::PlayRandomSound({ 10,11,12,13 }, .3f);
 			glm::vec2 shootPoint = gameObject->GetComponent<TransformComponent>()->GetWorldPosition() + texture.GetForwardVector() * 25.f;
 
-			SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(shootPoint, texture.GetForwardVector(), "EnemyBullet"));
+			SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(shootPoint, texture.GetForwardVector(),bulletSpeed));
 
 			glm::vec2 upVec = texture.GetForwardVector();
-			auto explosion = PrefabRegistry::Instance().CreateTurretShootExplosionPrefab(gameObject->GetComponent<TransformComponent>()->GetWorldPosition() + texture.GetForwardVector() * 45.f);
+			auto explosion = PrefabRegistry::Instance().CreateTurretShootExplosionPrefab(gameObject->GetComponent<TransformComponent>()->GetWorldPosition() + texture.GetForwardVector() * 55.f);
 			float explosionRotation = glm::degrees(-atan2(upVec.y, upVec.x)) + 270.f;
 			explosion->GetComponent<TransformComponent>()->SetRotation(explosionRotation);
 			SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
@@ -87,5 +90,6 @@ namespace FML
 		float cooldownTime;
 		float timeBetweenShots;
 		float shootingRange;
+		float bulletSpeed;
 	};
 }

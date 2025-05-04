@@ -17,7 +17,7 @@ namespace FML
 				return;
 
 			GameObject* destroyed = destroyEvent->GetDestroyedObject();
-			if (destroyed->GetTag() == "Enemy")
+			if (destroyed->GetTag() == "BlueTank" || destroyed->GetTag() == "PinkTank" || destroyed->GetTag() == "Recognizer")
 			{
 				auto player = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1");
 				if (player)

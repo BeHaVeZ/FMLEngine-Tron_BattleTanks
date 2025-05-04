@@ -214,5 +214,8 @@
     <ClInclude Include="BulletObserver.h">
       <Filter>Header Files\GameComponents</Filter>
     </ClInclude>
+    <ClInclude Include="RecognizerCollisionBehaviorComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

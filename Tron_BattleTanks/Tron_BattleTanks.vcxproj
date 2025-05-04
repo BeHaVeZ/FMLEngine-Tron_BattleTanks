@@ -251,6 +251,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="HighscoreManager.h" />
     <ClInclude Include="InputBindingHelper.h" />
     <ClInclude Include="NameEntryScene.h" />
+    <ClInclude Include="RecognizerCollisionBehaviorComponent.h" />
     <ClInclude Include="ReloadSceneCommand.h" />
     <ClInclude Include="ScoreComponent.h" />
     <ClInclude Include="ScoreUIComponent.h" />

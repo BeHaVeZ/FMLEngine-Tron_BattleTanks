@@ -13,7 +13,7 @@ Inspired by _Game Programming Patterns_ by **Robert Nystrom**, this engine power
 
 ## Project Overview
 
-This project was built from scratch in C++ using SDL2, with a focus on reusability, modularity, and learning core game engine architecture principles. It serves both as a learning project and as a flexible framework for future 2D games.
+This project was built from scratch in C++ using SDL2, with a focus on core game engine architecture principles. It serves both as a learning project and as a flexible framework for future 2D games.
 
 ---
 

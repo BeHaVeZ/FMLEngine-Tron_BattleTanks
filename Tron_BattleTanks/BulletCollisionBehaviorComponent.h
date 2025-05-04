@@ -60,7 +60,7 @@ namespace FML
 			const std::string& tag = otherGO->GetTag();
 
 			self->GetSubject().Notify(BulletHitEvent(otherGO, self->GetComponent<TransformComponent>()->GetWorldPosition()));
-			if (tag == "Enemy" || tag == "Player2" || tag == "Player1")
+			if (tag == "PinkTank" || tag == "Player2" || tag == "Player1" || tag == "BlueTank" || tag == "Recognizer")
 			{
 				auto healthComponent = otherGO->GetComponent<HealthComponent>();
 				if (healthComponent)

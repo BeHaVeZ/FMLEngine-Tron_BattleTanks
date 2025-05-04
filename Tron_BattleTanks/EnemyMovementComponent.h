@@ -61,6 +61,8 @@ namespace FML
 			//DrawDebug();
 		}
 
+		void SetIgnorePlayer(bool toIgnore) { ignorePlayer = toIgnore; }
+
 	private:
 		float moveSpeed;
 		float turnCooldown;
@@ -81,6 +83,8 @@ namespace FML
 		glm::vec2 topRight;
 		glm::vec2 off;
 
+		bool ignorePlayer;
+
 		std::mt19937 rng;
 		std::uniform_int_distribution<int> flipCoinDistribution;
 
@@ -90,22 +94,34 @@ namespace FML
 				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Wall") ||
 				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Wall");
 
-			const bool player1InFront =
-				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Player1") ||
-				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Player1");
+			bool enemyInFront = false;
+			std::vector<std::string> enemyTags = { "BlueTank", "PinkTank", "Recognizer" };
+			for (const auto& tag : enemyTags)
+			{
+				enemyInFront |=
+					CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, tag, gameObject) ||
+					CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, tag, gameObject);
+			}
 
-			const bool player2InFront =
-				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Player2") ||
-				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Player2");
+			bool player1InFront = false;
+			bool player2InFront = false;
 
-			const bool enemyInFront =
-				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Enemy", gameObject) ||
-				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Enemy", gameObject);
+			if (!ignorePlayer)
+			{
+				player1InFront =
+					CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Player1") ||
+					CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Player1");
+
+				player2InFront =
+					CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Player2") ||
+					CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Player2");
+			}
 
 			if (wallInFront || player1InFront || player2InFront || enemyInFront)
 			{
 				return false;
 			}
+
 			return true;
 		}
 

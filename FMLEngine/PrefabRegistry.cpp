@@ -20,6 +20,7 @@
 #include "../Tron_BattleTanks/TeleportTriggerComponent.h"
 #include <SpriteAnimatorComponent.h>
 #include "../Tron_BattleTanks/BulletObserver.h"
+#include "../Tron_BattleTanks/RecognizerCollisionBehaviorComponent.h"
 
 namespace FML
 {
@@ -108,9 +109,52 @@ namespace FML
 		return tank;
 	}
 
+	std::unique_ptr<GameObject> PrefabRegistry::CreateRecognizerPrefab(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto recognizer = std::make_unique<GameObject>(tag);
+
+		auto observer = std::make_unique<TankObserver>();
+		recognizer->GetSubject().AddObserver(observer.get());
+		recognizer->AddComponent(std::move(observer));
+
+		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/Recognizer.png", SceneManager::Instance().GetRenderer());
+		recognizer->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
+		recognizer->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y });
+		recognizer->AddComponent(std::move(tankTexture));
+
+		auto tankHealth = std::make_unique<HealthComponent>(1);
+		recognizer->GetSubject().AddObserver(tankHealth.get());
+		recognizer->AddComponent(std::move(tankHealth));
+
+		auto enemyMovement = std::make_unique<EnemyMovementComponent>(175.f);
+		enemyMovement->SetIgnorePlayer(true);
+		recognizer->AddComponent(std::move(enemyMovement));
+
+		auto recognizerCollisionBehavior = std::make_unique<RecognizerCollisionBehaviorComponent>();
+		recognizer->AddComponent(std::move(recognizerCollisionBehavior));
+
+		SDL_Rect recognizerBox = { 0,0,recognizer->GetComponent<TextureComponent>()->GetDefaultWidth() - 2,recognizer->GetComponent<TextureComponent>()->GetDefaultHeight() };
+		auto recognizerCollider = std::make_unique<BoxCollider>(recognizerBox);
+
+		GameObject* recognizerRaw = recognizer.get();
+		recognizerCollider->OnCollision = [recognizerRaw](Collider* other)
+			{
+				auto behavior = recognizerRaw->GetComponent<RecognizerCollisionBehaviorComponent>();
+				if (behavior)
+					behavior->OnCollision(recognizerRaw, other);
+			};
+		recognizer->AddComponent(std::move(recognizerCollider));
+
+		return recognizer;
+	}
+
 	std::unique_ptr<GameObject> PrefabRegistry::CreatePinkTankPrefab(glm::vec2 spawnPosition, const std::string tag) const
 	{
 		auto tank = std::make_unique<GameObject>(tag);
+
+		auto observer = std::make_unique<TankObserver>();
+		tank->GetSubject().AddObserver(observer.get());
+		tank->AddComponent(std::move(observer));
 
 		auto tankTexture = std::make_unique<TextureComponent>("data/artassets/PinkTank.png", SceneManager::Instance().GetRenderer());
 		tank->GetComponent<TransformComponent>()->CentralizePivotOnTexture(tankTexture.get());
@@ -121,13 +165,16 @@ namespace FML
 		tank->GetSubject().AddObserver(tankHealth.get());
 		tank->AddComponent(std::move(tankHealth));
 
-		auto enemyMovement = std::make_unique<EnemyMovementComponent>(100.f);
+		auto enemyMovement = std::make_unique<EnemyMovementComponent>(65.f);
 		tank->AddComponent(std::move(enemyMovement));
 
 		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth() - 2,tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
 		auto playerCollider = std::make_unique<BoxCollider>(tankBox);
-		//playerCollider->isStatic = true;
 		tank->AddComponent(std::move(playerCollider));
+
+		auto shootComponent = std::make_unique<EnemyShootComponent>();
+		shootComponent->SetBulletSpeed(500.f);
+		tank->AddComponent(std::move(shootComponent));
 
 		return tank;
 	}
@@ -263,7 +310,7 @@ namespace FML
 		return bullet;
 	}
 
-	std::unique_ptr<GameObject> PrefabRegistry::CreateEnemyBulletPrefab(glm::vec2 spawnPosition, glm::vec2 moveDirection, const std::string tag) const
+	std::unique_ptr<GameObject> PrefabRegistry::CreateEnemyBulletPrefab(glm::vec2 spawnPosition, glm::vec2 moveDirection,float bulletSpeed, const std::string tag) const
 	{
 		auto bullet = std::make_unique<GameObject>(tag);
 
@@ -275,7 +322,7 @@ namespace FML
 
 		bullet->GetComponent<TransformComponent>()->SetPosition(spawnPosition - bulletTransform->GetPivot());
 
-		auto bulletMoveComponent = std::make_unique<BulletMoveComponent>(moveDirection, 250.f, 0);
+		auto bulletMoveComponent = std::make_unique<BulletMoveComponent>(moveDirection, bulletSpeed, 0);
 		bullet->AddComponent(std::move(bulletMoveComponent));
 
 		auto bulletBehavior = std::make_unique<BulletCollisionBehaviorComponent>();
@@ -328,7 +375,7 @@ namespace FML
 	{
 		int numberOffset = 30;
 		auto healthUI = std::make_unique<GameObject>(tag);
-		auto healthUITextComponent = std::make_unique<TextComponent>("Health P1", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 0,0,255,255 }, SceneManager::Instance().GetRenderer());
+		auto healthUITextComponent = std::make_unique<TextComponent>("Lives P1", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 0,0,255,255 }, SceneManager::Instance().GetRenderer());
 
 		healthUI->AddComponent(std::move(healthUITextComponent));
 		healthUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x,spawnPosition.y });
@@ -349,7 +396,7 @@ namespace FML
 	{
 		int numberOffset = 30;
 		auto healthUI = std::make_unique<GameObject>(tag);
-		auto healthUITextComponent = std::make_unique<TextComponent>("Health P2", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,0,0,255 }, SceneManager::Instance().GetRenderer());
+		auto healthUITextComponent = std::make_unique<TextComponent>("Lives P2", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,0,0,255 }, SceneManager::Instance().GetRenderer());
 
 		healthUI->AddComponent(std::move(healthUITextComponent));
 		healthUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y });
