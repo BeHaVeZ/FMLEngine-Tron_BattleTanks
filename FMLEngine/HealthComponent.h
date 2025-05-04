@@ -17,10 +17,11 @@ namespace FML
 
 		void HandleEvent(const Event& event) override
 		{
-			if (const auto* damageEvent = dynamic_cast<const DamageEvent*>(&event)) {
+			if (const auto* damageEvent = dynamic_cast<const DamageEvent*>(&event)) 
+			{
 				health -= damageEvent->GetDamage();
 				auto transform = gameObject->GetComponent<TransformComponent>();
-				if (gameObject && gameObject->GetTag() == "Player1" || gameObject && gameObject->GetTag() == "Player2")
+				if (gameObject && gameObject->GetTag() == "Player1" && health > 0 || gameObject && gameObject->GetTag() == "Player2" && health > 0)
 				{
 					auto explosion = PrefabRegistry::Instance().CreateTankExplosionPrefab(
 						transform->GetWorldPosition()

@@ -19,6 +19,7 @@
 #include "../Tron_BattleTanks/TeleportManager.h"
 #include "../Tron_BattleTanks/TeleportTriggerComponent.h"
 #include <SpriteAnimatorComponent.h>
+#include "../Tron_BattleTanks/BulletObserver.h"
 
 namespace FML
 {
@@ -255,6 +256,10 @@ namespace FML
 
 		bullet->AddComponent(std::move(bulletCollider));
 
+		auto observer = std::make_unique<BulletObserver>();
+		bullet->GetSubject().AddObserver(observer.get());
+		bullet->AddComponent(std::move(observer));
+
 		return bullet;
 	}
 
@@ -288,6 +293,10 @@ namespace FML
 			};
 
 		bullet->AddComponent(std::move(bulletCollider));
+
+		auto observer = std::make_unique<BulletObserver>();
+		bullet->GetSubject().AddObserver(observer.get());
+		bullet->AddComponent(std::move(observer));
 
 		return bullet;
 	}
@@ -490,12 +499,12 @@ namespace FML
 		auto texture = std::make_unique<TextureComponent>("data/artassets/playerExplosion_ss.png", SceneManager::Instance().GetRenderer());
 		explosion->AddComponent(std::move(texture));
 
-		explosion->GetComponent<TransformComponent>()->SetSize(120, 120);
+		explosion->GetComponent<TransformComponent>()->SetSize(150, 150);
 
 		auto animator = std::make_unique<SpriteAnimatorComponent>(
 			192, 192,
 			22,
-			0.10f
+			0.05f
 		);
 		explosion->AddComponent(std::move(animator));
 

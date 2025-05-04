@@ -43,10 +43,16 @@ namespace FML
 			spawnCooldown -= dt;
 			if (spawnCooldown <= 0.f)
 			{
-				auto player = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1");
-				if (player)
+				auto player1 = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1");
+				auto player2 = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player2");
+				if (player1 || player2)
 				{
-					SpawnEnemy(player);
+					if (player1)
+					{
+						SpawnEnemy(player1);
+					}
+					else
+						SpawnEnemy(player2);
 					spawnCooldown = spawnCooldownTime;
 				}
 			}

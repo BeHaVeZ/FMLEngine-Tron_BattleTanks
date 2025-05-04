@@ -132,7 +132,7 @@ namespace FML
 
 	void SoloScene::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("AyoWhatV2.wav", 1, true);
+		ServiceLocator::GetSoundSystem().AddSound("SoloTheme_1.wav", 1, true);
 
 		SoundHelper::LoadSharedSounds();
 

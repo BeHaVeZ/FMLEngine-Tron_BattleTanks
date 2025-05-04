@@ -7,6 +7,7 @@
 #include "ServiceLocator.h"
 #include "SoundHelper.h"
 #include "glm.hpp"
+#include "BulletHitEvent.h"
 
 namespace FML
 {
@@ -58,6 +59,7 @@ namespace FML
 
 			const std::string& tag = otherGO->GetTag();
 
+			self->GetSubject().Notify(BulletHitEvent(otherGO, self->GetComponent<TransformComponent>()->GetWorldPosition()));
 			if (tag == "Enemy" || tag == "Player2" || tag == "Player1")
 			{
 				auto healthComponent = otherGO->GetComponent<HealthComponent>();

@@ -182,7 +182,7 @@ namespace FML
 
 	void CoopScene::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("AyoWhatV3.wav", 1, true);
+		ServiceLocator::GetSoundSystem().AddSound("CoopTheme_2.wav", 1, true);
 
 		SoundHelper::LoadSharedSounds();
 

@@ -238,7 +238,9 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="..\FMLEngine\VersusScene.h" />
     <ClInclude Include="BlueTankKilledEvent.h" />
     <ClInclude Include="BulletCollisionBehaviorComponent.h" />
+    <ClInclude Include="BulletHitEvent.h" />
     <ClInclude Include="BulletMoveComponent.h" />
+    <ClInclude Include="BulletObserver.h" />
     <ClInclude Include="ChangeVolumeCommand.h" />
     <ClInclude Include="EnemyManagerComponent.h" />
     <ClInclude Include="EnemyMovementComponent.h" />

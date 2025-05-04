@@ -158,7 +158,7 @@ namespace FML
 	void MainMenuScene::InitializeSounds()
 	{
 		ServiceLocator::GetSoundSystem().SetVolume(0.5f);
-		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
+		ServiceLocator::GetSoundSystem().AddSound("MenuTheme_1.mp3", 1, true);
 		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 }

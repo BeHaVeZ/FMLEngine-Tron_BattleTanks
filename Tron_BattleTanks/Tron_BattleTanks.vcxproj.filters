@@ -208,5 +208,11 @@
     <ClInclude Include="TeleportTriggerComponent.h">
       <Filter>Header Files\GameComponents</Filter>
     </ClInclude>
+    <ClInclude Include="BulletHitEvent.h">
+      <Filter>Header Files\GameEvents</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletObserver.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

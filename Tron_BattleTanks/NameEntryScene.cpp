@@ -98,7 +98,7 @@ namespace FML
 	}
 	void NameEntryScene::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
+		ServiceLocator::GetSoundSystem().AddSound("NameEntryTheme_1.mp3", 1, true);
 		ServiceLocator::GetSoundSystem().AddSound("blunk_1.wav", 15, false);
 		ServiceLocator::GetSoundSystem().AddSound("blunk_2.wav", 16, false);
 		ServiceLocator::GetSoundSystem().AddSound("blunk_3.wav", 17, false);

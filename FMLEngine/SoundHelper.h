@@ -34,7 +34,10 @@ namespace FML
 			soundSystem.AddSound("Explosion_3.wav", 12);
 			soundSystem.AddSound("Explosion_4.wav", 13);
 
-			soundSystem.AddSound("splash.wav", 15);
+			soundSystem.AddSound("echosplosion_1.wav", 15);
+			soundSystem.AddSound("echosplosion_1.wav", 16);
+
+			soundSystem.AddSound("splash.wav", 14);
 		}
 	};
 }
