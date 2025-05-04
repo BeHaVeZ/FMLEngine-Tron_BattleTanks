@@ -57,7 +57,7 @@ This project was built from scratch in C++ using SDL2, with a focus on reusabili
 
 ## Screenshots
 
-![image](https://github.com/user-attachments/assets/5ac7b09f-7c9e-4e1a-863c-bef85ea5508e)
+![demo](https://github.com/user-attachments/assets/e5893dc1-c3d2-4f9e-ba82-724a6e563998)
 
 ---
 
