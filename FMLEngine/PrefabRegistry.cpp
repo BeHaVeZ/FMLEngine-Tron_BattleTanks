@@ -18,6 +18,7 @@
 #include "../Tron_BattleTanks/HighscoreManager.h"
 #include "../Tron_BattleTanks/TeleportManager.h"
 #include "../Tron_BattleTanks/TeleportTriggerComponent.h"
+#include <SpriteAnimatorComponent.h>
 
 namespace FML
 {
@@ -407,6 +408,151 @@ namespace FML
 		enemyManager->AddComponent(std::move(managerComponent));
 
 		return enemyManager;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateTankExplosionPrefab(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto explosion = std::make_unique<GameObject>(tag);
+
+		auto texture = std::make_unique<TextureComponent>("data/artassets/tankExplosion_ss.png", SceneManager::Instance().GetRenderer());
+
+		explosion->AddComponent(std::move(texture));
+
+		auto animator = std::make_unique<SpriteAnimatorComponent>(
+			48, 48,
+			7, 
+			0.10f
+		);
+		explosion->AddComponent(std::move(animator));
+
+		explosion->Initialize();
+
+		explosion->GetComponent<TransformComponent>()->SetSize(84,84);
+		explosion->GetComponent<SpriteAnimatorComponent>()->Play();
+
+		explosion->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+		return explosion;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateBulletExplosionPrefab(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto explosion = std::make_unique<GameObject>(tag);
+
+		auto texture = std::make_unique<TextureComponent>("data/artassets/bulletExplosion_ss.png", SceneManager::Instance().GetRenderer());
+		explosion->AddComponent(std::move(texture));
+
+		explosion->GetComponent<TransformComponent>()->SetSize(32, 32);
+
+		auto animator = std::make_unique<SpriteAnimatorComponent>(
+			48, 48,
+			8,
+			0.05f
+		);
+		explosion->AddComponent(std::move(animator));
+
+		explosion->Initialize();
+		explosion->GetComponent<SpriteAnimatorComponent>()->Play();
+
+		explosion->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+		return explosion;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateHitExplosionPrefab(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto explosion = std::make_unique<GameObject>(tag);
+
+		auto texture = std::make_unique<TextureComponent>("data/artassets/hitExplosion_ss.png", SceneManager::Instance().GetRenderer());
+		explosion->AddComponent(std::move(texture));
+
+		explosion->GetComponent<TransformComponent>()->SetSize(32, 32);
+
+		auto animator = std::make_unique<SpriteAnimatorComponent>(
+			32, 32,
+			8,
+			0.06f
+		);
+		explosion->AddComponent(std::move(animator));
+
+		explosion->Initialize();
+		explosion->GetComponent<SpriteAnimatorComponent>()->Play();
+
+		explosion->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+		return explosion;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreatePlayerExplosionPrefab(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto explosion = std::make_unique<GameObject>(tag);
+
+		auto texture = std::make_unique<TextureComponent>("data/artassets/playerExplosion_ss.png", SceneManager::Instance().GetRenderer());
+		explosion->AddComponent(std::move(texture));
+
+		explosion->GetComponent<TransformComponent>()->SetSize(120, 120);
+
+		auto animator = std::make_unique<SpriteAnimatorComponent>(
+			192, 192,
+			22,
+			0.10f
+		);
+		explosion->AddComponent(std::move(animator));
+
+		explosion->Initialize();
+		explosion->GetComponent<SpriteAnimatorComponent>()->Play();
+
+		explosion->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+		return explosion;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateTurretShootExplosionPrefab(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto explosion = std::make_unique<GameObject>(tag);
+
+		auto texture = std::make_unique<TextureComponent>("data/artassets/turretFireExplosion_ss.png", SceneManager::Instance().GetRenderer());
+		explosion->AddComponent(std::move(texture));
+
+		explosion->GetComponent<TransformComponent>()->SetSize(40, 40);
+
+		auto animator = std::make_unique<SpriteAnimatorComponent>(
+			128, 128,
+			14,
+			0.05f
+		);
+		explosion->AddComponent(std::move(animator));
+
+		explosion->Initialize();
+		explosion->GetComponent<SpriteAnimatorComponent>()->Play();
+
+		explosion->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+		return explosion;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateTpEffect(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto effect = std::make_unique<GameObject>(tag);
+
+		auto texture = std::make_unique<TextureComponent>("data/artassets/tp_ss.png", SceneManager::Instance().GetRenderer());
+		effect->AddComponent(std::move(texture));
+
+		effect->GetComponent<TransformComponent>()->SetSize(120, 120);
+
+		auto animator = std::make_unique<SpriteAnimatorComponent>(
+			48, 48,
+			7,
+			0.10f
+		);
+		effect->AddComponent(std::move(animator));
+
+		effect->Initialize();
+		effect->GetComponent<SpriteAnimatorComponent>()->Play();
+
+		effect->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+
+		return effect;
 	}
 
 }

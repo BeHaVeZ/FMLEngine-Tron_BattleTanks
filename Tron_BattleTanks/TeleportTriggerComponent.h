@@ -29,6 +29,10 @@ namespace FML
                         {
                             transform->SetPosition(randomPosition);
                             ServiceLocator::GetSoundSystem().PlaySound(15, ServiceLocator::GetSoundSystem().GetCurrentVolume() + .3f);
+
+                            transform->UpdateWorldPosition();
+                            auto tpEffect = PrefabRegistry::Instance().CreateTpEffect(transform->GetWorldPosition());
+                            SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(tpEffect));
                         }
                     }
                 };

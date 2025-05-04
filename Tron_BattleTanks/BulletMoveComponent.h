@@ -32,6 +32,11 @@ namespace FML
 			}
 			moveDirection = glm::reflect(moveDirection, glm::normalize(normal));
 			++bounceCount;
+
+			auto explosion = PrefabRegistry::Instance().CreateHitExplosionPrefab(
+				gameObject->GetComponent<TransformComponent>()->GetWorldPosition()
+			);
+			SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
 		}
 
 		glm::vec2 GetMoveDirection() const { return moveDirection; }

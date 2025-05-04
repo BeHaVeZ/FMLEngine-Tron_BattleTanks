@@ -13,8 +13,9 @@ namespace FML
         currentFrame(0),
         timeAccumulator(0.0f),
         isPlaying(false),
-        isLooping(true),
-        textureComponent(nullptr)
+        isLooping(false),
+        textureComponent(nullptr),
+        destroyOnEnd(true)
     {
     }
 
@@ -26,7 +27,6 @@ namespace FML
             throw std::runtime_error("SpriteAnimatorComponent requires a TextureComponent.");
         }
 
-        // Set initial frame
         textureComponent->SetSourceRect({ 0, 0, frameWidth, frameHeight });
     }
 
@@ -48,6 +48,12 @@ namespace FML
                 {
                     currentFrame = totalFrames - 1;
                     isPlaying = false;
+
+
+                    if (destroyOnEnd && gameObject)
+                    {
+                        gameObject->Destroy();
+                    }
                 }
             }
 
@@ -74,5 +80,9 @@ namespace FML
     void SpriteAnimatorComponent::SetLooping(bool loop)
     {
         isLooping = loop;
+    }
+    void SpriteAnimatorComponent::SetDestroyOnEnd(bool destroy)
+    {
+        destroyOnEnd = destroy;
     }
 }

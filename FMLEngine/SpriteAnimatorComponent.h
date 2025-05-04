@@ -18,6 +18,8 @@ namespace FML
         void Stop();
         void SetLooping(bool loop);
 
+        void SetDestroyOnEnd(bool destroy);
+
     private:
         int frameWidth;
         int frameHeight;
@@ -28,6 +30,7 @@ namespace FML
         float timeAccumulator;
         bool isPlaying;
         bool isLooping;
+        bool destroyOnEnd;
 
         TextureComponent* textureComponent;
     };

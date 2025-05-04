@@ -66,7 +66,15 @@ namespace FML
 			if (cooldownTime > 0.f)
 				return;
 			SoundHelper::PlayRandomSound({ 10,11,12,13 }, .3f);
-			SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(gameObject->GetComponent<TransformComponent>()->GetWorldPosition() + texture.GetForwardVector() * 25.f, texture.GetForwardVector(), "EnemyBullet"));
+			glm::vec2 shootPoint = gameObject->GetComponent<TransformComponent>()->GetWorldPosition() + texture.GetForwardVector() * 25.f;
+
+			SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(shootPoint, texture.GetForwardVector(), "EnemyBullet"));
+
+			glm::vec2 upVec = texture.GetForwardVector();
+			auto explosion = PrefabRegistry::Instance().CreateTurretShootExplosionPrefab(gameObject->GetComponent<TransformComponent>()->GetWorldPosition() + texture.GetForwardVector() * 45.f);
+			float explosionRotation = glm::degrees(-atan2(upVec.y, upVec.x)) + 270.f;
+			explosion->GetComponent<TransformComponent>()->SetRotation(explosionRotation);
+			SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
 			cooldownTime = timeBetweenShots;
 		}
 

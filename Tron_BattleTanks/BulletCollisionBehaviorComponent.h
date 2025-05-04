@@ -6,6 +6,7 @@
 #include <string>
 #include "ServiceLocator.h"
 #include "SoundHelper.h"
+#include "glm.hpp"
 
 namespace FML
 {

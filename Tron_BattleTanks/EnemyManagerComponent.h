@@ -64,6 +64,8 @@ namespace FML
 			rawEnemy->GetSubject().AddObserver(this);
 
 			SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(enemy));
+			auto tpEffect = PrefabRegistry::Instance().CreateTpEffect(pos);
+			SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(tpEffect));
 			++currentEnemies;
 		};
 		glm::vec2 ChooseSpawnPosition(GameObject* player)

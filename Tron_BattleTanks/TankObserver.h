@@ -26,11 +26,22 @@ namespace FML
 				}
 				gameObject->GetSubject().Notify(BlueTankKilledEvent());
 
-				Logger::Log(LogLevel::Error, "Enemy destroyed: Spawning explosion.");
+				Logger::Log(LogLevel::Error, "Enemy destroyed: Spawning explosion at %d.", destroyed->GetComponent<TransformComponent>()->GetWorldPosition().x);
+
+				auto explosion = PrefabRegistry::Instance().CreateTankExplosionPrefab(
+					destroyed->GetComponent<TransformComponent>()->GetWorldPosition()
+				);
+				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
 			}
 			else 	if (destroyed->GetTag() == "Player1" || destroyed->GetTag() == "Player2")
 			{
 				GameAdmin::Instance().OnPlayerDestroyed(destroyed);
+
+				auto explosion = PrefabRegistry::Instance().CreatePlayerExplosionPrefab(
+					destroyed->GetComponent<TransformComponent>()->GetWorldPosition()
+				);
+				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
+
 				Logger::Log(LogLevel::Error, "Player destroyed: Spawning explosion.");
 			}
 		};

@@ -32,6 +32,15 @@ namespace FML
 
 		std::unique_ptr<GameObject> CreateEnemyManager(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "EnemyManager") const;
 
+
+		std::unique_ptr<GameObject> CreateTankExplosionPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "TankExplosion") const;
+		std::unique_ptr<GameObject> CreateBulletExplosionPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "BulletExplosion") const;
+		std::unique_ptr<GameObject> CreateHitExplosionPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "HitExplosion") const;
+		std::unique_ptr<GameObject> CreatePlayerExplosionPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "PlayerExplosion") const;
+		std::unique_ptr<GameObject> CreateTurretShootExplosionPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "TurretExplosion") const;
+		std::unique_ptr<GameObject> CreateTpEffect(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "TPEffect") const;
+
+
 	private:
 		PrefabRegistry() {}
 		PrefabRegistry(const PrefabRegistry&) = delete;

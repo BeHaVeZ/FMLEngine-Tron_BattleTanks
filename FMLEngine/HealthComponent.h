@@ -6,6 +6,7 @@
 #include "../Tron_BattleTanks/BlueTankKilledEvent.h"
 #include "../Tron_BattleTanks/ScoreComponent.h"
 #include "../Tron_BattleTanks/TeleportManager.h"
+#include "PrefabRegistry.h"
 
 namespace FML
 {
@@ -18,9 +19,18 @@ namespace FML
 		{
 			if (const auto* damageEvent = dynamic_cast<const DamageEvent*>(&event)) {
 				health -= damageEvent->GetDamage();
+				auto transform = gameObject->GetComponent<TransformComponent>();
 				if (gameObject && gameObject->GetTag() == "Player1" || gameObject && gameObject->GetTag() == "Player2")
 				{
-					gameObject->GetComponent<TransformComponent>()->SetPosition(TeleportManager::Instance().GetRandomTeleportPosition());
+					auto explosion = PrefabRegistry::Instance().CreateTankExplosionPrefab(
+						transform->GetWorldPosition()
+					);
+					SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
+					transform->SetPosition(TeleportManager::Instance().GetRandomTeleportPosition());
+					transform->UpdateWorldPosition();
+
+					auto tpEffect = PrefabRegistry::Instance().CreateTpEffect(transform->GetWorldPosition());
+					SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(tpEffect));
 				}
 				if (health <= 0)
 				{

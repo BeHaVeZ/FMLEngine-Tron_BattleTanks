@@ -9,7 +9,8 @@ namespace FML
 {
 
 	TextureComponent::TextureComponent(const std::string& filePath, SDL_Renderer* renderer)
-		: texture(nullptr) {
+		: texture(nullptr) 
+	{
 		if (!TextureManager::Instance().Load(filePath, filePath, renderer)) {
 			printf("Failed to load texture in TextureComponent constructor\n");
 		}

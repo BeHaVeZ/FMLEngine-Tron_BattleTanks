@@ -21,7 +21,16 @@ namespace FML
 			offsetDistance(5.f),
 			turnCooldownTime(2.f),
 			minTurnCooldownTime(2.f),
-			maxTurnCooldownTime(5.f)
+			maxTurnCooldownTime(5.f),
+			bottomLeft({}),
+			bottomRight({}),
+			center({}),
+			middleLeft({}),
+			middleRight({}),
+			topLeft({}),
+			topRight({}),
+			off({}),
+			up({})
 		{
 			std::random_device rd;
 			rng = std::mt19937(rd());

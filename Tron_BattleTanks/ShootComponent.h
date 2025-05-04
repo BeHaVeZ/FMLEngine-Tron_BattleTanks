@@ -78,6 +78,11 @@ namespace FML
 				Logger::Log(LogLevel::Debug, "Shooting from %s", gameObject->GetParent()->GetTag().c_str());
 				SoundHelper::PlayRandomSound({ 10,11,12,13 }, .3f);
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateBulletPrefab({shootPoint},rayDirection,"Bullet"));
+
+				auto explosion = PrefabRegistry::Instance().CreateTurretShootExplosionPrefab(shootPoint);
+				float explosionRotation = glm::degrees(-atan2(rayDirection.y, rayDirection.x)) + 270.f;
+				explosion->GetComponent<TransformComponent>()->SetRotation(explosionRotation);
+				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
 				canShoot = false;
 				timeSinceLastShot = 0.0f;
 			}
