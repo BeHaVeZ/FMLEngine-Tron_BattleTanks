@@ -57,7 +57,11 @@ This project was built from scratch in C++ using SDL2, with a focus on core game
 
 ## Screenshots
 
-![image](https://github.com/user-attachments/assets/5ac7b09f-7c9e-4e1a-863c-bef85ea5508e)
+![demo2](https://github.com/user-attachments/assets/06298d1d-c79c-4c11-8419-f7d9d7439b25)
+
+![demo](https://github.com/user-attachments/assets/e5893dc1-c3d2-4f9e-ba82-724a6e563998)
+
+![demo3](https://github.com/user-attachments/assets/32ba1b5c-b70a-46a2-ae88-dbb9fb3e23c5)
 
 ---
 
