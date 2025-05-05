@@ -85,10 +85,15 @@ namespace FML
 		InputBindingHelper::BindGlobalCommands();
 
 		InputHandler::Instance().BindFunction(SDLK_UP, [this]() { MoveUp(); },InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_w, [this]() { MoveUp(); },InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindFunction(SDLK_DOWN, [this]() { MoveDown(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_s, [this]() { MoveDown(); }, InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindFunction(SDLK_LEFT, [this]() { MoveLeft(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_a, [this]() { MoveLeft(); }, InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindFunction(SDLK_RIGHT, [this]() { MoveRight(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_d, [this]() { MoveRight(); }, InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindFunction(SDLK_RETURN, [this]() { SubmitScore(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_SPACE, [this]() { SubmitScore(); }, InputHandler::KeyAction::KeyUp);
 
 		InputHandler::Instance().BindGamepadFunction(controllerId, XINPUT_GAMEPAD_DPAD_UP, [this]() { MoveUp(); }, InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindGamepadFunction(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, [this]() { MoveDown(); }, InputHandler::KeyAction::KeyUp);

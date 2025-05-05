@@ -83,7 +83,8 @@ namespace FML
 					move->Bounce(sep.normal);
 
 				auto* tr = self->GetComponent<TransformComponent>();
-				tr->SetPosition(tr->GetLocalPosition() + sep.normal * (sep.depth + 1.5f));
+				const float separationBias = 4.0f;
+				tr->SetPosition(tr->GetLocalPosition() + sep.normal * (sep.depth + separationBias));
 			}
 			else if (tag == "EnemyBullet" || tag == "Bullet")
 			{

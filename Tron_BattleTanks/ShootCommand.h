@@ -16,7 +16,8 @@ namespace FML
 		{
 			if (gameObject && !gameObject->IsMarkedForDestruction())
 			{
-				gameObject->GetComponent<ShootComponent>()->Shoot();
+				if (auto shoot = gameObject->GetComponent<ShootComponent>())
+					shoot->Shoot();
 			}
 		}
 

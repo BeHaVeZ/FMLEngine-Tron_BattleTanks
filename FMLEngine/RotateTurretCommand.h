@@ -7,7 +7,7 @@ namespace FML
 {
 	class RotateTurretCommand : public Command {
 	public:
-		RotateTurretCommand(GameObject* gameObject, float rotationSpeed = .5f)
+		RotateTurretCommand(GameObject* gameObject, float rotationSpeed = 2000.f)
 			: gameObject(gameObject), rotationSpeed(rotationSpeed)
 		{
 		}
@@ -19,7 +19,8 @@ namespace FML
 				if (transform) {
 					float currentRotation = transform->GetLocalRotation();
 
-					currentRotation += rotationSpeed;
+					float deltaTime = Timer::Instance().GetDeltaTime();
+					currentRotation += rotationSpeed * deltaTime;
 
 					transform->SetRotation(currentRotation);
 				}

@@ -28,8 +28,12 @@ namespace FML
 		{
 			if (m_IsShutdown) return;
 
-			m_Pending.push({ id, volume });
-			m_Cv.notify_all();
+			{
+				std::lock_guard<std::mutex> lk(m_CvMutex);
+				m_Pending.push({ id, volume });
+			}
+
+			m_Cv.notify_one();
 			Logger::Log(LogLevel::Info, "Queued sound with ID [%d] at [%f] volume\n", id, volume);
 		}
 
