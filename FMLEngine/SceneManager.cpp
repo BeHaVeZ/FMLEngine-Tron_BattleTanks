@@ -42,6 +42,12 @@ namespace FML
 		queuedSceneChange = name;
 	}
 
+	void SceneManager::QueueSceneChangeWithDelay(const std::string& sceneName, float delaySeconds)
+	{
+		queuedSceneChange = sceneName;
+		sceneChangeDelay = delaySeconds;
+	}
+
 	void SceneManager::RemoveScene(const std::string& name) {
 		auto it = scenes.find(name);
 		if (it != scenes.end()) {
@@ -191,9 +197,9 @@ namespace FML
 		if (currentScene) currentScene->Update(deltaTime);
 		isInsideSceneUpdate = false;
 
-		if (!queuedSceneChange.empty()) 
+		sceneChangeDelay -= deltaTime;
+		if (!queuedSceneChange.empty() && sceneChangeDelay <= 0) 
 		{
-			scenes;
 			ChangeScene(queuedSceneChange);
 			queuedSceneChange.clear();
 		}

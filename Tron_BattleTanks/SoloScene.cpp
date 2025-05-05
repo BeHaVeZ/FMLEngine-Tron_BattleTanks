@@ -99,13 +99,13 @@ namespace FML
 
 	void SoloScene::InitializeHealthUI()
 	{
-		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, 3, "HealthUIPlayer1");
+		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, "HealthUIPlayer1");
 		AddGameObject(std::move(healthUIPlayer1));
 	}
 
 	void SoloScene::InitializeFirstTank()
 	{
-		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 57,118 }, "Player1");
+		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 514,428 }, "Player1");
 		AddGameObject(std::move(tank));
 	}
 

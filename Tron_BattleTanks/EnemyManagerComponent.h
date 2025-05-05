@@ -49,6 +49,8 @@ namespace FML
 		void SetMaxBlueTanks(int newMax) { maxBlueTanks = newMax; }
 		void SetMaxPinkTanks(int newMax) { maxPinkTanks = newMax; }
 
+		void SetSpawnCooldown(float newCooldown) { spawnCooldownTime = newCooldown; }
+
 		void Update(float dt) override
 		{
 			spawnCooldown -= dt;
@@ -166,11 +168,34 @@ namespace FML
 			
 			if (enemiesToKillForTheNextLevel <= 0 && GameData::CurrentGameMode == GameData::GameMode::Solo)
 			{
-				auto& nextSceneName = SceneManager::Instance().GetNextScene()->GetName();
-				if (nextSceneName == "Coop" || nextSceneName == "Versus")
+				std::string currentScene = SceneManager::Instance().GetCurrentScene()->GetName();
+
+				if (currentScene == "Level404")
+				{
+					Logger::Log(LogLevel::Info, "Exiting Level404, returning to Solo.");
 					SceneManager::Instance().QueueSceneChange("Solo");
+					return;
+				}
+
+				std::random_device rd;
+				std::mt19937 rng(rd());
+				std::uniform_int_distribution<> dist(1, 100);
+
+				int roll = dist(rng);
+
+				if (roll <= 25)
+				{
+					Logger::Log(LogLevel::Error, "Level404 triggered!");
+					SceneManager::Instance().QueueSceneChange("Level404");
+				}
 				else
-					SceneManager::Instance().QueueSceneChange(nextSceneName);
+				{
+					auto& nextSceneName = SceneManager::Instance().GetNextScene()->GetName();
+					if (nextSceneName == "Coop" || nextSceneName == "Versus")
+						SceneManager::Instance().QueueSceneChange("Solo");
+					else
+						SceneManager::Instance().QueueSceneChange(nextSceneName);
+				}
 			}
 		}
 

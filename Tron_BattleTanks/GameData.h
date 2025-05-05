@@ -12,4 +12,13 @@ namespace GameData
 
     inline GameMode CurrentGameMode = GameMode::None;
     inline int CurrentScore = 0;
+    inline int Player1Health = 3;
+    inline int Player2Health = 3;
+
+    inline void ResetValues()
+    {
+        CurrentScore = 0;
+        Player1Health = 3;
+        Player2Health = 3;
+    }
 };

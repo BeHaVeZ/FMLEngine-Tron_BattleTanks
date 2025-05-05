@@ -20,6 +20,7 @@
 #include "ShootCommand.h"
 #include "SkipLevelCommand.h"
 #include "InputBindingHelper.h"
+#include "EnemyManagerComponent.h"
 
 
 namespace FML
@@ -115,13 +116,13 @@ namespace FML
 
 	void SoloLevel3::InitializeHealthUI()
 	{
-		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, 3, "HealthUIPlayer1");
+		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, "HealthUIPlayer1");
 		gameObjects.push_back(std::move(healthUIPlayer1));
 	}
 
 	void SoloLevel3::InitializeFirstTank()
 	{
-		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 57,118 }, "Player1");
+		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 514,428 }, "Player1");
 		gameObjects.push_back(std::move(tank));
 	}
 
@@ -148,7 +149,7 @@ namespace FML
 
 	void SoloLevel3::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("SoloTheme_1.wav", 1, true);
+		ServiceLocator::GetSoundSystem().AddSound("SoloTheme_3.wav", 1, true);
 
 		SoundHelper::LoadSharedSounds();
 
@@ -158,6 +159,11 @@ namespace FML
 	void SoloLevel3::InitializeManagers()
 	{
 		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
+		auto enemyManagement = enemyManager->GetComponent<EnemyManagerComponent>();
+		enemyManagement->SetMaxBlueTanks(2);
+		enemyManagement->SetMaxPinkTanks(2);
+		enemyManagement->SetMaxRecognizers(2);
+
 		AddGameObject(std::move(enemyManager));
 	}
 

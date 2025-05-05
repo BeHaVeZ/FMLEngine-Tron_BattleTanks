@@ -31,19 +31,19 @@ namespace FML
 		case GameData::GameMode::Solo:
 			if (players.empty())
 			{
-				SceneManager::Instance().QueueSceneChange("NameEntry");
+				SceneManager::Instance().QueueSceneChangeWithDelay("NameEntry",2.5f);
 			}
 			break;
 		case GameData::GameMode::Coop:
 			if (players.empty())
 			{
-				SceneManager::Instance().QueueSceneChange("MainMenu");
+				SceneManager::Instance().QueueSceneChangeWithDelay("MainMenu",2.5f);
 				//Game over screen and show score WIP
 			}
 			break;
 		case GameData::GameMode::Versus:
 			//WIP
-			SceneManager::Instance().QueueSceneChange("MainMenu");
+			SceneManager::Instance().QueueSceneChangeWithDelay("MainMenu",2.5f);
 			break;
 		default:
 			break;

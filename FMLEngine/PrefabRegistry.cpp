@@ -21,6 +21,7 @@
 #include <SpriteAnimatorComponent.h>
 #include "../Tron_BattleTanks/BulletObserver.h"
 #include "../Tron_BattleTanks/RecognizerCollisionBehaviorComponent.h"
+#include "../Tron_BattleTanks/GameData.h"
 
 namespace FML
 {
@@ -40,7 +41,7 @@ namespace FML
 		tank->GetSubject().AddObserver(observer.get());
 		tank->AddComponent(std::move(observer));
 
-		auto playerHealth = std::make_unique<HealthComponent>(3);
+		auto playerHealth = std::make_unique<HealthComponent>(GameData::Player1Health);
 		tank->GetSubject().AddObserver(playerHealth.get());
 		tank->AddComponent(std::move(playerHealth));
 
@@ -239,7 +240,7 @@ namespace FML
 		tank->AddComponent(std::move(tankTexture));
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
-		auto playerHealth = std::make_unique<HealthComponent>(3);
+		auto playerHealth = std::make_unique<HealthComponent>(GameData::Player2Health);
 		tank->GetSubject().AddObserver(playerHealth.get());
 		tank->AddComponent(std::move(playerHealth));
 
@@ -371,7 +372,7 @@ namespace FML
 		return tpCenter;
 	}
 
-	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer1(glm::vec2 spawnPosition, int maxHealth, const std::string tag) const
+	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer1(glm::vec2 spawnPosition, const std::string tag) const
 	{
 		int numberOffset = 30;
 		auto healthUI = std::make_unique<GameObject>(tag);
@@ -382,7 +383,7 @@ namespace FML
 
 
 		auto healthUIPlayer1 = std::make_unique<GameObject>(tag);
-		auto healthUIComponent = std::make_unique<HealthUIComponent>(maxHealth);
+		auto healthUIComponent = std::make_unique<HealthUIComponent>(GameData::Player1Health);
 		healthUIPlayer1->AddComponent(std::move(healthUIComponent));
 		healthUIPlayer1->GetComponent<HealthUIComponent>()->Initialize();
 		healthUIPlayer1->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });
@@ -392,7 +393,7 @@ namespace FML
 		return healthUI;
 	}
 
-	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer2(glm::vec2 spawnPosition, int maxHealth, const std::string tag) const
+	std::unique_ptr<GameObject> PrefabRegistry::CreateHealthUIForPlayer2(glm::vec2 spawnPosition, const std::string tag) const
 	{
 		int numberOffset = 30;
 		auto healthUI = std::make_unique<GameObject>(tag);
@@ -403,7 +404,7 @@ namespace FML
 
 
 		auto healthUIPlayer2 = std::make_unique<GameObject>(tag);
-		auto healthUIComponent = std::make_unique<HealthUIComponent>(maxHealth, SDL_Color(255, 0, 0, 255));
+		auto healthUIComponent = std::make_unique<HealthUIComponent>(GameData::Player2Health, SDL_Color(255, 0, 0, 255));
 		healthUIPlayer2->AddComponent(std::move(healthUIComponent));
 		healthUIPlayer2->GetComponent<HealthUIComponent>()->Initialize();
 		healthUIPlayer2->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });

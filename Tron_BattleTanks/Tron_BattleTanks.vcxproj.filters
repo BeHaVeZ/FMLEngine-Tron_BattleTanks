@@ -86,6 +86,9 @@
     <ClCompile Include="TeleportManager.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
+    <ClCompile Include="Level404.cpp">
+      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\FMLEngine\DamageEvent.h">
@@ -216,6 +219,9 @@
     </ClInclude>
     <ClInclude Include="RecognizerCollisionBehaviorComponent.h">
       <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Level404.h">
+      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

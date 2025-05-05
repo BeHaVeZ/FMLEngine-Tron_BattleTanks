@@ -213,6 +213,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="GameAdmin.cpp" />
     <ClCompile Include="HighscoreManager.cpp" />
     <ClCompile Include="InputBindingHelper.cpp" />
+    <ClCompile Include="Level404.cpp" />
     <ClCompile Include="NameEntryScene.cpp" />
     <ClCompile Include="SoloHighscoreScene.cpp" />
     <ClCompile Include="SoloLevel2.cpp" />
@@ -250,6 +251,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="GameData.h" />
     <ClInclude Include="HighscoreManager.h" />
     <ClInclude Include="InputBindingHelper.h" />
+    <ClInclude Include="Level404.h" />
     <ClInclude Include="NameEntryScene.h" />
     <ClInclude Include="RecognizerCollisionBehaviorComponent.h" />
     <ClInclude Include="ReloadSceneCommand.h" />

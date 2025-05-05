@@ -23,9 +23,9 @@ namespace FML
 
 		std::unique_ptr<GameObject> CreateTeleportCenterPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "TPCenter") const;
 
-		std::unique_ptr<GameObject> CreateHealthUIForPlayer1(glm::vec2 spawnPosition = { 0,0 }, int maxHealth = 3, const std::string tag = "HealthUIPlayer1") const;
+		std::unique_ptr<GameObject> CreateHealthUIForPlayer1(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "HealthUIPlayer1") const;
 
-		std::unique_ptr<GameObject> CreateHealthUIForPlayer2(glm::vec2 spawnPosition = { 0,0 }, int maxHealth = 3, const std::string tag = "HealthUIPlayer2") const;
+		std::unique_ptr<GameObject> CreateHealthUIForPlayer2(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "HealthUIPlayer2") const;
 
 		std::unique_ptr<GameObject> CreateHighScoreUI(glm::vec2 spawnPosition = {0,0}, const std::string tag = "HighScoreUI") const;
 

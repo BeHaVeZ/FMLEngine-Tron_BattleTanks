@@ -21,6 +21,7 @@
 #include "SkipLevelCommand.h"
 #include "InputBindingHelper.h"
 #include "GameData.h"
+#include "EnemyManagerComponent.h"
 
 
 namespace FML
@@ -116,13 +117,13 @@ namespace FML
 
 	void SoloLevel2::InitializeHealthUI()
 	{
-		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, 3, "HealthUIPlayer1");
+		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, "HealthUIPlayer1");
 		gameObjects.push_back(std::move(healthUIPlayer1));
 	}
 
 	void SoloLevel2::InitializeFirstTank()
 	{
-		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 57,118 }, "Player1");
+		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 514,428 }, "Player1");
 		gameObjects.push_back(std::move(tank));
 	}
 
@@ -187,6 +188,10 @@ namespace FML
 	void SoloLevel2::InitializeManagers()
 	{
 		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
+		auto enemyManagement = enemyManager->GetComponent<EnemyManagerComponent>();
+		enemyManagement->SetMaxBlueTanks(4);
+		enemyManagement->SetMaxPinkTanks(1);
+		enemyManagement->SetMaxRecognizers(2);
 		AddGameObject(std::move(enemyManager));
 	}
 

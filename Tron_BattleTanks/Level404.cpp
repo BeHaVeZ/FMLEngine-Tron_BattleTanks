@@ -1,4 +1,5 @@
-#include "CoopScene.h"
+#include "PrefabRegistry.h"
+#include "Level404.h"
 #include "TextureComponent.h"
 #include "TransformComponent.h"
 #include "InputHandler.h"
@@ -6,39 +7,39 @@
 #include "TextComponent.h"
 #include "FPSComponent.h"
 #include "ServiceLocator.h"
-#include "MoveCommand.h"
 #include <iostream>
-#include "PrefabRegistry.h"
-#include "BoxCollider.h"
-#include "RotateCommand.h"
+#include "MuteSoundCommand.h"
+#include "MoveCommand.h"
 #include "RotateTurretCommand.h"
 #include "DamageCommand.h"
-#include "MuteSoundCommand.h"
-#include "../Tron_BattleTanks/FileReader.h"
-#include "../Tron_BattleTanks/ShootCommand.h"
-#include "../Tron_BattleTanks/SkipLevelCommand.h"
-#include "../Tron_BattleTanks/InputBindingHelper.h"
-#include "../Tron_BattleTanks/GameData.h"
-#include "../Tron_BattleTanks/EnemyManagerComponent.h"
+#include "HealthUIComponent.h"
+#include "DebugDraw.h"
+#include "FileReader.h"
+#include "BoxCollider.h"
 #include "TestCommand.h"
+#include "ShootCommand.h"
+#include "SkipLevelCommand.h"
+#include "InputBindingHelper.h"
+#include "EnemyManagerComponent.h"
+
 
 namespace FML
 {
-	const std::string backgroundImagePath = "data/levels/level00.png";
 
-	bool CoopScene::Initialize(SDL_Renderer* renderer) 
+	const std::string backgroundImagePath = "data/levels/level404.png";
+
+	bool Level404::Initialize(SDL_Renderer* renderer)
 	{
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
 
 		InitializeFirstTank();
-		InitializeSecondTank();
 
 		InitializeUI();
-
 		InitializeWalls();
 		InitializeManagers();
 		InitializeCenterTP();
+
 
 		InitializeInput();
 		InitializeSounds();
@@ -46,7 +47,7 @@ namespace FML
 		return true;
 	}
 
-	void CoopScene::InitializeBackground(SDL_Renderer* renderer) {
+	void Level404::InitializeBackground(SDL_Renderer* renderer) {
 		auto background = std::make_unique<GameObject>("Background");
 		auto backgroundTexture = std::make_unique<TextureComponent>(backgroundImagePath, renderer);
 		background->AddComponent(std::move(backgroundTexture));
@@ -55,7 +56,6 @@ namespace FML
 		if (backgroundTransform) {
 			backgroundTransform->SetPosition({ ConfigManager::Instance().GetWindowWidth() / 2, ConfigManager::Instance().GetWindowHeight() / 2 });
 			backgroundTransform->SetPivot({ 0.f, 0.f });
-
 			backgroundTransform->SetSize(
 				static_cast<float>(ConfigManager::Instance().GetWindowWidth()),
 				static_cast<float>(ConfigManager::Instance().GetWindowHeight())
@@ -71,7 +71,7 @@ namespace FML
 
 	}
 
-	void CoopScene::InitializeTitle(SDL_Renderer* renderer)
+	void Level404::InitializeTitle(SDL_Renderer* renderer)
 	{
 		auto title = std::make_unique<GameObject>("title");
 
@@ -90,7 +90,7 @@ namespace FML
 		gameObjects.push_back(std::move(title));
 	}
 
-	void CoopScene::InitializeFPSCounter(SDL_Renderer* renderer)
+	void Level404::InitializeFPSCounter(SDL_Renderer* renderer)
 	{
 		auto fpsGameObject = std::make_unique<GameObject>("FPSCounter");
 
@@ -107,45 +107,25 @@ namespace FML
 		gameObjects.push_back(std::move(fpsGameObject));
 	}
 
-	void CoopScene::InitializeFirstTank()
-	{
-		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 514,428 }, "Player1");
-		gameObjects.push_back(std::move(tank));
-	}
-
-	void CoopScene::InitializeSecondTank()
-	{
-		auto tank = PrefabRegistry::Instance().CreateYellowTankPrefab({ 514,428 }, "Player2");
-		gameObjects.push_back(std::move(tank));
-	}
-
-	void CoopScene::InitializeInput()
-	{
-		InputBindingHelper::BindGlobalCommands();
-
-		auto tankP1 = FindGameObjectByTag("Player1");
-		auto tankP2 = FindGameObjectByTag("Player2");
-		if (tankP1 && tankP2)
-		{
-			InputBindingHelper::BindDuoModeControls(tankP1, tankP2);
-		}
-	}
-
-	void CoopScene::InitializeUI()
+	void Level404::InitializeUI()
 	{
 		InitializeHealthUI();
 		InitializeScoreUI();
 	}
 
-	void CoopScene::InitializeHealthUI()
+	void Level404::InitializeHealthUI()
 	{
 		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, "HealthUIPlayer1");
 		gameObjects.push_back(std::move(healthUIPlayer1));
-		auto healthUIPlayer2 = PrefabRegistry::Instance().CreateHealthUIForPlayer2({ 200,30 }, "HealthUIPlayer2");
-		gameObjects.push_back(std::move(healthUIPlayer2));
 	}
 
-	void CoopScene::InitializeScoreUI()
+	void Level404::InitializeFirstTank()
+	{
+		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 514,428 }, "Player1");
+		gameObjects.push_back(std::move(tank));
+	}
+
+	void Level404::InitializeScoreUI()
 	{
 		auto highScoreUI = PrefabRegistry::Instance().CreateHighScoreUI({ 400,30 }, "HighScoreUI");
 		gameObjects.push_back(std::move(highScoreUI));
@@ -154,15 +134,49 @@ namespace FML
 		gameObjects.push_back(std::move(currentScoreUI));
 	}
 
-	void CoopScene::InitializeCenterTP()
+
+	void Level404::InitializeInput()
+	{
+		InputBindingHelper::BindGlobalCommands();
+
+		auto tank = FindGameObjectByTag("Player1");
+		if (tank)
+		{
+			InputBindingHelper::BindSoloModeControls(tank);
+		}
+	}
+
+	void Level404::InitializeSounds()
+	{
+		ServiceLocator::GetSoundSystem().AddSound("SoloTheme_404.mp3", 1, true);
+
+		SoundHelper::LoadSharedSounds();
+
+		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+	}
+
+	void Level404::InitializeManagers()
+	{
+		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
+		auto enemyManagement = enemyManager->GetComponent<EnemyManagerComponent>();
+		enemyManagement->SetMaxBlueTanks(0);
+		enemyManagement->SetMaxPinkTanks(0);
+		enemyManagement->SetMaxRecognizers(10);
+		enemyManagement->SetSpawnCooldown(.5f);
+
+
+		AddGameObject(std::move(enemyManager));
+	}
+
+	void Level404::InitializeCenterTP()
 	{
 		auto centerTP = PrefabRegistry::Instance().CreateTeleportCenterPrefab();
 		AddGameObject(std::move(centerTP));
 	}
 
-	void CoopScene::InitializeWalls()
+	void Level404::InitializeWalls()
 	{
-		FileReader reader("data/levels/level00C.txt");
+		FileReader reader("data/levels/level02C.txt");
 		auto walls = reader.ReadRectangles();
 
 		for (const auto& rect : walls) {
@@ -177,44 +191,29 @@ namespace FML
 			wall->GetComponent<TransformComponent>()->SetPosition({ rect.x, rect.y });
 			wall->GetComponent<TransformComponent>()->SetPivot({ 0,0 });
 
+
 			AddGameObject(std::move(wall));
 		}
 	}
 
-	void CoopScene::InitializeSounds()
+
+	void Level404::HandleInput(SDL_Event& event)
 	{
-		ServiceLocator::GetSoundSystem().AddSound("CoopTheme_2.wav", 1, true);
-
-		SoundHelper::LoadSharedSounds();
-
-		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
-	}
-
-	void CoopScene::InitializeManagers()
-	{
-		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
-		enemyManager->GetComponent<EnemyManagerComponent>()->SetMaxBlueTanks(4);
-		enemyManager->GetComponent<EnemyManagerComponent>()->SetMaxPinkTanks(3);
-		enemyManager->GetComponent<EnemyManagerComponent>()->SetMaxRecognizers(2);
-		AddGameObject(std::move(enemyManager));
-	}
-
-	void CoopScene::HandleInput(SDL_Event& event) {
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void CoopScene::Update(float deltaTime) 
+	void Level404::Update(float deltaTime)
 	{
 		Scene::Update(deltaTime);
 	}
 
-	void CoopScene::Render(SDL_Renderer* renderer)
+	void Level404::Render(SDL_Renderer* renderer)
 	{
 		Scene::Render(renderer);
 	}
-	void CoopScene::OnExit()
+
+	void Level404::OnExit()
 	{
 		GameAdmin::Instance().ResetPlayers();
 	}
 }
-
