@@ -5,7 +5,7 @@
 ![Status](https://img.shields.io/badge/Status-WIP-darkblue)
 
 
-An in-progress 2D game engine built using **C++** and **SDL2**, featuring a modular **component-based architecture**, game object hierarchy, command-pattern-based input system, and prefab creation.
+An in-progress 2D game engine built using **C++** and **SDL2**, featuring a **component-based architecture**, game object hierarchy, command-pattern-based input system, and prefab creation.
 
 Inspired by _Game Programming Patterns_ by **Robert Nystrom**, this engine powers **Tron Battle Tanks**, a prototype for a top-down tank battle game.
 
@@ -62,6 +62,13 @@ This project was built from scratch in C++ using SDL2, with a focus on core game
 ![demo](https://github.com/user-attachments/assets/e5893dc1-c3d2-4f9e-ba82-724a6e563998)
 
 ![demo3](https://github.com/user-attachments/assets/32ba1b5c-b70a-46a2-ae88-dbb9fb3e23c5)
+
+<details>
+  <summary>Secret Level</summary>
+
+  ![demo4](https://github.com/user-attachments/assets/4a157f1d-7edb-4777-b399-c6ba8b697588)
+
+</details>
 
 ---
 
