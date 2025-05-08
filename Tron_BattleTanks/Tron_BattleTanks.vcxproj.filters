@@ -33,6 +33,12 @@
     <Filter Include="Header Files\Scenes\SoloModeScenes\Levels">
       <UniqueIdentifier>{88f23a96-f9f1-4dcf-ae17-95cb3d9a5763}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\State">
+      <UniqueIdentifier>{eccced65-6c5c-4306-971f-69b8618ebcef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\State\Recognizer">
+      <UniqueIdentifier>{8e61ba53-2d7c-4a63-944b-5ebb88cf0208}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tron_BattleTanks.cpp">
@@ -88,6 +94,12 @@
     </ClCompile>
     <ClCompile Include="Level404.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="RecognizerMovementHelper.cpp">
+      <Filter>Header Files\State\Recognizer</Filter>
+    </ClCompile>
+    <ClCompile Include="ChasePlayerState.cpp">
+      <Filter>Header Files\State\Recognizer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +234,21 @@
     </ClInclude>
     <ClInclude Include="Level404.h">
       <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="RecognizerMovementHelper.h">
+      <Filter>Header Files\State\Recognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="RecognizerState.h">
+      <Filter>Header Files\State\Recognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="RecognizerStateComponent.h">
+      <Filter>Header Files\State\Recognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="ChasePlayerState.h">
+      <Filter>Header Files\State\Recognizer</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalMovingState.h">
+      <Filter>Header Files\State\Recognizer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

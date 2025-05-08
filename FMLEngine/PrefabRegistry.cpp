@@ -22,6 +22,9 @@
 #include "../Tron_BattleTanks/BulletObserver.h"
 #include "../Tron_BattleTanks/RecognizerCollisionBehaviorComponent.h"
 #include "../Tron_BattleTanks/GameData.h"
+#include "../Tron_BattleTanks/RecognizerStateComponent.h"
+#include "../Tron_BattleTanks/NormalMovingState.h"
+
 
 namespace FML
 {
@@ -127,9 +130,9 @@ namespace FML
 		recognizer->GetSubject().AddObserver(tankHealth.get());
 		recognizer->AddComponent(std::move(tankHealth));
 
-		auto enemyMovement = std::make_unique<EnemyMovementComponent>(175.f);
-		enemyMovement->SetIgnorePlayer(true);
-		recognizer->AddComponent(std::move(enemyMovement));
+		auto stateComponent = std::make_unique<RecognizerStateComponent>();
+		recognizer->AddComponent(std::move(stateComponent));
+		recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(new NormalMovingState());
 
 		auto recognizerCollisionBehavior = std::make_unique<RecognizerCollisionBehaviorComponent>();
 		recognizer->AddComponent(std::move(recognizerCollisionBehavior));

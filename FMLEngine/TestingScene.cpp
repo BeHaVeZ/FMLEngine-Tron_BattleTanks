@@ -28,12 +28,12 @@ namespace FML
 	const std::string backgroundImagePath = "data/levels/level00.png";
 
 	bool TestingScene::Initialize(SDL_Renderer* renderer) {
-		//InitializeBackground(renderer);
+		InitializeBackground(renderer);
 
 		InitializeFirstTank();
 		InitializeFPSCounter(renderer);
 
-		//InitializeWalls();
+		InitializeWalls();
 
 		InitializeInput();
 		InitializeSounds();
@@ -48,19 +48,21 @@ namespace FML
 
 		auto backgroundTransform = background->GetComponent<TransformComponent>();
 		if (backgroundTransform) {
-			backgroundTransform->SetPosition({ 0, 0 });
+			backgroundTransform->SetPosition({ ConfigManager::Instance().GetWindowWidth() / 2, ConfigManager::Instance().GetWindowHeight() / 2 });
+			backgroundTransform->SetPivot({ 0.f, 0.f });
 			backgroundTransform->SetSize(
 				static_cast<float>(ConfigManager::Instance().GetWindowWidth()),
 				static_cast<float>(ConfigManager::Instance().GetWindowHeight())
 			);
 		}
-		gameObjects.push_back(std::move(background));
+		AddGameObject(std::move(background));
 
 		float offset = 100.f;
 
 		auto bg = FindGameObjectByTag("Background");
 		bg->GetComponent<TransformComponent>()->SetSize((float)ConfigManager::Instance().GetWindowWidth(), (float)ConfigManager::Instance().GetWindowHeight() - offset);
-		bg->GetComponent<TransformComponent>()->SetPosition({0,offset});
+		bg->GetComponent<TransformComponent>()->SetPosition({ 0,offset });
+
 	}
 
 	void TestingScene::InitializeFPSCounter(SDL_Renderer* renderer)
@@ -117,6 +119,8 @@ namespace FML
 			wall->AddComponent(std::move(wallCollider));
 
 			wall->GetComponent<TransformComponent>()->SetPosition({ rect.x, rect.y });
+			wall->GetComponent<TransformComponent>()->SetPivot({ 0,0 });
+
 
 			AddGameObject(std::move(wall));
 		}

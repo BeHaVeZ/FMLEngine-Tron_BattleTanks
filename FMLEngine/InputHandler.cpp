@@ -150,7 +150,7 @@ namespace FML
 				glm::vec2 clickPos = { x, y };
 
 				Logger::Log(LogLevel::Info, "Spawning tank at: (%d, %d)", x, y);
-				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreatePinkTankPrefab(clickPos));
+				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateBlueTankPrefab(clickPos));
 			}
 		}
 

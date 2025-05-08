@@ -20,7 +20,7 @@ namespace FML
 			checkDistance(50.f),
 			offsetDistance(5.f),
 			turnCooldownTime(2.f),
-			minTurnCooldownTime(2.f),
+			minTurnCooldownTime(.1f),
 			maxTurnCooldownTime(5.f),
 			bottomLeft({}),
 			bottomRight({}),
@@ -61,8 +61,6 @@ namespace FML
 			//DrawDebug();
 		}
 
-		void SetIgnorePlayer(bool toIgnore) { ignorePlayer = toIgnore; }
-
 	private:
 		float moveSpeed;
 		float turnCooldown;
@@ -82,8 +80,6 @@ namespace FML
 		glm::vec2 middleRight;
 		glm::vec2 topRight;
 		glm::vec2 off;
-
-		bool ignorePlayer;
 
 		std::mt19937 rng;
 		std::uniform_int_distribution<int> flipCoinDistribution;
@@ -106,16 +102,14 @@ namespace FML
 			bool player1InFront = false;
 			bool player2InFront = false;
 
-			if (!ignorePlayer)
-			{
-				player1InFront =
-					CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Player1") ||
-					CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Player1");
+			player1InFront =
+				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Player1") ||
+				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Player1");
 
-				player2InFront =
-					CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Player2") ||
-					CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Player2");
-			}
+			player2InFront =
+				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Player2") ||
+				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Player2");
+
 
 			if (wallInFront || player1InFront || player2InFront || enemyInFront)
 			{
