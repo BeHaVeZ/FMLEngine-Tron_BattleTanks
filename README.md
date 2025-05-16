@@ -3,7 +3,18 @@
 ![Gameplay](https://img.shields.io/badge/Gameplay-2D--Platformer-orange)
 ![Input](https://img.shields.io/badge/input-Keyboard%20%2B%20Controller/XINPUT-lightgrey)
 ![Status](https://img.shields.io/badge/Status-WIP-darkblue)
+![demo2](https://github.com/user-attachments/assets/06298d1d-c79c-4c11-8419-f7d9d7439b25)
 
+![demo](https://github.com/user-attachments/assets/e5893dc1-c3d2-4f9e-ba82-724a6e563998)
+
+![demo3](https://github.com/user-attachments/assets/32ba1b5c-b70a-46a2-ae88-dbb9fb3e23c5)
+
+<details>
+  <summary>Secret Level</summary>
+  
+  ![demo4](https://github.com/user-attachments/assets/4a157f1d-7edb-4777-b399-c6ba8b697588)
+
+</details>
 
 An in-progress 2D game engine built using **C++** and **SDL2**, featuring a **component-based architecture**, game object hierarchy, command-pattern-based input system, and prefab creation.
 
@@ -52,23 +63,6 @@ This project was built from scratch in C++ using SDL2, with a focus on core game
 - **glm**
 - **XInput** (gamepad support)
 - Design Patterns like **Command**, **Service Locator**, **Observer**, **Component**, **Singleton**, **Dirty flag** etc...
-
----
-
-## Screenshots
-
-![demo2](https://github.com/user-attachments/assets/06298d1d-c79c-4c11-8419-f7d9d7439b25)
-
-![demo](https://github.com/user-attachments/assets/e5893dc1-c3d2-4f9e-ba82-724a6e563998)
-
-![demo3](https://github.com/user-attachments/assets/32ba1b5c-b70a-46a2-ae88-dbb9fb3e23c5)
-
-<details>
-  <summary>Secret Level</summary>
-
-  ![demo4](https://github.com/user-attachments/assets/4a157f1d-7edb-4777-b399-c6ba8b697588)
-
-</details>
 
 ---
 
