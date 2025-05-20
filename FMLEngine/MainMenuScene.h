@@ -30,6 +30,7 @@ namespace FML
 
 		void InitializeSounds();
 
+		void OnExit() override;
 
 	private:
 		std::vector<GameObject*> menuOptions;

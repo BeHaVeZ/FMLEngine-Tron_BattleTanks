@@ -132,7 +132,7 @@ namespace FML
 	void NameEntryScene::MoveDown()
 	{
 		SoundHelper::PlayRandomSound({ 15 });
-		charIndices[currentSlot] = (charIndices[currentSlot] - 1 + allowedChars.size()) % allowedChars.size();
+		charIndices[currentSlot] = ((int)charIndices[currentSlot] - 1 + (int)allowedChars.size()) % (int)allowedChars.size();
 		auto* textComp = FindGameObjectByTag("Letter" + std::to_string(currentSlot))->GetComponent<TextComponent>();
 		textComp->SetText(std::string(1, allowedChars[charIndices[currentSlot]]), SceneManager::Instance().GetRenderer());
 	}

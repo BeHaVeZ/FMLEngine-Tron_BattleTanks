@@ -17,7 +17,7 @@ namespace FML
 
 			if (RecognizerMovementHelper::PlayerVisible(recognizer))
 			{
-				//recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(new ChasePlayerState());
+				recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(new ChasePlayerState());
 			}
 		}
 	};

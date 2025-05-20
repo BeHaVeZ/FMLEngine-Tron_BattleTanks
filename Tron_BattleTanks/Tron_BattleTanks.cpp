@@ -1,5 +1,9 @@
 #define WIN32_LEAN_AND_MEAN
-#include "vld.h"
+
+#ifdef _DEBUG
+#include <vld.h>
+#endif
+
 #include "Game.h"
 
 int main(int, char* [])

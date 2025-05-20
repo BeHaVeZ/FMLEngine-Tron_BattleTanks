@@ -30,7 +30,8 @@ namespace FML
         GameObject* FindGameObjectByTag(const std::string& tag);
         void CleanupDestroyedGameObjects();
 
-        virtual void OnExit() {};
+        virtual void OnEnter();
+        virtual void OnExit();
 
     protected:
         std::vector<std::unique_ptr<GameObject>> gameObjects;

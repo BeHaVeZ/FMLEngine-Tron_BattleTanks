@@ -13,7 +13,7 @@ namespace FML
 	{
         chaseTimer -= dt;
 
-        TurnTowardsPlayer(recognizer);
+        RecognizerMovementHelper::Move(recognizer, 175.f);
 
         if (RecognizerMovementHelper::PlayerVisible(recognizer))
         {
@@ -26,6 +26,5 @@ namespace FML
 	}
     void ChasePlayerState::TurnTowardsPlayer(GameObject* recognizer)
     {
-
     }
 }

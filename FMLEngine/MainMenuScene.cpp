@@ -218,5 +218,11 @@ namespace FML
 		ServiceLocator::GetSoundSystem().AddSound("MenuTheme_1.mp3", 1, true);
 		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
+
+	void MainMenuScene::OnExit()
+	{
+		gameObjects.clear();
+		menuOptions.clear();
+	}
 }
 

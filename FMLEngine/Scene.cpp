@@ -90,4 +90,11 @@ namespace FML
 				}),
 			gameObjects.end());
 	}
+	void Scene::OnEnter()
+	{
+	}
+
+	void Scene::OnExit()
+	{
+	}
 }

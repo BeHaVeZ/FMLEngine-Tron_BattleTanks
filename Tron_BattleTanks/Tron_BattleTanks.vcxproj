@@ -92,12 +92,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;$(SolutionDir)vendor\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x86;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x86;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x86;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x86;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x86;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x86;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x86;$(SolutionDir)vendor\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>FMLEngine.lib;SDL2.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -121,14 +121,14 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;$(SolutionDir)vendor\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x86;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x86;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x86;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x86;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x86;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x86;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x86;$(SolutionDir)vendor\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>FMLEngine.lib;SDL2.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -150,12 +150,12 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;$(SolutionDir)vendor\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x64;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x64;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x64;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x64;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x64;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x64;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x64;$(SolutionDir)vendor\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>FMLEngine.lib;SDL2.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -179,14 +179,14 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;$(SolutionDir)vendor\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x64;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x64;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x64;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)bin\FMLEngine\$(Platform)\$(Configuration);$(SolutionDir)vendor\SDL2-2.30.7\lib\x64;$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\x64;$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\x64;$(SolutionDir)vendor\SDL2_image-2.8.2\lib\x64;$(SolutionDir)vendor\Visual Leak Detector\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>FMLEngine.lib;SDL2.lib;SDL2_ttf.lib;SDL2_mixer.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>

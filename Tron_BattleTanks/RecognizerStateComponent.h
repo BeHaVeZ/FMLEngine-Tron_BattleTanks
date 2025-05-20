@@ -11,22 +11,41 @@ namespace FML
         {
             if (currentState)
                 currentState->Update(gameObject, dt);
+
+            if (pendingState)
+            {
+                if (currentState)
+                {
+                    currentState->Exit(gameObject);
+                    delete currentState;
+                }
+
+                currentState = pendingState;
+                currentState->Enter(gameObject);
+                pendingState = nullptr;
+            }
         }
 
         void ChangeState(RecognizerState* newState)
         {
-            if (currentState)
+            if (pendingState)
             {
-                currentState->Exit(gameObject);
-                delete currentState;
+                delete pendingState;
             }
-            currentState = newState;
+
+            pendingState = newState;
+        }
+
+        ~RecognizerStateComponent()
+        {
             if (currentState)
-                currentState->Enter(gameObject);
+                delete currentState;
+            if (pendingState)
+                delete pendingState;
         }
 
     private:
         RecognizerState* currentState = nullptr;
+        RecognizerState* pendingState = nullptr;
     };
-
 }
