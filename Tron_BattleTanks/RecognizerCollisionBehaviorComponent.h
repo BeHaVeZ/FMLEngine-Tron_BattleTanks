@@ -9,7 +9,7 @@ namespace FML
     class RecognizerCollisionBehaviorComponent : public Component
     {
     public:
-        void OnCollision(GameObject* self, Collider* other)
+        void OnCollision(GameObject*, Collider* other)
         {
             if (!other) return;
             GameObject* otherGO = other->GetOwner();

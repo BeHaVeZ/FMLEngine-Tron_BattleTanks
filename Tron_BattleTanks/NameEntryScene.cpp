@@ -170,7 +170,7 @@ namespace FML
 				return a.second > b.second;
 			});
 
-		if (scores.size() < highscoreCap || scoreToSubmit > scores.back().second)
+		if ((int)scores.size() < highscoreCap || scoreToSubmit > (int)scores.back().second)
 		{
 			scores.emplace_back(name, scoreToSubmit);
 
@@ -179,7 +179,7 @@ namespace FML
 					return a.second > b.second;
 				});
 
-			if (scores.size() > highscoreCap)
+			if ((int)scores.size() > highscoreCap)
 				scores.resize(highscoreCap);
 
 			SaveHighscores(scores);

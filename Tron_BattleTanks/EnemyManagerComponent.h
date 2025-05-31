@@ -178,10 +178,10 @@ namespace FML
 				}
 
 				std::random_device rd;
-				std::mt19937 rng(rd());
+				std::mt19937 localRng(rd());
 				std::uniform_int_distribution<> dist(1, 100);
 
-				int roll = dist(rng);
+				int roll = dist(localRng);
 
 				if (roll <= 25)
 				{

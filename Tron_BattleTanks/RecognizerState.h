@@ -10,8 +10,8 @@ namespace FML
 
         virtual void Update(GameObject* recognizer, float dt) = 0;
 
-        virtual void Enter(GameObject* recognizer) {};
-        virtual void Exit(GameObject* recognizer) {};
+        virtual void Enter(GameObject*) {};
+        virtual void Exit(GameObject*) {};
     };
 
 }

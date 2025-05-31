@@ -10,7 +10,7 @@ namespace FML
 	class NormalMovingState : public RecognizerState
 	{
 	public:
-		void Update(GameObject* recognizer, float dt) override
+		void Update(GameObject* recognizer, float) override
 		{
 			constexpr float recognizerSpeed = 175.f;
 			RecognizerMovementHelper::Move(recognizer, recognizerSpeed);

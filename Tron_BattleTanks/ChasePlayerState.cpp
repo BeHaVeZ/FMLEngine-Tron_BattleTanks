@@ -4,7 +4,7 @@
 
 namespace FML 
 {
-    void ChasePlayerState::Enter(GameObject* recognizer)
+    void ChasePlayerState::Enter(GameObject*)
     {
         chaseTimer = 5.0f;
     }
@@ -24,7 +24,7 @@ namespace FML
             recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(new NormalMovingState());
         }
 	}
-    void ChasePlayerState::TurnTowardsPlayer(GameObject* recognizer)
+    void ChasePlayerState::TurnTowardsPlayer(GameObject*)
     {
     }
 }

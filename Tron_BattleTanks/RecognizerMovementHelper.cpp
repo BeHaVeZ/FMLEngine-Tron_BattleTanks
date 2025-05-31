@@ -104,7 +104,7 @@ namespace FML
         return !(wallInFront || enemyInFront);
     }
 
-    bool RecognizerMovementHelper::LeftSideClear(GameObject* recognizer)
+    bool RecognizerMovementHelper::LeftSideClear(GameObject*)
     {
         glm::vec2 topRayStart = topLeft - off;
         glm::vec2 bottomRayStart = bottomLeft + off;
@@ -117,7 +117,7 @@ namespace FML
         return topClear && bottomClear && middleClear;
     }
 
-    bool RecognizerMovementHelper::RightSideClear(GameObject* recognizer)
+    bool RecognizerMovementHelper::RightSideClear(GameObject*)
     {
         glm::vec2 topRayStart = topRight - off;
         glm::vec2 bottomRayStart = bottomRight + off;
@@ -188,17 +188,17 @@ namespace FML
         float halfHeight = texture->GetDefaultHeight() / 2.f;
         float worldRotationDegrees = transform->GetWorldRotation();
         float rotationRadians = glm::radians(worldRotationDegrees + 90.f);
-        glm::vec2 up = { -std::cos(rotationRadians), -std::sin(rotationRadians) };
-        glm::vec2 right = { up.y, -up.x };
-        glm::vec2 center = transform->GetWorldPosition();
-        glm::vec2 topLeft = center - right * halfWidth + up * halfHeight;
-        glm::vec2 topRight = center + right * halfWidth + up * halfHeight;
-        glm::vec2 shootDir = up;
+        glm::vec2 localUp = { -std::cos(rotationRadians), -std::sin(rotationRadians) };
+        glm::vec2 localRight = { localUp.y, -localUp.x };
+        glm::vec2 localCenter = transform->GetWorldPosition();
+        glm::vec2 localTopLeft = localCenter - localRight * halfWidth + localUp * halfHeight;
+        glm::vec2 localTopRight = localCenter + localRight * halfWidth + localUp * halfHeight;
+        glm::vec2 shootDir = localUp;
 
         auto leftHit = CollisionManager::Instance()
-            .RaycastFirstHit(topLeft, shootDir, 1000.f, recognizer, nullptr);
+            .RaycastFirstHit(localTopLeft, shootDir, 1000.f, recognizer, nullptr);
         auto rightHit = CollisionManager::Instance()
-            .RaycastFirstHit(topRight, shootDir, 1000.f, recognizer, nullptr);
+            .RaycastFirstHit(localTopRight, shootDir, 1000.f, recognizer, nullptr);
 
         if (IsPlayerHit(leftHit) || IsPlayerHit(rightHit))
             return true;
