@@ -4,6 +4,7 @@
 #include "GameObjectDestroyedEvent.h"
 #include "GameAdmin.h"
 #include "Logger.h"
+#include "GameTags.h"
 
 namespace FML
 {
@@ -17,28 +18,31 @@ namespace FML
 				return;
 
 			GameObject* destroyed = destroyEvent->GetDestroyedObject();
-			if (destroyed->GetTag() == "BlueTank" || destroyed->GetTag() == "PinkTank" || destroyed->GetTag() == "Recognizer")
+			if (Tags::IsEnemyTag(destroyed->GetTag()))
 			{
-				auto player = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1");
+				auto player = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag(Tags::Player1.data());
 				if (player)
 				{
-					player->GetComponent<ScoreComponent>()->AddScore();
+					if (auto* score = player->GetComponent<ScoreComponent>())
+					{
+						score->AddScore();
+					}
 				}
 				gameObject->GetSubject().Notify(BlueTankKilledEvent());
 
-				Logger::Log(LogLevel::Error, "Enemy destroyed: Spawning explosion at %d.", destroyed->GetComponent<TransformComponent>()->GetWorldPosition().x);
+				Logger::Log(LogLevel::Info, "Enemy destroyed: spawning explosion at %.1f.", destroyed->GetComponent<TransformComponent>()->GetWorldPosition().x);
 
 				auto explosion = PrefabRegistry::Instance().CreateTankExplosionPrefab(destroyed->GetComponent<TransformComponent>()->GetWorldPosition());
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
 			}
-			else 	if (destroyed->GetTag() == "Player1" || destroyed->GetTag() == "Player2")
+			else if (Tags::IsPlayerTag(destroyed->GetTag()))
 			{
 				GameAdmin::Instance().OnPlayerDestroyed(destroyed);
 
 				auto explosion = PrefabRegistry::Instance().CreatePlayerExplosionPrefab(destroyed->GetComponent<TransformComponent>()->GetWorldPosition());
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
 
-				SoundHelper::PlayRandomSound({ 15,16 }, .3f);
+				SoundHelper::PlayRandomSound({ SoundId::PlayerExplosion1, SoundId::PlayerExplosion2 }, .3f);
 
 				Logger::Log(LogLevel::Error, "Player destroyed: Spawning explosion.");
 			}

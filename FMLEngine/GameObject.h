@@ -25,13 +25,10 @@ namespace FML
 			return nullptr;
 		}
 		void AddComponent(std::unique_ptr<Component> component);
-		bool RemoveComponent(const Component* component);
-		bool HasComponent() const;
 
 		void AddChild(std::unique_ptr<GameObject> child);
 		bool RemoveChild(GameObject* child);
 		GameObject* FindChildByTag(const std::string& tag) const;
-		void Reparent(GameObject* newParent);
 
 
 		void Initialize();
@@ -40,7 +37,6 @@ namespace FML
 
 		void SetTag(const std::string& newTag);
 		const std::string& GetTag() const;
-		void Unparent();
 		GameObject* GetParent() const;
 		const std::vector<std::unique_ptr<GameObject>>& GetChildren() const;
 		bool HasChildren() const;

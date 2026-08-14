@@ -11,8 +11,6 @@ namespace FML
 			: destroyed(destroyedObject) {
 		}
 
-		void Process(Observer& observer) const override;
-
 		GameObject* GetDestroyedObject() const { return destroyed; }
 
 	private:

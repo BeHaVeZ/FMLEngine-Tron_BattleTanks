@@ -24,6 +24,8 @@
 #include "../Tron_BattleTanks/GameData.h"
 #include "../Tron_BattleTanks/RecognizerStateComponent.h"
 #include "../Tron_BattleTanks/NormalMovingState.h"
+#include "../Tron_BattleTanks/PlayerRespawnComponent.h"
+#include "../Tron_BattleTanks/LevelProgressionComponent.h"
 
 
 namespace FML
@@ -44,9 +46,13 @@ namespace FML
 		tank->GetSubject().AddObserver(observer.get());
 		tank->AddComponent(std::move(observer));
 
-		auto playerHealth = std::make_unique<HealthComponent>(GameData::Player1Health);
+		auto playerHealth = std::make_unique<HealthComponent>(&GameData::Player1Health);
 		tank->GetSubject().AddObserver(playerHealth.get());
 		tank->AddComponent(std::move(playerHealth));
+
+		auto respawn = std::make_unique<PlayerRespawnComponent>();
+		tank->GetSubject().AddObserver(respawn.get());
+		tank->AddComponent(std::move(respawn));
 
 		auto playerScore = std::make_unique<ScoreComponent>();
 		tank->GetSubject().AddObserver(playerScore.get());
@@ -74,7 +80,7 @@ namespace FML
 
 		float shootAllowanceRange = 28.f;
 
-		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, .5f);
+		auto shootComponent = std::make_unique<ShootComponent>(shootAllowanceRange, .5f);
 		turret->AddComponent(std::move(shootComponent));
 
 		tank->AddChild(std::move(turret));
@@ -132,7 +138,7 @@ namespace FML
 
 		auto stateComponent = std::make_unique<RecognizerStateComponent>();
 		recognizer->AddComponent(std::move(stateComponent));
-		recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(new NormalMovingState());
+		recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(std::make_unique<NormalMovingState>());
 
 		auto recognizerCollisionBehavior = std::make_unique<RecognizerCollisionBehaviorComponent>();
 		recognizer->AddComponent(std::move(recognizerCollisionBehavior));
@@ -195,6 +201,10 @@ namespace FML
 		tank->GetSubject().AddObserver(playerHealth.get());
 		tank->AddComponent(std::move(playerHealth));
 
+		auto respawn = std::make_unique<PlayerRespawnComponent>();
+		tank->GetSubject().AddObserver(respawn.get());
+		tank->AddComponent(std::move(respawn));
+
 		auto playerScore = std::make_unique<ScoreComponent>();
 		tank->GetSubject().AddObserver(playerScore.get());
 		tank->AddComponent(std::move(playerScore));
@@ -221,7 +231,7 @@ namespace FML
 
 		float shootAllowanceRange = 28.f;
 
-		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, .5f);
+		auto shootComponent = std::make_unique<ShootComponent>(shootAllowanceRange, .5f);
 		turret->AddComponent(std::move(shootComponent));
 
 		tank->AddChild(std::move(turret));
@@ -243,9 +253,13 @@ namespace FML
 		tank->AddComponent(std::move(tankTexture));
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
-		auto playerHealth = std::make_unique<HealthComponent>(GameData::Player2Health);
+		auto playerHealth = std::make_unique<HealthComponent>(&GameData::Player2Health);
 		tank->GetSubject().AddObserver(playerHealth.get());
 		tank->AddComponent(std::move(playerHealth));
+
+		auto respawn = std::make_unique<PlayerRespawnComponent>();
+		tank->GetSubject().AddObserver(respawn.get());
+		tank->AddComponent(std::move(respawn));
 
 		auto playerScore = std::make_unique<ScoreComponent>();
 		tank->GetSubject().AddObserver(playerScore.get());
@@ -262,7 +276,7 @@ namespace FML
 
 		float shootAllowanceRange = 28.f;
 
-		auto shootComponent = std::make_unique<ShootComponent>(turret.get(), shootAllowanceRange, .5f);
+		auto shootComponent = std::make_unique<ShootComponent>(shootAllowanceRange, .5f);
 		turret->AddComponent(std::move(shootComponent));
 
 		tank->AddChild(std::move(turret));
@@ -463,6 +477,7 @@ namespace FML
 	std::unique_ptr<GameObject> PrefabRegistry::CreateEnemyManager(glm::vec2, const std::string) const
 	{
 		auto enemyManager = std::make_unique<GameObject>("EnemyManager");
+		enemyManager->AddComponent(std::make_unique<LevelProgressionComponent>());
 
 		auto managerComponent = std::make_unique<EnemyManagerComponent>();
 		enemyManager->AddComponent(std::move(managerComponent));

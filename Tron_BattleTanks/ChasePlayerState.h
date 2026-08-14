@@ -12,10 +12,8 @@ namespace FML
         void Enter(GameObject* recognizer) override;
         void Update(GameObject* recognizer, float dt) override;
 
-    private:
-        float chaseTimer;
-
-        void TurnTowardsPlayer(GameObject* recognizer);
+	private:
+		float chaseTimer{ 0.f };
     };
 
 }

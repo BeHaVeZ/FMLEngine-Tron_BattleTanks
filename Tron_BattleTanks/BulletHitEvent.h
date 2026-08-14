@@ -13,12 +13,7 @@ namespace FML
         {
         }
 
-        void Process(Observer& observer) const override
-        {
-            observer.HandleEvent(*this);
-        };
-
-        GameObject* GetTarget() const { return target; }
+		GameObject* GetTarget() const { return target; }
         glm::vec2 GetHitPosition() const { return hitPosition; }
 
     private:

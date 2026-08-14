@@ -4,10 +4,13 @@
 #include "TransformComponent.h"
 #include "TextureComponent.h"
 #include "CollisionManager.h"
-#include "Timer.h"
+#include "GameTags.h"
+#include "DebugDraw.h"
+#include "Logger.h"
 #include <glm.hpp>
 #include <random>
 #include <cmath>
+#include <array>
 
 namespace FML
 {
@@ -25,6 +28,7 @@ namespace FML
 			bottomLeft({}),
 			bottomRight({}),
 			center({}),
+			right({}),
 			middleLeft({}),
 			middleRight({}),
 			topLeft({}),
@@ -37,7 +41,7 @@ namespace FML
 			flipCoinDistribution = std::uniform_int_distribution<int>(0, 1);
 		}
 
-		void Update(float dt)
+		void Update(float dt) override
 		{
 			turnCooldown -= dt;
 			CacheFrameData();
@@ -57,8 +61,7 @@ namespace FML
 				ResetCooldownTimer();
 			}
 			CacheFrameData();
-			MoveUp();
-			//DrawDebug();
+			MoveUp(dt);
 		}
 
 	private:
@@ -87,28 +90,29 @@ namespace FML
 		bool FrontClear()
 		{
 			const bool wallInFront =
-				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Wall") ||
-				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Wall");
+				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, Tags::Wall) ||
+				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, Tags::Wall);
 
 			bool enemyInFront = false;
-			std::vector<std::string> enemyTags = { "BlueTank", "PinkTank", "Recognizer" };
+			static constexpr std::array enemyTags{ Tags::BlueTank, Tags::PinkTank, Tags::Recognizer };
 			for (const auto& tag : enemyTags)
 			{
-				enemyInFront |=
+				enemyInFront =
 					CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, tag, gameObject) ||
 					CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, tag, gameObject);
+				if (enemyInFront) break;
 			}
 
 			bool player1InFront = false;
 			bool player2InFront = false;
 
 			player1InFront =
-				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Player1") ||
-				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Player1");
+				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, Tags::Player1) ||
+				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, Tags::Player1);
 
 			player2InFront =
-				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, "Player2") ||
-				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, "Player2");
+				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, Tags::Player2) ||
+				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, Tags::Player2);
 
 
 			if (wallInFront || player1InFront || player2InFront || enemyInFront)
@@ -119,14 +123,14 @@ namespace FML
 			return true;
 		}
 
-		void MoveUp()
+		void MoveUp(float deltaTime)
 		{
 
 			auto* transform = gameObject->GetComponent<TransformComponent>();
 			if (!transform) return;
 
 			glm::vec2 currentPos = transform->GetLocalPosition();
-			glm::vec2 newPos = currentPos + up * moveSpeed * Timer::Instance().GetDeltaTime();
+			glm::vec2 newPos = currentPos + up * moveSpeed * deltaTime;
 			transform->SetPosition(newPos);
 		}
 
@@ -158,10 +162,11 @@ namespace FML
 			off = -up * offsetDistance;
 		}
 
+#ifdef _DEBUG
 		void DrawDebug()
 		{
 			Logger::Log(LogLevel::Info,
-				"Rot=%.0f°  Up=(%.1f,%.1f)  Pos=(%.1f,%.1f)",
+				"Rot=%.0f deg  Up=(%.1f,%.1f)  Pos=(%.1f,%.1f)",
 				gameObject->GetComponent<TransformComponent>()->GetWorldRotation(),
 				up.x, up.y,
 				center.x, center.y);
@@ -179,6 +184,7 @@ namespace FML
 			DebugDraw::DrawLine(topLeft, topLeft + up * 10.f, { 0, 1, 1, 1 });
 			DebugDraw::DrawLine(topRight, topRight + up * 10.f, { 0, 1, 1, 1 });
 		}
+#endif
 
 		void DecideTurn(bool leftClear, bool rightClear)
 		{
@@ -230,9 +236,9 @@ namespace FML
 			glm::vec2 bottomRayStart = bottomRight + off;
 			glm::vec2 middleRayStart = middleRight;
 
-			bool topClear = !CollisionManager::Instance().RaycastWithTag(topRayStart, right, checkDistance, "Wall");
-			bool bottomClear = !CollisionManager::Instance().RaycastWithTag(bottomRayStart, right, checkDistance, "Wall");
-			bool middleClear = !CollisionManager::Instance().RaycastWithTag(middleRayStart, right, checkDistance, "Wall");
+			bool topClear = !CollisionManager::Instance().RaycastWithTag(topRayStart, right, checkDistance, Tags::Wall);
+			bool bottomClear = !CollisionManager::Instance().RaycastWithTag(bottomRayStart, right, checkDistance, Tags::Wall);
+			bool middleClear = !CollisionManager::Instance().RaycastWithTag(middleRayStart, right, checkDistance, Tags::Wall);
 
 			return topClear && bottomClear && middleClear;
 		}
@@ -243,9 +249,9 @@ namespace FML
 			glm::vec2 bottomRayStart = bottomLeft + off;
 			glm::vec2 middleRayStart = middleLeft;
 
-			bool topClear = !CollisionManager::Instance().RaycastWithTag(topRayStart, -right, checkDistance, "Wall");
-			bool bottomClear = !CollisionManager::Instance().RaycastWithTag(bottomRayStart, -right, checkDistance, "Wall");
-			bool middleClear = !CollisionManager::Instance().RaycastWithTag(middleRayStart, -right, checkDistance, "Wall");
+			bool topClear = !CollisionManager::Instance().RaycastWithTag(topRayStart, -right, checkDistance, Tags::Wall);
+			bool bottomClear = !CollisionManager::Instance().RaycastWithTag(bottomRayStart, -right, checkDistance, Tags::Wall);
+			bool middleClear = !CollisionManager::Instance().RaycastWithTag(middleRayStart, -right, checkDistance, Tags::Wall);
 
 			return topClear && bottomClear && middleClear;
 		}

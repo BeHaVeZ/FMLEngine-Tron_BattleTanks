@@ -40,27 +40,13 @@ namespace FML
 	void SceneManager::QueueSceneChange(const std::string& name) 
 	{
 		queuedSceneChange = name;
+		sceneChangeDelay = 0.f;
 	}
 
 	void SceneManager::QueueSceneChangeWithDelay(const std::string& sceneName, float delaySeconds)
 	{
 		queuedSceneChange = sceneName;
 		sceneChangeDelay = delaySeconds;
-	}
-
-	void SceneManager::RemoveScene(const std::string& name) {
-		auto it = scenes.find(name);
-		if (it != scenes.end()) {
-			if (currentScene == it->second.get()) 
-			{
-				currentScene->Cleanup();     
-				currentScene = nullptr;
-			}
-			it->second->Cleanup();     
-			scenes.erase(it);
-
-			sceneOrder.erase(std::remove(sceneOrder.begin(), sceneOrder.end(), name), sceneOrder.end());
-		}
 	}
 
 	Scene* SceneManager::GetCurrentScene() const {
@@ -74,33 +60,14 @@ namespace FML
 		if (!currentScene)
 			return emptyName;
 
-		auto it = std::find_if(scenes.begin(), scenes.end(),
-			[this](const auto& pair) {
-				return pair.second.get() == currentScene;
-			});
-
-		if (it != scenes.end())
-			return it->first;
-
-		return emptyName;
+		return currentScene->GetName();
 	}
 
 	Scene* SceneManager::GetNextScene() const
 	{
 		if (!currentScene) return nullptr;
 
-		auto currentIt = std::find_if(scenes.begin(), scenes.end(),
-			[this](const auto& pair) {
-				return pair.second.get() == currentScene;
-			});
-
-		if (currentIt == scenes.end()) 
-		{
-			std::cerr << "[SceneManager] GetNextScene: Current scene not found in map.\n";
-			return nullptr;
-		}
-
-		auto nameIt = std::find(sceneOrder.begin(), sceneOrder.end(), currentIt->first);
+		auto nameIt = std::find(sceneOrder.begin(), sceneOrder.end(), currentScene->GetName());
 		if (nameIt != sceneOrder.end() && (nameIt + 1) != sceneOrder.end())
 		{
 			const std::string& nextSceneName = *(nameIt + 1);
@@ -122,39 +89,9 @@ namespace FML
 		return nullptr;
 	}
 
-	Scene* SceneManager::GetPreviousScene() const
-	{
-		if (!currentScene)
-			return nullptr;
-
-		auto currentIt = std::find_if(scenes.begin(), scenes.end(),
-			[this](const auto& pair) {
-				return pair.second.get() == currentScene;
-			});
-
-		if (currentIt == scenes.end())
-			return nullptr;
-
-		auto nameIt = std::find(sceneOrder.begin(), sceneOrder.end(), currentIt->first);
-		if (nameIt != sceneOrder.begin() && nameIt != sceneOrder.end())
-		{
-			std::string previousSceneName = *(nameIt - 1);
-			auto sceneIt = scenes.find(previousSceneName);
-			if (sceneIt != scenes.end())
-				return sceneIt->second.get();
-		}
-
-		return nullptr;
-	}
-
 	void SceneManager::ReloadScene()
 	{
 		if (!currentScene) return;
-
-		auto currentIt = std::find_if(scenes.begin(), scenes.end(),
-			[this](const auto& pair) { return pair.second.get() == currentScene; });
-
-		if (currentIt == scenes.end()) return;
 
 		InputHandler::Instance().ClearBindings();
 		ServiceLocator::GetSoundSystem().ClearSounds();
@@ -162,19 +99,14 @@ namespace FML
 		currentScene->Cleanup();
 		currentScene->Initialize(localRenderer);
 
-		std::cout << "Restarted scene: " << currentIt->first << std::endl;
+		std::cout << "Restarted scene: " << currentScene->GetName() << std::endl;
 	}
 
 	void SceneManager::GoToNextScene()
 	{
 		if (!currentScene) return;
 
-		auto currentIt = std::find_if(scenes.begin(), scenes.end(),
-			[this](const auto& pair) { return pair.second.get() == currentScene; });
-
-		if (currentIt == scenes.end()) return;
-
-		auto nameIt = std::find(sceneOrder.begin(), sceneOrder.end(), currentIt->first);
+		auto nameIt = std::find(sceneOrder.begin(), sceneOrder.end(), currentScene->GetName());
 		if (nameIt != sceneOrder.end() && (nameIt + 1) != sceneOrder.end()) {
 			std::string nextSceneName = *(nameIt + 1);
 			QueueSceneChange(nextSceneName);
@@ -185,23 +117,21 @@ namespace FML
 		}
 	}
 
-	void SceneManager::HandleInput(SDL_Event& event) {
-		if (currentScene) {
-			currentScene->HandleInput(event);
-		}
-	}
-
 	void SceneManager::Update(float deltaTime) 
 	{
 		isInsideSceneUpdate = true;
 		if (currentScene) currentScene->Update(deltaTime);
 		isInsideSceneUpdate = false;
 
-		sceneChangeDelay -= deltaTime;
-		if (!queuedSceneChange.empty() && sceneChangeDelay <= 0) 
+		if (!queuedSceneChange.empty())
 		{
-			ChangeScene(queuedSceneChange);
-			queuedSceneChange.clear();
+			sceneChangeDelay -= deltaTime;
+			if (sceneChangeDelay <= 0.f)
+			{
+				ChangeScene(queuedSceneChange);
+				queuedSceneChange.clear();
+				sceneChangeDelay = 0.f;
+			}
 		}
 	}
 
@@ -222,11 +152,7 @@ namespace FML
 
 	SDL_Renderer* SceneManager::GetRenderer() const
 	{
-		if (localRenderer)
-		{
-			return localRenderer;
-		}
-		return nullptr;
+		return localRenderer;
 	}
 
 }

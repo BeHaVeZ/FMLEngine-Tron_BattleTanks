@@ -107,12 +107,11 @@
 xcopy "$(SolutionDir)vendor\SDL2-2.30.7\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
-xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"
-rd /s /q "$(SolutionDir)intermediates"</Command>
+      <Command>if exist "$(OutputPath)" rd /s /q "$(OutputPath)"
+if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     </PreBuildEvent>
     <Lib>
       <AdditionalDependencies>xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -143,12 +142,11 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
 xcopy "$(SolutionDir)vendor\SDL2-2.30.7\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
-xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"
-rd /s /q "$(SolutionDir)intermediates"</Command>
+      <Command>if exist "$(OutputPath)" rd /s /q "$(OutputPath)"
+if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     </PreBuildEvent>
     <Lib>
       <AdditionalDependencies>xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -175,12 +173,11 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
 xcopy "$(SolutionDir)vendor\SDL2-2.30.7\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
-xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"
-rd /s /q "$(SolutionDir)intermediates"</Command>
+      <Command>if exist "$(OutputPath)" rd /s /q "$(OutputPath)"
+if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     </PreBuildEvent>
     <Lib>
       <AdditionalDependencies>xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -211,12 +208,11 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
 xcopy "$(SolutionDir)vendor\SDL2-2.30.7\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
-xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"
-rd /s /q "$(SolutionDir)intermediates"</Command>
+      <Command>if exist "$(OutputPath)" rd /s /q "$(OutputPath)"
+if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     </PreBuildEvent>
     <Lib>
       <AdditionalDependencies>xinput.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -228,7 +224,6 @@ rd /s /q "$(SolutionDir)intermediates"</Command>
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
-    <ClCompile Include="GameObjectDestroyedEvent.cpp" />
     <ClCompile Include="SpriteAnimatorComponent.cpp" />
     <ClCompile Include="Subject.cpp" />
     <ClCompile Include="XInputGamepadHandlerImpl.cpp" />

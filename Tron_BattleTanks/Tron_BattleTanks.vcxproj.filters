@@ -44,9 +44,6 @@
     <ClCompile Include="Tron_BattleTanks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\FMLEngine\DamageEvent.cpp">
-      <Filter>Header Files\GameEvents</Filter>
-    </ClCompile>
     <ClCompile Include="..\FMLEngine\PrefabRegistry.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
@@ -62,9 +59,6 @@
     <ClCompile Include="FileReader.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
-    <ClCompile Include="BlueTankKilledEvent.cpp">
-      <Filter>Header Files\GameEvents</Filter>
-    </ClCompile>
     <ClCompile Include="InputBindingHelper.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
@@ -77,22 +71,13 @@
     <ClCompile Include="NameEntryScene.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
     </ClCompile>
-    <ClCompile Include="SoloLevel2.cpp">
-      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
-    </ClCompile>
-    <ClCompile Include="SoloLevel3.cpp">
-      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
-    </ClCompile>
-    <ClCompile Include="SoloScene.cpp">
-      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
-    </ClCompile>
     <ClCompile Include="GameAdmin.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
     <ClCompile Include="TeleportManager.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
-    <ClCompile Include="Level404.cpp">
+    <ClCompile Include="TankLevelScene.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
     </ClCompile>
     <ClCompile Include="RecognizerMovementHelper.cpp">
@@ -198,6 +183,18 @@
     </ClInclude>
     <ClInclude Include="GameData.h">
       <Filter>Header Files\GameManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTags.h">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelProgressionComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerRespawnComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="TankLevelScene.h">
+      <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
     </ClInclude>
     <ClInclude Include="TankObserver.h">
       <Filter>Header Files\GameComponents</Filter>

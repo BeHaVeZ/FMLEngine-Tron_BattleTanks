@@ -6,7 +6,26 @@
 namespace FML
 {
 
-	using SoundId = unsigned short;
+	enum class SoundId : unsigned short
+	{
+		Music = 1,
+		Bounce1 = 2,
+		Bounce2 = 3,
+		Bounce3 = 4,
+		Hit1 = 5,
+		Hit2 = 6,
+		Hit3 = 7,
+		Explosion1 = 10,
+		Explosion2 = 11,
+		Explosion3 = 12,
+		Explosion4 = 13,
+		Splash = 14,
+		PlayerExplosion1 = 15,
+		PlayerExplosion2 = 16,
+		UiBlunk1 = 20,
+		UiBlunk2 = 21,
+		UiBlunk3 = 22
+	};
 
 	class SoundSystem
 	{
@@ -47,7 +66,7 @@ namespace FML
 	{
 	public:
 		explicit SDL_SoundSystem();
-		~SDL_SoundSystem() = default;
+		~SDL_SoundSystem() override;
 
 		virtual void PlaySound(const SoundId id, const float volume) override;
 		virtual void AddSound(const std::string& path, const SoundId id, bool doLoop = false) override;
@@ -65,26 +84,6 @@ namespace FML
 	private:
 		class SDL_SoundSystemImpl;
 		std::unique_ptr<SDL_SoundSystemImpl> m_pImpl;
-	};
-
-	class Logging_SoundSystem final : public SoundSystem
-	{
-	public:
-		Logging_SoundSystem(SoundSystem* ss) : m_pSS(ss) {};
-
-		virtual void PlaySound(const SoundId id, const float volume) override;
-		virtual void AddSound(const std::string& path, const SoundId id, bool doLoop = false) override;
-		virtual void StartUp() override;
-		virtual void Shutdown() override;
-		virtual bool IsShutdown() override;
-		virtual bool IsMuted() const override { return m_pSS->IsMuted(); };
-		virtual void MuteSound() override {};
-		virtual void UnmuteSound() override {};
-		virtual void ClearSounds() override {}
-		virtual void ClearQueue() override {};
-
-	private:
-		std::unique_ptr<SoundSystem> m_pSS;
 	};
 
 }

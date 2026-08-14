@@ -271,3 +271,17 @@ StarTransit/.editorconfig
 DSI Viewer/.editorconfig
 MicrosoftTranslatorProvider/.editorconfig
 Toolkit/.editorconfig
+
+*.md
+!README.md
+.claude/
+.codex/
+.cursor/
+.cursorrules
+.aider*
+.github/copilot-instructions.md
+.windsurf/
+.continue/
+.gemini/
+AGENTS.md
+GEMINI.md

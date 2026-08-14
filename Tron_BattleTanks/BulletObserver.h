@@ -33,7 +33,7 @@ namespace FML
 
                 glm::vec2 position = go->GetComponent<TransformComponent>()->GetWorldPosition();
 
-                SoundHelper::PlayRandomSound({ 10,13 }, .3f);
+				SoundHelper::PlayRandomSound({ SoundId::Explosion1, SoundId::Explosion4 }, .3f);
 
                 auto poof = PrefabRegistry::Instance().CreateBulletExplosionPrefab(position);
                 SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(poof));

@@ -13,7 +13,7 @@ namespace FML
 	{
         chaseTimer -= dt;
 
-        RecognizerMovementHelper::Move(recognizer, 175.f);
+		RecognizerMovementHelper::Move(recognizer, RecognizerMovementHelper::RecognizerSpeed);
 
         if (RecognizerMovementHelper::PlayerVisible(recognizer))
         {
@@ -21,10 +21,7 @@ namespace FML
         }
         else if (chaseTimer <= 0)
         {
-            recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(new NormalMovingState());
-        }
+			recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(std::make_unique<NormalMovingState>());
+		}
 	}
-    void ChasePlayerState::TurnTowardsPlayer(GameObject*)
-    {
-    }
 }

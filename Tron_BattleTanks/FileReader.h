@@ -11,7 +11,7 @@ namespace FML
 	public:
 		FileReader(const std::string& filename);
 		std::vector<SDL_Rect> ReadRectangles();
-		std::vector<std::string> readLines();
+		std::vector<std::string> ReadLines();
 
 	private:
 		std::string filename;

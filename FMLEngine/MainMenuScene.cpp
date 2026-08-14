@@ -153,7 +153,7 @@ namespace FML
 	{
 		if (selectedOption->GetTag() == "Play") return;
 		selectedOption = FindGameObjectByTag("Play");
-		SoundHelper::PlayRandomSound({ 15,16,17 });
+		SoundHelper::PlayRandomSound({ SoundId::UiBlunk1, SoundId::UiBlunk2, SoundId::UiBlunk3 });
 		UpdateMenuOptionHighlight();
 	}
 
@@ -161,7 +161,7 @@ namespace FML
 	{
 		if (selectedOption->GetTag() == "Quit") return;
 		selectedOption = FindGameObjectByTag("Quit");
-		SoundHelper::PlayRandomSound({ 15,16,17 });
+		SoundHelper::PlayRandomSound({ SoundId::UiBlunk1, SoundId::UiBlunk2, SoundId::UiBlunk3 });
 		UpdateMenuOptionHighlight();
 	}
 
@@ -169,7 +169,7 @@ namespace FML
 	{
 		if (selectedOption->GetTag() == "Coop") return;
 		selectedOption = FindGameObjectByTag("Coop");
-		SoundHelper::PlayRandomSound({ 15,16,17 });
+		SoundHelper::PlayRandomSound({ SoundId::UiBlunk1, SoundId::UiBlunk2, SoundId::UiBlunk3 });
 		UpdateMenuOptionHighlight();
 	}
 
@@ -177,7 +177,7 @@ namespace FML
 	{
 		if (selectedOption->GetTag() == "Versus") return;
 		selectedOption = FindGameObjectByTag("Versus");
-		SoundHelper::PlayRandomSound({ 15,16,17 });
+		SoundHelper::PlayRandomSound({ SoundId::UiBlunk1, SoundId::UiBlunk2, SoundId::UiBlunk3 });
 		UpdateMenuOptionHighlight();
 	}
 
@@ -211,12 +211,12 @@ namespace FML
 
 	void MainMenuScene::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("blunk_1.wav", 15, false);
-		ServiceLocator::GetSoundSystem().AddSound("blunk_2.wav", 16, false);
-		ServiceLocator::GetSoundSystem().AddSound("blunk_3.wav", 17, false);
+		ServiceLocator::GetSoundSystem().AddSound("blunk_1.wav", SoundId::UiBlunk1, false);
+		ServiceLocator::GetSoundSystem().AddSound("blunk_2.wav", SoundId::UiBlunk2, false);
+		ServiceLocator::GetSoundSystem().AddSound("blunk_3.wav", SoundId::UiBlunk3, false);
 		ServiceLocator::GetSoundSystem().SetVolume(0.5f);
-		ServiceLocator::GetSoundSystem().AddSound("MenuTheme_1.mp3", 1, true);
-		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		ServiceLocator::GetSoundSystem().AddSound("MenuTheme_1.mp3", SoundId::Music, true);
+		ServiceLocator::GetSoundSystem().PlaySound(SoundId::Music, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 
 	void MainMenuScene::OnExit()

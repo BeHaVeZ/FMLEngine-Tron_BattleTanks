@@ -109,9 +109,6 @@
     <ClCompile Include="CollisionManager.cpp">
       <Filter>Engine\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="GameObjectDestroyedEvent.cpp">
-      <Filter>Engine\Event</Filter>
-    </ClCompile>
     <ClCompile Include="SpriteAnimatorComponent.cpp">
       <Filter>Engine\Components</Filter>
     </ClCompile>

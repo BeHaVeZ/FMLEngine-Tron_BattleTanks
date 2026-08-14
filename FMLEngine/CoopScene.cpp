@@ -183,11 +183,11 @@ namespace FML
 
 	void CoopScene::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("CoopTheme_2.wav", 1, true);
+		ServiceLocator::GetSoundSystem().AddSound("CoopTheme_2.wav", SoundId::Music, true);
 
 		SoundHelper::LoadSharedSounds();
 
-		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		ServiceLocator::GetSoundSystem().PlaySound(SoundId::Music, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 
 	void CoopScene::InitializeManagers()

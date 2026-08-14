@@ -7,13 +7,11 @@ namespace FML
 	class BlueTankKilledEvent : public Event
 	{
 	public:
-		BlueTankKilledEvent();
-		~BlueTankKilledEvent();
-		void Process(Observer& observer) const override;
+		BlueTankKilledEvent() = default;
 
 		int GetScore() const { return scoreForBlueTankKilled; }
 	private:
-		int scoreForBlueTankKilled;
+		int scoreForBlueTankKilled{ 100 };
 	};
 
 }

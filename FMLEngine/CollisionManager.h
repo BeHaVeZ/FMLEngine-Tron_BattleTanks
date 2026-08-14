@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include "glm.hpp"
 #include <string>
+#include <string_view>
 #include <optional>
 
 namespace FML
@@ -35,8 +36,7 @@ namespace FML
         void ResolveCollision(Collider* colliderA, Collider* colliderB);
 
         bool Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
-        bool RaycastWithTag(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
-        std::optional<RaycastHit> RaycastWithTagHit(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
+		bool RaycastWithTag(const glm::vec2& start, const glm::vec2& direction, float maxDistance, std::string_view tagToCheck, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);
         std::optional<RaycastHit> RaycastFirstHit(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude, GameObject* excludeParent);
         bool IntersectRayWithRectangle(const glm::vec2& rayStart,
             const glm::vec2& rayDirNorm,
@@ -44,13 +44,7 @@ namespace FML
             const SDL_Rect& rect,
             float& outDist);
         
-
-
-
-        bool IntersectRayWithRectangle(const glm::vec2& rayStart, const glm::vec2& rayEnd, const SDL_Rect& rect);
-
-
-    private:
+	private:
         CollisionManager() {}
         std::vector<Collider*> colliders;
     };

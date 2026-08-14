@@ -28,7 +28,7 @@ namespace FML
                         if (transform)
                         {
                             transform->SetPosition(randomPosition);
-                            ServiceLocator::GetSoundSystem().PlaySound(15, ServiceLocator::GetSoundSystem().GetCurrentVolume() + .3f);
+							ServiceLocator::GetSoundSystem().PlaySound(SoundId::PlayerExplosion1, ServiceLocator::GetSoundSystem().GetCurrentVolume() + .3f);
 
                             transform->UpdateWorldPosition();
                             auto tpEffect = PrefabRegistry::Instance().CreateTpEffect(transform->GetWorldPosition());

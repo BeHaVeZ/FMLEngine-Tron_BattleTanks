@@ -25,12 +25,12 @@ namespace FML
 		SDL_Rect GetSourceRect() const;
 
 	private:
-		SDL_Texture* texture;
-		SDL_Rect destRect;
-		SDL_Rect srcRect;
+		SDL_Texture* texture{ nullptr };
+		SDL_Rect destRect{};
+		SDL_Rect srcRect{};
 
-		int defaultWidth;
-		int defaultHeight;
+		int defaultWidth{ 0 };
+		int defaultHeight{ 0 };
 	};
 
 

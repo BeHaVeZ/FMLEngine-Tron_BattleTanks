@@ -24,18 +24,23 @@ namespace FML
 		gameObjects.clear();
 	}
 
-	void Scene::AddGameObject(std::unique_ptr<GameObject> gameObject, glm::vec2 position)
+	void Scene::AddGameObject(std::unique_ptr<GameObject> gameObject)
 	{
 		if (gameObject)
 		{
-			TransformComponent* transform = gameObject->GetComponent<TransformComponent>();
-
 			gameObjects.emplace_back(std::move(gameObject));
+		}
+	}
 
-			if (transform && position != glm::vec2(0, 0))
+	void Scene::AddGameObject(std::unique_ptr<GameObject> gameObject, const glm::vec2& position)
+	{
+		if (gameObject)
+		{
+			if (auto* transform = gameObject->GetComponent<TransformComponent>())
 			{
 				transform->SetPosition(position);
 			}
+			gameObjects.emplace_back(std::move(gameObject));
 		}
 	}
 
@@ -54,7 +59,10 @@ namespace FML
 	{
 		for (auto& gameObject : gameObjects)
 		{
-			gameObject->Render(renderer);
+			if (!gameObject->IsMarkedForDestruction())
+			{
+				gameObject->Render(renderer);
+			}
 		}
 	}
 

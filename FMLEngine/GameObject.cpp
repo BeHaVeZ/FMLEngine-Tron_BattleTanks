@@ -18,22 +18,6 @@ namespace FML
 		components.push_back(std::move(component));
 	}
 
-	bool GameObject::RemoveComponent(const Component* component)
-	{
-		auto it = std::find_if(components.begin(), components.end(),
-			[component](const std::unique_ptr<Component>& c) { return c.get() == component; });
-		if (it != components.end()) {
-			components.erase(it);
-			return true;
-		}
-		return false;
-	}
-
-	bool GameObject::HasComponent() const
-	{
-		return !components.empty();
-	}
-
 	void GameObject::AddChild(std::unique_ptr<GameObject> child)
 	{
 		if (!child or child.get() == this or child->HasParent())
@@ -81,15 +65,6 @@ namespace FML
 	}
 
 
-	void GameObject::Reparent(GameObject* newParent)
-	{
-		if (parent) {
-			parent->RemoveChild(this);
-		}
-		newParent->AddChild(std::unique_ptr<GameObject>(this));
-		parent = newParent;
-	}
-
 	void GameObject::Initialize()
 	{
 		for (auto& component : components)
@@ -135,14 +110,6 @@ namespace FML
 	const std::string& GameObject::GetTag() const
 	{
 		return tag;
-	}
-
-	void GameObject::Unparent()
-	{
-		if (parent != nullptr)
-		{
-			parent = nullptr;
-		}
 	}
 
 	GameObject* GameObject::GetParent() const

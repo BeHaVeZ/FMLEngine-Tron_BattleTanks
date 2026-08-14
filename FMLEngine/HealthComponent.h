@@ -1,41 +1,22 @@
 #pragma once
 #include "Observer.h"
 #include "DamageEvent.h"
-#include "Logger.h"
-#include "SceneManager.h"
-#include "../Tron_BattleTanks/BlueTankKilledEvent.h"
-#include "../Tron_BattleTanks/ScoreComponent.h"
-#include "../Tron_BattleTanks/TeleportManager.h"
-#include "PrefabRegistry.h"
+#include "GameObject.h"
 
 namespace FML
 {
 	class HealthComponent : public Component, public Observer
 	{
 	public:
-		HealthComponent(int initialHealth) : health(initialHealth) {}
+		explicit HealthComponent(int initialHealth) : health(initialHealth) {}
+		explicit HealthComponent(int* sharedHealth) : sharedHealth(sharedHealth) {}
 
 		void HandleEvent(const Event& event) override
 		{
 			if (const auto* damageEvent = dynamic_cast<const DamageEvent*>(&event)) 
 			{
-				health -= damageEvent->GetDamage();
-				auto transform = gameObject->GetComponent<TransformComponent>();
-				if (gameObject && gameObject->GetTag() == "Player1" && health > 0 || gameObject && gameObject->GetTag() == "Player2" && health > 0)
-				{
-					auto explosion = PrefabRegistry::Instance().CreateTankExplosionPrefab(transform->GetWorldPosition());
-					SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
-					transform->SetPosition(TeleportManager::Instance().GetRandomTeleportPosition());
-					transform->UpdateWorldPosition();
-
-					auto tpEffect = PrefabRegistry::Instance().CreateTpEffect(transform->GetWorldPosition());
-					SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(tpEffect));
-					if (gameObject->GetTag() == "Player1")
-						GameData::Player1Health--;
-					else
-						GameData::Player2Health--;
-				}
-				if (health <= 0)
+				CurrentHealth() -= damageEvent->GetDamage();
+				if (CurrentHealth() <= 0 && gameObject)
 				{
 					gameObject->Destroy();
 					return;
@@ -50,10 +31,13 @@ namespace FML
 
 		int GetCurrentHealth() const
 		{
-			return health;
+			return sharedHealth ? *sharedHealth : health;
 		}
 
 	private:
-		int health;
+		int& CurrentHealth() { return sharedHealth ? *sharedHealth : health; }
+
+		int health{ 0 };
+		int* sharedHealth{ nullptr };
 	};
 }

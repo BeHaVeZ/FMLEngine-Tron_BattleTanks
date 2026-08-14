@@ -142,7 +142,48 @@ namespace FML
 	void TestingScene::HandleInput(SDL_Event& event)
 	{
 		InputHandler::Instance().HandleInput(event);
+#ifdef _DEBUG
+		HandleDebugMouseInput(event);
+#endif
 	}
+
+#ifdef _DEBUG
+	void TestingScene::HandleDebugMouseInput(const SDL_Event& event)
+	{
+		if (event.type != SDL_MOUSEBUTTONDOWN)
+		{
+			return;
+		}
+
+		const glm::vec2 clickPosition{ event.button.x, event.button.y };
+		if (event.button.button == SDL_BUTTON_LEFT)
+		{
+			if (isFirstClick)
+			{
+				firstClick = clickPosition;
+				isFirstClick = false;
+				Logger::Log(LogLevel::Info, "First click at: (%d, %d)", event.button.x, event.button.y);
+				return;
+			}
+
+			const int width = event.button.x - static_cast<int>(firstClick.x);
+			const int height = event.button.y - static_cast<int>(firstClick.y);
+			isFirstClick = true;
+			Logger::Log(LogLevel::Info, "Rectangle dimensions: {%d, %d, %d, %d},",
+				static_cast<int>(firstClick.x), static_cast<int>(firstClick.y), width, height);
+		}
+		else if (event.button.button == SDL_BUTTON_RIGHT)
+		{
+			Logger::Log(LogLevel::Info, "Spawning recognizer at: (%d, %d)", event.button.x, event.button.y);
+			AddGameObject(PrefabRegistry::Instance().CreateRecognizerPrefab(clickPosition));
+		}
+		else if (event.button.button == SDL_BUTTON_MIDDLE)
+		{
+			Logger::Log(LogLevel::Info, "Spawning tank at: (%d, %d)", event.button.x, event.button.y);
+			AddGameObject(PrefabRegistry::Instance().CreateBlueTankPrefab(clickPosition));
+		}
+	}
+#endif
 
 	void TestingScene::Update(float deltaTime)
 	{

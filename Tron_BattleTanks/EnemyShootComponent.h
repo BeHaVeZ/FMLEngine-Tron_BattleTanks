@@ -20,7 +20,7 @@ namespace FML
 		};
 		~EnemyShootComponent() {};
 
-		void Update(float deltaTime)
+		void Update(float deltaTime) override
 		{
 			cooldownTime -= deltaTime;
 
@@ -51,9 +51,6 @@ namespace FML
 			auto rightHit = CollisionManager::Instance()
 				.RaycastFirstHit(topRight, shootDir, shootingRange, gameObject, nullptr);
 
-			//DebugDraw::DrawLine(topLeft, topLeft + shootDir * shootingRange, { 1,0,0,1 });
-			//DebugDraw::DrawLine(topRight, topRight + shootDir * shootingRange, { 1,0,0,1 });
-
 			if (IsPlayerHit(leftHit) || IsPlayerHit(rightHit))
 			{
 				Shoot(*texture);
@@ -68,7 +65,7 @@ namespace FML
 		{
 			if (cooldownTime > 0.f)
 				return;
-			SoundHelper::PlayRandomSound({ 10,11,12,13 }, .3f);
+			SoundHelper::PlayRandomSound({ SoundId::Explosion1, SoundId::Explosion2, SoundId::Explosion3, SoundId::Explosion4 }, .3f);
 			glm::vec2 shootPoint = gameObject->GetComponent<TransformComponent>()->GetWorldPosition() + texture.GetForwardVector() * 25.f;
 
 			SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(shootPoint, texture.GetForwardVector(),bulletSpeed));

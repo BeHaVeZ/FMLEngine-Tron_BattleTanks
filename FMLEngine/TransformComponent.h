@@ -21,7 +21,6 @@ namespace FML
 		void CentralizePivotOnTexture(TextureComponent* texture);
 
 
-		void Render(SDL_Renderer*) override;
 		void Update(float deltaTime) override;
 		void UpdateWorldPosition();
 		void MarkDirty();

@@ -103,11 +103,11 @@ namespace FML
 	}
 	void NameEntryScene::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("NameEntryTheme_1.mp3", 1, true);
-		ServiceLocator::GetSoundSystem().AddSound("blunk_1.wav", 15, false);
-		ServiceLocator::GetSoundSystem().AddSound("blunk_2.wav", 16, false);
-		ServiceLocator::GetSoundSystem().AddSound("blunk_3.wav", 17, false);
-		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		ServiceLocator::GetSoundSystem().AddSound("NameEntryTheme_1.mp3", SoundId::Music, true);
+		ServiceLocator::GetSoundSystem().AddSound("blunk_1.wav", SoundId::UiBlunk1, false);
+		ServiceLocator::GetSoundSystem().AddSound("blunk_2.wav", SoundId::UiBlunk2, false);
+		ServiceLocator::GetSoundSystem().AddSound("blunk_3.wav", SoundId::UiBlunk3, false);
+		ServiceLocator::GetSoundSystem().PlaySound(SoundId::Music, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 	void NameEntryScene::HandleInput(SDL_Event& event)
 	{
@@ -123,7 +123,7 @@ namespace FML
 	}
 	void NameEntryScene::MoveUp()
 	{
-		SoundHelper::PlayRandomSound({ 15 });
+		SoundHelper::PlayRandomSound({ SoundId::UiBlunk1 });
 		charIndices[currentSlot] = (charIndices[currentSlot] + 1) % allowedChars.size();
 		auto* textComp = FindGameObjectByTag("Letter" + std::to_string(currentSlot))->GetComponent<TextComponent>();
 		textComp->SetText(std::string(1, allowedChars[charIndices[currentSlot]]), SceneManager::Instance().GetRenderer());
@@ -131,20 +131,20 @@ namespace FML
 
 	void NameEntryScene::MoveDown()
 	{
-		SoundHelper::PlayRandomSound({ 15 });
+		SoundHelper::PlayRandomSound({ SoundId::UiBlunk1 });
 		charIndices[currentSlot] = ((int)charIndices[currentSlot] - 1 + (int)allowedChars.size()) % (int)allowedChars.size();
 		auto* textComp = FindGameObjectByTag("Letter" + std::to_string(currentSlot))->GetComponent<TextComponent>();
 		textComp->SetText(std::string(1, allowedChars[charIndices[currentSlot]]), SceneManager::Instance().GetRenderer());
 	}
 	void NameEntryScene::MoveLeft()
 	{
-		SoundHelper::PlayRandomSound({ 16 });
+		SoundHelper::PlayRandomSound({ SoundId::UiBlunk2 });
 		if (currentSlot > 0) --currentSlot;
 		UpdateArrowHighlight();
 	}
 	void NameEntryScene::MoveRight()
 	{
-		SoundHelper::PlayRandomSound({ 16 });
+		SoundHelper::PlayRandomSound({ SoundId::UiBlunk2 });
 		if (currentSlot < 2) ++currentSlot;
 		UpdateArrowHighlight();
 	}
@@ -215,7 +215,7 @@ namespace FML
 	std::vector<std::pair<std::string, int>> NameEntryScene::LoadHighscores()
 	{
 		FileReader reader("data/highscores.txt");
-		auto lines = reader.readLines();
+		auto lines = reader.ReadLines();
 		std::vector<std::pair<std::string, int>> scores;
 
 		for (const auto& line : lines) {

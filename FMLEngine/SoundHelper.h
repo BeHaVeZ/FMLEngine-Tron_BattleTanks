@@ -1,7 +1,7 @@
 #pragma once
 #include "ServiceLocator.h"
 #include <vector>
-#include <cstdlib>
+#include <random>
 
 namespace FML
 {
@@ -12,8 +12,9 @@ namespace FML
 		{
 			if (soundIds.empty()) return;
 
-			int randIndex = rand() % soundIds.size();
-			SoundId chosenSound = soundIds[randIndex];
+			static thread_local std::mt19937 rng{ std::random_device{}() };
+			std::uniform_int_distribution<size_t> distribution(0, soundIds.size() - 1);
+			const SoundId chosenSound = soundIds[distribution(rng)];
 
 			ServiceLocator::GetSoundSystem().PlaySound(chosenSound, ServiceLocator::GetSoundSystem().GetCurrentVolume() + volumeBoost);
 		}
@@ -21,23 +22,23 @@ namespace FML
 		{
 			auto& soundSystem = ServiceLocator::GetSoundSystem();
 
-			soundSystem.AddSound("bounce_1.wav", 2);
-			soundSystem.AddSound("bounce_2.wav", 3);
-			soundSystem.AddSound("bounce_3.wav", 4);
+			soundSystem.AddSound("bounce_1.wav", SoundId::Bounce1);
+			soundSystem.AddSound("bounce_2.wav", SoundId::Bounce2);
+			soundSystem.AddSound("bounce_3.wav", SoundId::Bounce3);
 
-			soundSystem.AddSound("hit_1.wav", 5);
-			soundSystem.AddSound("hit_2.wav", 6);
-			soundSystem.AddSound("hit_3.wav", 7);
+			soundSystem.AddSound("hit_1.wav", SoundId::Hit1);
+			soundSystem.AddSound("hit_2.wav", SoundId::Hit2);
+			soundSystem.AddSound("hit_3.wav", SoundId::Hit3);
 
-			soundSystem.AddSound("Explosion_1.wav", 10);
-			soundSystem.AddSound("Explosion_2.wav", 11);
-			soundSystem.AddSound("Explosion_3.wav", 12);
-			soundSystem.AddSound("Explosion_4.wav", 13);
+			soundSystem.AddSound("Explosion_1.wav", SoundId::Explosion1);
+			soundSystem.AddSound("Explosion_2.wav", SoundId::Explosion2);
+			soundSystem.AddSound("Explosion_3.wav", SoundId::Explosion3);
+			soundSystem.AddSound("Explosion_4.wav", SoundId::Explosion4);
 
-			soundSystem.AddSound("echosplosion_1.wav", 15);
-			soundSystem.AddSound("echosplosion_1.wav", 16);
+			soundSystem.AddSound("echosplosion_1.wav", SoundId::PlayerExplosion1);
+			soundSystem.AddSound("echosplosion_2.wav", SoundId::PlayerExplosion2);
 
-			soundSystem.AddSound("splash.wav", 14);
+			soundSystem.AddSound("splash.wav", SoundId::Splash);
 		}
 	};
 }

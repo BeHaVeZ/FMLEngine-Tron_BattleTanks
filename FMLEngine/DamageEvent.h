@@ -8,8 +8,7 @@ namespace FML
 	{
 	public:
 		DamageEvent(int damage) : damageAmount(damage) {}
-		void Process(Observer& observer) const override;
-		int GetDamage() const;
+		int GetDamage() const { return damageAmount; }
 
 	private:
 		int damageAmount;

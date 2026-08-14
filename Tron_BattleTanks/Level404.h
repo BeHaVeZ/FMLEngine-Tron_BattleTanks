@@ -1,38 +1,13 @@
 #pragma once
-#include "Scene.h"
-#include "GameObject.h"
-#include <vector>
-#include <memory>
+#include "TankLevelScene.h"
 
 namespace FML
 {
 
-	class Level404 final : public Scene {
+	class Level404 final : public TankLevelScene {
 	public:
-		Level404() : Scene("Level404") {}
-		bool Initialize(SDL_Renderer* renderer) override;
-
-		void InitializeBackground(SDL_Renderer* renderer);
-		void InitializeTitle(SDL_Renderer* renderer);
-		void InitializeFPSCounter(SDL_Renderer* renderer);
-		void InitializeFirstTank();
-
-		void InitializeUI();
-		void InitializeHealthUI();
-		void InitializeScoreUI();
-
-		void InitializeInput() override;
-		void InitializeSounds();
-		void InitializeManagers();
-		void InitializeCenterTP();
-
-		void InitializeWalls();
-
-		void HandleInput(SDL_Event& event) override;
-
-		void Update(float deltaTime) override;
-		void Render(SDL_Renderer* renderer) override;
-
-		void OnExit() override;
+		Level404() : TankLevelScene("Level404", {
+			"data/levels/level404.png", "data/levels/level02C.txt", "SoloTheme_404.mp3",
+			{ 514.f, 428.f }, 0, 0, 10, .5f }) {}
 	};
 }

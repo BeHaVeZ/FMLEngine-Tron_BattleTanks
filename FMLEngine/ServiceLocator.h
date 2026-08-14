@@ -11,10 +11,13 @@ namespace FML
 		static NullSoundSystem m_DefaultSS;
 
 	public:
-		static SoundSystem& GetSoundSystem() { return *m_pSSInstance.get(); }
-		static void RegisterSoundSystem(SoundSystem* pSoundSystem)
+		static SoundSystem& GetSoundSystem()
 		{
-			m_pSSInstance.reset(pSoundSystem == nullptr ? &m_DefaultSS : pSoundSystem);
+			return m_pSSInstance ? *m_pSSInstance : m_DefaultSS;
+		}
+		static void RegisterSoundSystem(std::unique_ptr<SoundSystem> soundSystem)
+		{
+			m_pSSInstance = std::move(soundSystem);
 		}
 	};
 

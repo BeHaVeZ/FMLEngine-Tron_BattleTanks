@@ -25,6 +25,13 @@ namespace FML
 
 		void Update(float deltaTime) override;
 		void Render(SDL_Renderer* renderer) override;
+
+	private:
+#ifdef _DEBUG
+		glm::vec2 firstClick{};
+		bool isFirstClick{ true };
+		void HandleDebugMouseInput(const SDL_Event& event);
+#endif
 	};
 
 }

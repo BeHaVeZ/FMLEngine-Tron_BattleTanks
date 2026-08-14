@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "RecognizerState.h"
+#include <memory>
 
 namespace FML
 {
@@ -12,40 +13,25 @@ namespace FML
             if (currentState)
                 currentState->Update(gameObject, dt);
 
-            if (pendingState)
-            {
-                if (currentState)
-                {
-                    currentState->Exit(gameObject);
-                    delete currentState;
-                }
+			if (pendingState)
+			{
+				if (currentState)
+				{
+					currentState->Exit(gameObject);
+				}
 
-                currentState = pendingState;
-                currentState->Enter(gameObject);
-                pendingState = nullptr;
-            }
-        }
+				currentState = std::move(pendingState);
+				currentState->Enter(gameObject);
+			}
+		}
 
-        void ChangeState(RecognizerState* newState)
-        {
-            if (pendingState)
-            {
-                delete pendingState;
-            }
+		void ChangeState(std::unique_ptr<RecognizerState> newState)
+		{
+			pendingState = std::move(newState);
+		}
 
-            pendingState = newState;
-        }
-
-        ~RecognizerStateComponent()
-        {
-            if (currentState)
-                delete currentState;
-            if (pendingState)
-                delete pendingState;
-        }
-
-    private:
-        RecognizerState* currentState = nullptr;
-        RecognizerState* pendingState = nullptr;
+	private:
+		std::unique_ptr<RecognizerState> currentState;
+		std::unique_ptr<RecognizerState> pendingState;
     };
 }

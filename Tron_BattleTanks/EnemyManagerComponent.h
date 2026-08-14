@@ -8,8 +8,9 @@
 #include "PrefabRegistry.h"
 #include "SceneManager.h"
 #include "Logger.h"
-#include "BlueTankKilledEvent.h"
 #include <GameObjectDestroyedEvent.h>
+#include "GameTags.h"
+#include "LevelProgressionComponent.h"
 
 namespace FML
 {
@@ -19,22 +20,7 @@ namespace FML
 		enum class EnemyType { Blue, Pink, Recognizer };
 
 		EnemyManagerComponent() :
-			enemiesToKillForTheNextLevel(10),
-			spawnCooldown(0.f),
-			spawnCooldownTime(2.5f),
-			visibilityTolerance(20.f),
-			maxBlueTanks(3),
-			maxPinkTanks(2),
-			maxRecognizers(1),
-			currentBlueTanks(0),
-			currentPinkTanks(0),
-			currentRecognizers(0)
-		{
-			std::random_device rd;
-			rng = std::mt19937(rd());
-
-			spawnPositions =
-			{
+			spawnPositions{
 				{956,133},
 				{958,719},
 				{71,133},
@@ -42,7 +28,18 @@ namespace FML
 				{71,351},
 				{71,722},
 				{480,722}
-			};
+			},
+			maxBlueTanks(3),
+			maxPinkTanks(2),
+			maxRecognizers(1),
+			currentBlueTanks(0),
+			currentPinkTanks(0),
+			currentRecognizers(0),
+			spawnCooldown(0.f),
+			spawnCooldownTime(2.5f),
+			visibilityTolerance(20.f),
+			rng(std::random_device{}())
+		{
 		};
 
 		void SetMaxRecognizers(int newMax) { maxRecognizers = newMax; }
@@ -56,8 +53,8 @@ namespace FML
 			spawnCooldown -= dt;
 			if (spawnCooldown <= 0.f)
 			{
-				auto player1 = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1");
-				auto player2 = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player2");
+				auto player1 = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag(Tags::Player1.data());
+				auto player2 = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag(Tags::Player2.data());
 				if (player1 || player2)
 				{
 					if (player1)
@@ -111,6 +108,10 @@ namespace FML
 
 			GameObject* rawEnemy = enemy.get();
 			rawEnemy->GetSubject().AddObserver(this);
+			if (auto* progression = gameObject->GetComponent<LevelProgressionComponent>())
+			{
+				rawEnemy->GetSubject().AddObserver(progression);
+			}
 
 			SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(enemy));
 
@@ -152,50 +153,15 @@ namespace FML
 				GameObject* destroyed = destroyEvent->GetDestroyedObject();
 				if (!destroyed) return;
 
-				std::string tag = destroyed->GetTag();
+				const std::string& tag = destroyed->GetTag();
 
-				if (tag == "BlueTank")
+				if (tag == Tags::BlueTank)
 					--currentBlueTanks;
-				else if (tag == "PinkTank")
+				else if (tag == Tags::PinkTank)
 					--currentPinkTanks;
-				else if (tag == "Recognizer")
+				else if (tag == Tags::Recognizer)
 					--currentRecognizers;
 
-				--enemiesToKillForTheNextLevel;
-				Logger::Log(LogLevel::Warning, "Enemy destroyed. Remaining enemies to kill: %d", enemiesToKillForTheNextLevel);
-			}
-
-			
-			if (enemiesToKillForTheNextLevel <= 0 && GameData::CurrentGameMode == GameData::GameMode::Solo)
-			{
-				std::string currentScene = SceneManager::Instance().GetCurrentScene()->GetName();
-
-				if (currentScene == "Level404")
-				{
-					Logger::Log(LogLevel::Info, "Exiting Level404, returning to Solo.");
-					SceneManager::Instance().QueueSceneChange("Solo");
-					return;
-				}
-
-				std::random_device rd;
-				std::mt19937 localRng(rd());
-				std::uniform_int_distribution<> dist(1, 100);
-
-				int roll = dist(localRng);
-
-				if (roll <= 25)
-				{
-					Logger::Log(LogLevel::Error, "Level404 triggered!");
-					SceneManager::Instance().QueueSceneChange("Level404");
-				}
-				else
-				{
-					auto& nextSceneName = SceneManager::Instance().GetNextScene()->GetName();
-					if (nextSceneName == "Coop" || nextSceneName == "Versus")
-						SceneManager::Instance().QueueSceneChange("Solo");
-					else
-						SceneManager::Instance().QueueSceneChange(nextSceneName);
-				}
 			}
 		}
 
@@ -209,8 +175,6 @@ namespace FML
 		int currentBlueTanks;
 		int currentPinkTanks;
 		int currentRecognizers;
-
-		int enemiesToKillForTheNextLevel;
 
 		float spawnCooldown;
 		float spawnCooldownTime;

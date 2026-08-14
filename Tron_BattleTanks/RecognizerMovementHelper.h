@@ -9,10 +9,11 @@
 
 namespace FML
 {
-    class RecognizerMovementHelper
-    {
-    public:
-        static void Move(GameObject* recognizer, float moveSpeed);
+	class RecognizerMovementHelper
+	{
+	public:
+		static constexpr float RecognizerSpeed = 175.f;
+		static void Move(GameObject* recognizer, float moveSpeed);
 
         static bool FrontClear(GameObject* recognizer);
         static bool LeftSideClear(GameObject* recognizer);

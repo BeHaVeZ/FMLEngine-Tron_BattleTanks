@@ -1,11 +1,15 @@
 #include "Subject.h"
 #include "Observer.h"
+#include <algorithm>
 
 namespace FML
 {
 void Subject::AddObserver(Observer* observer)
 {
-	observers.emplace_back(observer);
+	if (observer && std::find(observers.begin(), observers.end(), observer) == observers.end())
+	{
+		observers.emplace_back(observer);
+	}
 }
 
 void Subject::RemoveObserver(Observer* observer)
@@ -15,9 +19,13 @@ void Subject::RemoveObserver(Observer* observer)
 
 void Subject::Notify(const Event& event)
 {
-    for (auto observer : observers) 
-    {
-        event.Process(*observer);
-    }
+	const auto snapshot = observers;
+	for (auto* observer : snapshot)
+	{
+		if (observer && std::find(observers.begin(), observers.end(), observer) != observers.end())
+		{
+			observer->HandleEvent(event);
+		}
+	}
 }
 }

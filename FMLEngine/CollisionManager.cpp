@@ -111,9 +111,7 @@ namespace FML
 
 	bool CollisionManager::Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude, GameObject* excludeParent)
 	{
-		bool hitDetected = false;
-		glm::vec2 normalizedDirection = glm::normalize(direction);
-		glm::vec2 end = start + normalizedDirection * maxDistance;
+		const glm::vec2 normalizedDirection = glm::normalize(direction);
 
 		for (auto* collider : colliders)
 		{
@@ -123,21 +121,18 @@ namespace FML
 				continue;
 			}
 
-			SDL_Rect box = collider->GetBoundingBox();
-			if (IntersectRayWithRectangle(start, end, box))
+			float hitDistance = 0.f;
+			if (IntersectRayWithRectangle(start, normalizedDirection, maxDistance, collider->GetBoundingBox(), hitDistance))
 			{
-				hitDetected = true;
-				//Logger::Log(LogLevel::Debug, "Raycast hit detected with object: %s", colliderGameObject->GetTag().c_str());
+				return true;
 			}
 		}
-		return hitDetected;
+		return false;
 	}
 
-	bool CollisionManager::RaycastWithTag(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude, GameObject* excludeParent)
+	bool CollisionManager::RaycastWithTag(const glm::vec2& start, const glm::vec2& direction, float maxDistance, std::string_view tagToCheck, GameObject* exclude, GameObject* excludeParent)
 	{
-		bool hitDetected = false;
-		glm::vec2 normalizedDirection = glm::normalize(direction);
-		glm::vec2 end = start + normalizedDirection * maxDistance;
+		const glm::vec2 normalizedDirection = glm::normalize(direction);
 
 		for (auto* collider : colliders)
 		{
@@ -148,47 +143,14 @@ namespace FML
 			if (colliderGO->GetTag() != tagToCheck)
 				continue;
 
-			SDL_Rect box = collider->GetBoundingBox();
-			if (IntersectRayWithRectangle(start, end, box))
+			float hitDistance = 0.f;
+			if (IntersectRayWithRectangle(start, normalizedDirection, maxDistance, collider->GetBoundingBox(), hitDistance))
 			{
-				hitDetected = true;
-				//Logger::Log(LogLevel::Debug, "RaycastWithTag hit: [%s]", colliderGO->GetTag().c_str());
-				break;
+				return true;
 			}
 		}
 
-		return hitDetected;
-	}
-
-	std::optional<CollisionManager::RaycastHit> CollisionManager::RaycastWithTagHit(const glm::vec2& start, const glm::vec2& direction, float maxDistance, const std::string& tagToCheck, GameObject* exclude, GameObject* excludeParent)
-	{
-		glm::vec2 normalizedDirection = glm::normalize(direction);
-		glm::vec2 end = start + normalizedDirection * maxDistance;
-
-		std::optional<RaycastHit> closestHit;
-		float closestDistance = std::numeric_limits<float>::max();
-
-		for (auto* collider : colliders)
-		{
-			GameObject* colliderGO = collider->GetOwner();
-			if (!colliderGO || colliderGO == exclude || colliderGO == excludeParent || colliderGO->GetTag() != tagToCheck)
-				continue;
-
-			SDL_Rect box = collider->GetBoundingBox();
-			if (IntersectRayWithRectangle(start, end, box))
-			{
-				glm::vec2 hitPoint = start + normalizedDirection * maxDistance;
-				float distance = glm::distance(start, hitPoint);
-
-				if (distance < closestDistance)
-				{
-					closestDistance = distance;
-					closestHit = RaycastHit{ colliderGO, hitPoint, distance };
-				}
-			}
-		}
-
-		return closestHit;
+		return false;
 	}
 
 	std::optional<CollisionManager::RaycastHit> CollisionManager::RaycastFirstHit(
@@ -265,51 +227,4 @@ namespace FML
 		return outDist >= 0.f && outDist <= maxDist;
 	}
 
-	bool CollisionManager::IntersectRayWithRectangle(const glm::vec2& rayStart, const glm::vec2& rayEnd, const SDL_Rect& rect)
-	{
-		float t0 = 0.0f;
-		float t1 = std::numeric_limits<float>::max();
-
-		float invDir;
-		glm::vec2 rayDir = rayEnd - rayStart;
-
-		if (std::abs(rayDir.x) < std::numeric_limits<float>::epsilon())
-		{
-			if (rayStart.x < rect.x || rayStart.x >(rect.x + rect.w))
-			{
-				return false;
-			}
-		}
-		else
-		{
-			invDir = 1.0f / rayDir.x;
-			float tNearX = (rect.x - rayStart.x) * invDir;
-			float tFarX = ((rect.x + rect.w) - rayStart.x) * invDir;
-
-			if (tNearX > tFarX) std::swap(tNearX, tFarX);
-			t0 = std::max(t0, tNearX);
-			t1 = std::min(t1, tFarX);
-			if (t0 > t1) return false;
-		}
-		if (std::abs(rayDir.y) < std::numeric_limits<float>::epsilon())
-		{
-			if (rayStart.y < rect.y || rayStart.y >(rect.y + rect.h))
-			{
-				return false;
-			}
-		}
-		else
-		{
-			invDir = 1.0f / rayDir.y;
-			float tNearY = (rect.y - rayStart.y) * invDir;
-			float tFarY = ((rect.y + rect.h) - rayStart.y) * invDir;
-
-			if (tNearY > tFarY) std::swap(tNearY, tFarY);
-			t0 = std::max(t0, tNearY);
-			t1 = std::min(t1, tFarY);
-			if (t0 > t1) return false;
-		}
-
-		return t1 >= 0 && t0 <= 1.0f;
-	}
 }

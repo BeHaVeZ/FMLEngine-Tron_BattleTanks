@@ -12,12 +12,11 @@ namespace FML
 	public:
 		void Update(GameObject* recognizer, float) override
 		{
-			constexpr float recognizerSpeed = 175.f;
-			RecognizerMovementHelper::Move(recognizer, recognizerSpeed);
+			RecognizerMovementHelper::Move(recognizer, RecognizerMovementHelper::RecognizerSpeed);
 
 			if (RecognizerMovementHelper::PlayerVisible(recognizer))
 			{
-				recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(new ChasePlayerState());
+				recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(std::make_unique<ChasePlayerState>());
 			}
 		}
 	};

@@ -1,38 +1,13 @@
 #pragma once
-#include "Scene.h"
-#include "GameObject.h"
-#include <vector>
-#include <memory>
+#include "TankLevelScene.h"
 
 namespace FML
 {
 
-	class SoloLevel3 final : public Scene {
+	class SoloLevel3 final : public TankLevelScene {
 	public:
-		SoloLevel3() : Scene("Solo3") {}
-		bool Initialize(SDL_Renderer* renderer) override;
-
-		void InitializeBackground(SDL_Renderer* renderer);
-		void InitializeTitle(SDL_Renderer* renderer);
-		void InitializeFPSCounter(SDL_Renderer* renderer);
-		void InitializeFirstTank();
-
-		void InitializeUI();
-		void InitializeHealthUI();
-		void InitializeScoreUI();
-
-		void InitializeInput() override;
-		void InitializeSounds();
-		void InitializeManagers();
-		void InitializeCenterTP();
-
-		void InitializeWalls();
-
-		void HandleInput(SDL_Event& event) override;
-
-		void Update(float deltaTime) override;
-		void Render(SDL_Renderer* renderer) override;
-
-		void OnExit() override;
+		SoloLevel3() : TankLevelScene("Solo3", {
+			"data/levels/level02.png", "data/levels/level02C.txt", "SoloTheme_3.wav",
+			{ 514.f, 428.f }, 2, 2, 2 }) {}
 	};
 }

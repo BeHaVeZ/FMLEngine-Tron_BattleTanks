@@ -159,11 +159,11 @@ namespace FML
 
 	void VersusScene::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("VersusTheme_1.wav", 1, true);
+		ServiceLocator::GetSoundSystem().AddSound("VersusTheme_1.wav", SoundId::Music, true);
 
 		SoundHelper::LoadSharedSounds();
 
-		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		ServiceLocator::GetSoundSystem().PlaySound(SoundId::Music, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 
 

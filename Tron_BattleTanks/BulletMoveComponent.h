@@ -24,7 +24,7 @@ namespace FML
 
 		void Bounce(const glm::vec2& normal)
 		{
-			SoundHelper::PlayRandomSound({ 2,3,4 }, .3f);
+			SoundHelper::PlayRandomSound({ SoundId::Bounce1, SoundId::Bounce2, SoundId::Bounce3 }, .3f);
 			if (bounceCount == maxBounces)
 			{
 				gameObject->Destroy();

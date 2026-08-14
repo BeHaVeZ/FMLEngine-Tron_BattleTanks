@@ -1,24 +1,30 @@
 #include "TextureComponent.h"
-#include "TextureComponent.h"
 #include "TextureManager.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
-#include <iostream>
+#include "Logger.h"
 
 namespace FML
 {
 
 	TextureComponent::TextureComponent(const std::string& filePath, SDL_Renderer* renderer)
-		: texture(nullptr) 
 	{
-		if (!TextureManager::Instance().Load(filePath, filePath, renderer)) {
-			printf("Failed to load texture in TextureComponent constructor\n");
+		if (!TextureManager::Instance().Load(filePath, filePath, renderer))
+		{
+			Logger::Log(LogLevel::Error, "Failed to load texture: %s", filePath.c_str());
+			return;
 		}
 
 		texture = TextureManager::Instance().GetTexture(filePath);
 
-		int width, height;
-		SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
+		int width = 0;
+		int height = 0;
+		if (!texture || SDL_QueryTexture(texture, nullptr, nullptr, &width, &height) != 0)
+		{
+			Logger::Log(LogLevel::Error, "Failed to query texture %s: %s", filePath.c_str(), SDL_GetError());
+			texture = nullptr;
+			return;
+		}
 		defaultWidth = width;
 		defaultHeight = height;
 

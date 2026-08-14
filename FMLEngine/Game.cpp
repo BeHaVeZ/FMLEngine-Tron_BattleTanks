@@ -22,6 +22,32 @@
 #include "../Tron_BattleTanks/NameEntryScene.h"
 #include "CollisionManager.h"
 #include "../Tron_BattleTanks/Level404.h"
+#include <filesystem>
+
+namespace
+{
+	bool SetWorkingDirectoryToExecutable()
+	{
+		char* executableDirectory = SDL_GetBasePath();
+		if (!executableDirectory)
+		{
+			FML::Logger::Log(FML::LogLevel::Error, "Could not locate the executable directory: %s", SDL_GetError());
+			return false;
+		}
+
+		std::error_code error;
+		std::filesystem::current_path(executableDirectory, error);
+		SDL_free(executableDirectory);
+
+		if (error)
+		{
+			FML::Logger::Log(FML::LogLevel::Error, "Could not use the executable directory as the working directory: %s", error.message().c_str());
+			return false;
+		}
+
+		return true;
+	}
+}
 
 namespace FML
 {
@@ -38,6 +64,11 @@ namespace FML
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		{
 			Logger::Log(LogLevel::Error, "SDL could not initialize! SDL_Error: %s", SDL_GetError());
+			return false;
+		}
+
+		if (!SetWorkingDirectoryToExecutable())
+		{
 			return false;
 		}
 
@@ -61,7 +92,7 @@ namespace FML
 			refreshRate = 60;
 		}
 		else {
-			refreshRate = current.refresh_rate;
+			refreshRate = current.refresh_rate > 0 ? current.refresh_rate : 60;
 		}
 
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -79,8 +110,7 @@ namespace FML
 
 		SceneManager::Instance().SetRenderer(renderer);
 
-		auto soundSystem = new SDL_SoundSystem();
-		ServiceLocator::RegisterSoundSystem(soundSystem);
+		ServiceLocator::RegisterSoundSystem(std::make_unique<SDL_SoundSystem>());
 
 		ServiceLocator::GetSoundSystem().StartUp();
 

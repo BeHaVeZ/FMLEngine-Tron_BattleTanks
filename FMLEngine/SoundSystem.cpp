@@ -1,12 +1,13 @@
 #include "SoundSystem.h"
-#include "SoundSystem.h"
 #include <SDL_mixer.h>
-#include "Logger.h"
+#include <atomic>
+#include <cmath>
 #include <thread>
 #include <condition_variable>
 #include <queue>
 #include <algorithm>
 #include <map>
+#include <mutex>
 
 namespace FML
 {
@@ -26,7 +27,7 @@ namespace FML
 
 		void PlaySound(const SoundId id, const float volume)
 		{
-			if (m_IsShutdown) return;
+			if (m_IsShutdown.load()) return;
 
 			{
 				std::lock_guard<std::mutex> lk(m_CvMutex);
@@ -34,20 +35,23 @@ namespace FML
 			}
 
 			m_Cv.notify_one();
-			Logger::Log(LogLevel::Info, "Queued sound with ID [%d] at [%f] volume\n", id, volume);
 		}
 
 		void AddSound(const std::string& path, const SoundId id, bool doLoop = false)
 		{
-			if (m_IsShutdown) return;
+			if (m_IsShutdown.load()) return;
 
-			m_Sounds.emplace(id, Sound{ "data/sounds/" + path, nullptr, false, doLoop });
-			Logger::Log(LogLevel::Info, "Added sound with ID [%d] and path data/sounds/%s]\n", id, path.c_str());
+			std::lock_guard<std::mutex> lock(m_SoundsMutex);
+			const auto insertionResult = m_Sounds.emplace(id, Sound{ "data/sounds/" + path, nullptr, false, doLoop });
+			if (!insertionResult.second)
+			{
+				Logger::Log(LogLevel::Error, "Sound ID [%d] is already registered", static_cast<unsigned int>(id));
+			}
 		}
 
 		void StartUp()
 		{
-			if (!m_IsShutdown) return;
+			if (!m_IsShutdown.load()) return;
 
 			if (Mix_Init(MIX_INIT_OGG | MIX_INIT_MP3) == 0) {
 				Logger::Log(LogLevel::Error, "Failed to initialize SDL_mixer: %s\n", Mix_GetError());
@@ -59,43 +63,59 @@ namespace FML
 				return;
 			}
 
+			m_IsShutdown.store(false);
 			m_UpdateThread = std::jthread(&SDL_SoundSystemImpl::Update, this);
-			m_IsShutdown = false;
 		}
 
 		void Shutdown()
 		{
-			if (m_IsShutdown) return;
-
-			m_IsShutdown = true;
+			if (m_IsShutdown.exchange(true)) return;
 
 			ClearQueue();
-
-			Mix_HaltChannel(-1);
-
-			for (auto& sound : m_Sounds)
+			m_Cv.notify_all();
+			if (m_UpdateThread.joinable())
 			{
-				if (sound.second.isLoaded)
+				m_UpdateThread.join();
+			}
+
+			{
+				std::lock_guard<std::mutex> lock(m_SoundsMutex);
+				Mix_HaltChannel(-1);
+				for (auto& soundEntry : m_Sounds)
 				{
-					Mix_FreeChunk(sound.second.pChunk);
-					sound.second.isLoaded = false;
+					auto& sound = soundEntry.second;
+					if (sound.isLoaded)
+					{
+						Mix_FreeChunk(sound.pChunk);
+						sound.pChunk = nullptr;
+						sound.isLoaded = false;
+					}
 				}
+				m_Sounds.clear();
 			}
 
 			Mix_CloseAudio();
 			Mix_Quit();
-
-			m_Cv.notify_all();
 		}
 
 		bool IsShutdown()
 		{
-			return m_IsShutdown;
+			return m_IsShutdown.load();
 		}
 
 		void ClearSounds()
 		{
+			ClearQueue();
+			std::lock_guard<std::mutex> lock(m_SoundsMutex);
 			Mix_HaltChannel(-1);
+			for (auto& soundEntry : m_Sounds)
+			{
+				auto& sound = soundEntry.second;
+				if (sound.isLoaded)
+				{
+					Mix_FreeChunk(sound.pChunk);
+				}
+			}
 			m_Sounds.clear();
 		}
 
@@ -169,10 +189,11 @@ namespace FML
 
 		std::condition_variable m_Cv;
 		std::mutex m_CvMutex;
+		std::mutex m_SoundsMutex;
 
 		std::jthread m_UpdateThread;
 
-		bool m_IsShutdown{ true };
+		std::atomic_bool m_IsShutdown{ true };
 		bool m_IsMuted{ false };
 		float m_CurrentVolume{ .5f };
 
@@ -180,34 +201,68 @@ namespace FML
 		{
 			while (true)
 			{
-				std::unique_lock<std::mutex> lk(m_CvMutex);
-				m_Cv.wait(lk, [&] { return !m_Pending.empty() || m_IsShutdown; });
+				PlayMessage message{};
+				{
+					std::unique_lock<std::mutex> lock(m_CvMutex);
+					m_Cv.wait(lock, [&] { return !m_Pending.empty() || m_IsShutdown.load(); });
 
-				if (m_IsShutdown) return;
+					if (m_IsShutdown.load()) return;
 
-				auto& sound = m_Sounds[m_Pending.front().id];
-				if (!sound.isLoaded) {
-					sound.pChunk = Mix_LoadWAV(sound.path.c_str());
-					if (!sound.pChunk) {
-						std::cerr << "Failed to load sound: " << Mix_GetError() << std::endl;
-						m_Pending.pop();
+					message = m_Pending.front();
+					m_Pending.pop();
+				}
+
+				std::string path;
+				{
+					std::lock_guard<std::mutex> lock(m_SoundsMutex);
+					const auto soundIt = m_Sounds.find(message.id);
+					if (soundIt == m_Sounds.end())
+					{
+						Logger::Log(LogLevel::Error, "Cannot play unknown sound ID [%d]", static_cast<unsigned int>(message.id));
 						continue;
 					}
-					sound.isLoaded = true;
+					if (!soundIt->second.isLoaded)
+					{
+						path = soundIt->second.path;
+					}
 				}
 
-				sound.pChunk->volume = static_cast<uint8_t>(m_Pending.front().volume * MIX_MAX_VOLUME);
-				int channel = Mix_PlayChannel(-1, sound.pChunk, sound.doLoop ? -1 : 0);
-				if (channel == -1)
+				if (!path.empty())
 				{
-					Logger::Log(LogLevel::Error, "Failed to play sound with ID [%d] at [%f] volume\n", m_Pending.front().id, m_Pending.front().volume);
-				}
-				else
-				{
-					Logger::Log(LogLevel::Info, "Playing sound from update with ID [%d] at [%f] volume\n", m_Pending.front().id, m_Pending.front().volume);
+					Mix_Chunk* loadedChunk = Mix_LoadWAV(path.c_str());
+					if (!loadedChunk)
+					{
+						Logger::Log(LogLevel::Error, "Failed to load sound ID [%d]: %s", static_cast<unsigned int>(message.id), Mix_GetError());
+						continue;
+					}
+
+					std::lock_guard<std::mutex> lock(m_SoundsMutex);
+					const auto soundIt = m_Sounds.find(message.id);
+					if (soundIt == m_Sounds.end() || m_IsShutdown.load())
+					{
+						Mix_FreeChunk(loadedChunk);
+						continue;
+					}
+					soundIt->second.pChunk = loadedChunk;
+					soundIt->second.isLoaded = true;
 				}
 
-				m_Pending.pop();
+				{
+					std::lock_guard<std::mutex> lock(m_SoundsMutex);
+					const auto soundIt = m_Sounds.find(message.id);
+					if (soundIt == m_Sounds.end() || !soundIt->second.isLoaded)
+					{
+						continue;
+					}
+
+					const int volume = std::clamp(static_cast<int>(message.volume * MIX_MAX_VOLUME), 0, MIX_MAX_VOLUME);
+					Mix_VolumeChunk(soundIt->second.pChunk, volume);
+					const int channel = Mix_PlayChannel(-1, soundIt->second.pChunk, soundIt->second.doLoop ? -1 : 0);
+					if (channel == -1)
+					{
+						Logger::Log(LogLevel::Error, "Failed to play sound ID [%d]: %s", static_cast<unsigned int>(message.id), Mix_GetError());
+					}
+				}
 			}
 		};
 	};
@@ -218,6 +273,7 @@ namespace FML
 	{
 		m_pImpl = std::make_unique<SDL_SoundSystemImpl>();
 	}
+	SDL_SoundSystem::~SDL_SoundSystem() = default;
 	void SDL_SoundSystem::PlaySound(const SoundId id, const float volume)
 	{
 		m_pImpl->PlaySound(id, volume);
@@ -271,39 +327,6 @@ namespace FML
 	void SDL_SoundSystem::ClearQueue()
 	{
 		m_pImpl->ClearQueue();
-	}
-#pragma endregion
-
-#pragma region Logging_SoundSystem
-	void Logging_SoundSystem::PlaySound(const SoundId id, const float volume)
-	{
-		m_pSS->PlaySound(id, volume);
-		Logger::Log(LogLevel::Info, "Queued sound with ID [%d] at [%f] volume\n", id, volume);
-	}
-
-	void Logging_SoundSystem::AddSound(const std::string& path, const SoundId id, bool doLoop)
-	{
-		m_pSS->AddSound(path, id, doLoop);
-		Logger::Log(LogLevel::Info, "Added sound with ID [%d] and path data/sounds/%s]\n", id, path.c_str());
-	}
-
-	void Logging_SoundSystem::StartUp()
-	{
-		m_pSS->StartUp();
-		Logger::Log(LogLevel::Info, "Starting up SoundSystem...\n");
-	};
-
-	void Logging_SoundSystem::Shutdown()
-	{
-		m_pSS->Shutdown();
-		Logger::Log(LogLevel::Info, "Shutting down SoundSystem...\n");
-	};
-
-	bool Logging_SoundSystem::IsShutdown()
-	{
-		bool isShutdown{ m_pSS->IsShutdown() };
-		Logger::Log(LogLevel::Info, "SoundSystem is %s\n", isShutdown ? "shutdown" : "not shutdown");
-		return isShutdown;
 	}
 #pragma endregion
 

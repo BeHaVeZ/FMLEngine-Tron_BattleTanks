@@ -8,6 +8,7 @@
 #include "SoundHelper.h"
 #include "glm.hpp"
 #include "BulletHitEvent.h"
+#include "GameTags.h"
 
 namespace FML
 {
@@ -37,21 +38,6 @@ namespace FML
 	{
 	public:
 
-		glm::vec2 CalculateCollisionNormal(const SDL_Rect& bulletBox, const SDL_Rect& wallBox)
-		{
-			int overlapLeft = bulletBox.x + bulletBox.w - wallBox.x;
-			int overlapRight = wallBox.x + wallBox.w - bulletBox.x;
-			int overlapTop = bulletBox.y + bulletBox.h - wallBox.y;
-			int overlapBottom = wallBox.y + wallBox.h - bulletBox.y;
-
-			int minOverlap = std::min({ overlapLeft, overlapRight, overlapTop, overlapBottom });
-
-			if (minOverlap == overlapLeft)			 return glm::vec2(-1, 0);
-			else if (minOverlap == overlapRight) return glm::vec2(1, 0);
-			else if (minOverlap == overlapTop)   return glm::vec2(0, -1);
-			else													return glm::vec2(0, 1);
-		}
-
 		void OnTrigger(GameObject* self, Collider* other)
 		{
 			GameObject* otherGO = other->GetOwner();
@@ -60,17 +46,17 @@ namespace FML
 			const std::string& tag = otherGO->GetTag();
 
 			self->GetSubject().Notify(BulletHitEvent(otherGO, self->GetComponent<TransformComponent>()->GetWorldPosition()));
-			if (tag == "PinkTank" || tag == "Player2" || tag == "Player1" || tag == "BlueTank" || tag == "Recognizer")
+			if (Tags::IsEnemyTag(tag) || Tags::IsPlayerTag(tag))
 			{
 				auto healthComponent = otherGO->GetComponent<HealthComponent>();
 				if (healthComponent)
 				{
-					SoundHelper::PlayRandomSound({ 5,6,7 }, .3f);
+					SoundHelper::PlayRandomSound({ SoundId::Hit1, SoundId::Hit2, SoundId::Hit3 }, .3f);
 					healthComponent->Damage(1);
 				}
 				self->Destroy();
 			}
-			else if (tag == "Wall")
+			else if (tag == Tags::Wall)
 			{
 				auto* bulletCol = self->GetComponent<Collider>();
 				auto* wallCol = otherGO->GetComponent<Collider>();
@@ -86,7 +72,7 @@ namespace FML
 				const float separationBias = 4.0f;
 				tr->SetPosition(tr->GetLocalPosition() + sep.normal * (sep.depth + separationBias));
 			}
-			else if (tag == "EnemyBullet" || tag == "Bullet")
+			else if (tag == Tags::EnemyBullet || tag == Tags::Bullet)
 			{
 				self->Destroy();
 				otherGO->Destroy();

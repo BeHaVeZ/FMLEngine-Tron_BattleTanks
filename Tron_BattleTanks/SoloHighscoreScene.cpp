@@ -105,8 +105,8 @@ namespace FML
 	void SoloHighscoreScene::InitializeSounds()
 	{
 		ServiceLocator::GetSoundSystem().SetVolume(0.f);
-		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", 1, true);
-		ServiceLocator::GetSoundSystem().PlaySound(1, ServiceLocator::GetSoundSystem().GetCurrentVolume());
+		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", SoundId::Music, true);
+		ServiceLocator::GetSoundSystem().PlaySound(SoundId::Music, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 }
 

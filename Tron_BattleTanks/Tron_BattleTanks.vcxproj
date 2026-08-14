@@ -107,11 +107,10 @@
 xcopy "$(SolutionDir)vendor\SDL2-2.30.7\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
-xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"</Command>
+      <Command>if exist "$(OutputPath)" rd /s /q "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -139,11 +138,10 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
 xcopy "$(SolutionDir)vendor\SDL2-2.30.7\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
-xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"</Command>
+      <Command>if exist "$(OutputPath)" rd /s /q "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -167,11 +165,10 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
 xcopy "$(SolutionDir)vendor\SDL2-2.30.7\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
-xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"</Command>
+      <Command>if exist "$(OutputPath)" rd /s /q "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -199,32 +196,26 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
 xcopy "$(SolutionDir)vendor\SDL2-2.30.7\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
-xcopy "$(ProjectDir)vendor\data" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
-      <Command>rd /s /q "$(SolutionDir)bin\$(ProjectName)\$(Platform)\$(Configuration)"</Command>
+      <Command>if exist "$(OutputPath)" rd /s /q "$(OutputPath)"</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\FMLEngine\CoopScene.cpp" />
-    <ClCompile Include="..\FMLEngine\DamageEvent.cpp" />
     <ClCompile Include="..\FMLEngine\MainMenuScene.cpp" />
     <ClCompile Include="..\FMLEngine\PrefabRegistry.cpp" />
     <ClCompile Include="..\FMLEngine\VersusScene.cpp" />
-    <ClCompile Include="BlueTankKilledEvent.cpp" />
     <ClCompile Include="ChasePlayerState.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="GameAdmin.cpp" />
     <ClCompile Include="HighscoreManager.cpp" />
     <ClCompile Include="InputBindingHelper.cpp" />
-    <ClCompile Include="Level404.cpp" />
     <ClCompile Include="NameEntryScene.cpp" />
     <ClCompile Include="RecognizerMovementHelper.cpp" />
     <ClCompile Include="SoloHighscoreScene.cpp" />
-    <ClCompile Include="SoloLevel2.cpp" />
-    <ClCompile Include="SoloLevel3.cpp" />
-    <ClCompile Include="SoloScene.cpp" />
+    <ClCompile Include="TankLevelScene.cpp" />
     <ClCompile Include="TeleportManager.cpp" />
     <ClCompile Include="Tron_BattleTanks.cpp" />
   </ItemGroup>
@@ -256,6 +247,10 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="FileReader.h" />
     <ClInclude Include="GameAdmin.h" />
     <ClInclude Include="GameData.h" />
+    <ClInclude Include="GameTags.h" />
+    <ClInclude Include="LevelProgressionComponent.h" />
+    <ClInclude Include="PlayerRespawnComponent.h" />
+    <ClInclude Include="TankLevelScene.h" />
     <ClInclude Include="HighscoreManager.h" />
     <ClInclude Include="InputBindingHelper.h" />
     <ClInclude Include="Level404.h" />

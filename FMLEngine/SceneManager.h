@@ -19,15 +19,12 @@ namespace FML
 		void ChangeScene(const std::string& sceneName);
 		void QueueSceneChange(const std::string& name);
 		void QueueSceneChangeWithDelay(const std::string& sceneName, float delaySeconds);
-		void RemoveScene(const std::string& name);
 		const std::string& GetSceneName() const;
 		Scene* GetCurrentScene() const;
 		Scene* GetNextScene() const;
-		Scene* GetPreviousScene() const;
 		void GoToNextScene();
 		void ReloadScene();
 
-		void HandleInput(SDL_Event& event);
 		void Update(float deltaTime);
 		void Render();
 
