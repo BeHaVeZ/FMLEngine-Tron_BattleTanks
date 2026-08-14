@@ -460,7 +460,7 @@ namespace FML
 		return currentScoreUIText;
 	}
 
-	std::unique_ptr<GameObject> PrefabRegistry::CreateEnemyManager(glm::vec2, const std::string tag) const
+	std::unique_ptr<GameObject> PrefabRegistry::CreateEnemyManager(glm::vec2, const std::string) const
 	{
 		auto enemyManager = std::make_unique<GameObject>("EnemyManager");
 

@@ -66,6 +66,31 @@ This project was built from scratch in C++ using SDL2, with a focus on core game
 
 ---
 
+## Building
+
+**Requirements:** Windows, and Visual Studio 2022 or newer with the **Desktop development with C++** workload.
+
+Everything else is vendored in `vendor/` (SDL2, SDL2_image, SDL2_ttf, SDL2_mixer, glm, Visual Leak Detector) and committed to the repo — there is no package manager or CMake step to run.
+
+1. Clone the repo.
+2. Open `FMLEngine.sln` and build (or from a terminal):
+
+```powershell
+msbuild FMLEngine.sln /p:Configuration=Debug /p:Platform=x64 /m
+```
+
+3. Run `bin\Tron_BattleTanks\x64\Debug\Tron_BattleTanks.exe`.
+
+Configurations are `Debug`/`Release` on `x64` and `x86`. The projects build with whatever MSVC toolset your Visual Studio installation provides (`$(DefaultPlatformToolset)`), so no "Retarget solution" step is needed. To pin a specific toolset instead, pass it explicitly:
+
+```powershell
+msbuild FMLEngine.sln /p:Configuration=Debug /p:Platform=x64 /p:PlatformToolset=v143
+```
+
+The post-build step copies the SDL DLLs and the `data/` folder next to the executable, so the game must be launched from its output directory (asset paths are relative to the exe).
+
+---
+
 ## Contact
 
 Feel free to connect with me:
