@@ -1,5 +1,7 @@
 #include "CollisionManager.h"
 #include "CollisionManager.h"
+#include "DebugDraw.h"
+#include "DebugOverlay.h"
 #include <algorithm>
 #include "Logger.h"
 #include "TransformComponent.h"
@@ -18,6 +20,28 @@ namespace FML
 		if (!colliders.empty())
 		{
 			colliders.erase(std::remove(colliders.begin(), colliders.end(), collider), colliders.end());
+		}
+	}
+
+	void CollisionManager::DebugRender() const
+	{
+		if (!DebugEnabled(DebugChannel::Colliders))
+			return;
+
+		for (const Collider* collider : colliders)
+		{
+			if (!collider)
+				continue;
+
+			const SDL_Rect box = collider->GetBoundingBox();
+			const glm::vec4 color = collider->isTrigger
+				? glm::vec4{ 1.f, .9f, .2f, .9f }
+				: (collider->isStatic ? glm::vec4{ .55f, .55f, .6f, .7f } : glm::vec4{ .2f, 1.f, .35f, .9f });
+
+			DebugDraw::DrawRectangle(
+				{ static_cast<float>(box.x), static_cast<float>(box.y) },
+				{ static_cast<float>(box.w), static_cast<float>(box.h) },
+				color);
 		}
 	}
 

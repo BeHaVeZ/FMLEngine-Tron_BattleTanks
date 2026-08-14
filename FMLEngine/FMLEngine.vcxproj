@@ -222,6 +222,8 @@ if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="DebugOverlay.cpp" />
+    <ClCompile Include="NavGrid.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
     <ClCompile Include="FPSComponent.cpp" />
     <ClCompile Include="SpriteAnimatorComponent.cpp" />
@@ -246,6 +248,8 @@ if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     <ClInclude Include="BoxCollider.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionManager.h" />
+    <ClInclude Include="DebugOverlay.h" />
+    <ClInclude Include="NavGrid.h" />
     <ClInclude Include="DebugDraw.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="FPSComponent.h" />

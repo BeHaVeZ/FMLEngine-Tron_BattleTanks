@@ -1,265 +1,45 @@
 #pragma once
-
 #include "Component.h"
+#include "DebugOverlay.h"
+#include "GameObject.h"
+#include "GridMovement.h"
 #include "TransformComponent.h"
-#include "TextureComponent.h"
-#include "CollisionManager.h"
-#include "GameTags.h"
-#include "DebugDraw.h"
-#include "Logger.h"
-#include <glm.hpp>
-#include <random>
-#include <cmath>
-#include <array>
 
 namespace FML
 {
 	class EnemyMovementComponent : public Component
 	{
 	public:
-		explicit EnemyMovementComponent(float speed)
-			: moveSpeed(speed),
-			turnCooldown(0.f),
-			checkDistance(50.f),
-			offsetDistance(5.f),
-			turnCooldownTime(2.f),
-			minTurnCooldownTime(.1f),
-			maxTurnCooldownTime(5.f),
-			bottomLeft({}),
-			bottomRight({}),
-			center({}),
-			right({}),
-			middleLeft({}),
-			middleRight({}),
-			topLeft({}),
-			topRight({}),
-			off({}),
-			up({})
+		explicit EnemyMovementComponent(float speed) : movement(speed) {}
+
+		void Update(float deltaTime) override
 		{
-			std::random_device rd;
-			rng = std::mt19937(rd());
-			flipCoinDistribution = std::uniform_int_distribution<int>(0, 1);
+			movement.Wander(gameObject, deltaTime);
 		}
 
-		void Update(float dt) override
+		void Render(SDL_Renderer*) override
 		{
-			turnCooldown -= dt;
-			CacheFrameData();
+			auto& overlay = DebugOverlay::Instance();
+			const glm::vec2 position = gameObject->GetComponent<TransformComponent>()->GetWorldPosition();
 
-			bool frontClear = FrontClear();
+			overlay.SubmitFocusCandidate(gameObject, position, gameObject->GetTag());
+			if (!overlay.IsFocused(gameObject))
+				return;
 
-			const bool rightClear = RightSideClear();
-			const bool leftClear = LeftSideClear();
+			movement.DebugRenderWhiskers();
 
-			if (!frontClear)
+			if (DebugEnabled(DebugChannel::AgentState))
 			{
-				DecideTurn(leftClear, rightClear);
+				overlay.WorldText(position + labelOffset, "WANDER", { .7f, .85f, 1.f, 1.f });
 			}
-			else if (turnCooldown <= 0 && (leftClear || rightClear))
-			{
-				DecideTurn(leftClear, rightClear);
-				ResetCooldownTimer();
-			}
-			CacheFrameData();
-			MoveUp(dt);
+
+			overlay.FocusStat(gameObject, "state WANDER");
+			overlay.FocusStat(gameObject, "pos   " + std::to_string(static_cast<int>(position.x)) + "," + std::to_string(static_cast<int>(position.y)));
 		}
 
 	private:
-		float moveSpeed;
-		float turnCooldown;
-		float turnCooldownTime;
-		float checkDistance;
-		float offsetDistance;
-		float minTurnCooldownTime;
-		float maxTurnCooldownTime;
+		GridMovement movement;
 
-		glm::vec2 up;
-		glm::vec2 right;
-		glm::vec2 center;
-		glm::vec2 bottomLeft;
-		glm::vec2 middleLeft;
-		glm::vec2 topLeft;
-		glm::vec2 bottomRight;
-		glm::vec2 middleRight;
-		glm::vec2 topRight;
-		glm::vec2 off;
-
-		std::mt19937 rng;
-		std::uniform_int_distribution<int> flipCoinDistribution;
-
-		bool FrontClear()
-		{
-			const bool wallInFront =
-				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, Tags::Wall) ||
-				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, Tags::Wall);
-
-			bool enemyInFront = false;
-			static constexpr std::array enemyTags{ Tags::BlueTank, Tags::PinkTank, Tags::Recognizer };
-			for (const auto& tag : enemyTags)
-			{
-				enemyInFront =
-					CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, tag, gameObject) ||
-					CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, tag, gameObject);
-				if (enemyInFront) break;
-			}
-
-			bool player1InFront = false;
-			bool player2InFront = false;
-
-			player1InFront =
-				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, Tags::Player1) ||
-				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, Tags::Player1);
-
-			player2InFront =
-				CollisionManager::Instance().RaycastWithTag(topLeft, up, 10.f, Tags::Player2) ||
-				CollisionManager::Instance().RaycastWithTag(topRight, up, 10.f, Tags::Player2);
-
-
-			if (wallInFront || player1InFront || player2InFront || enemyInFront)
-			{
-				return false;
-			}
-
-			return true;
-		}
-
-		void MoveUp(float deltaTime)
-		{
-
-			auto* transform = gameObject->GetComponent<TransformComponent>();
-			if (!transform) return;
-
-			glm::vec2 currentPos = transform->GetLocalPosition();
-			glm::vec2 newPos = currentPos + up * moveSpeed * deltaTime;
-			transform->SetPosition(newPos);
-		}
-
-		void CacheFrameData()
-		{
-			auto* transform = gameObject->GetComponent<TransformComponent>();
-			auto* texture = gameObject->GetComponent<TextureComponent>();
-			if (!transform || !texture)
-				return;
-
-			float worldRotationDegrees = transform->GetWorldRotation();
-			float rotationRadians = glm::radians(worldRotationDegrees + 90.f);
-
-			up = { -std::cos(rotationRadians), -std::sin(rotationRadians) };
-			right = { -up.y, up.x };
-			center = transform->GetWorldPosition();
-
-			float halfWidth = texture->GetDefaultWidth() * 0.5f;
-			float halfHeight = texture->GetDefaultHeight() * 0.5f;
-
-			bottomLeft = center - right * halfWidth - up * halfHeight;
-			topLeft = center - right * halfWidth + up * halfHeight;
-			bottomRight = center + right * halfWidth - up * halfHeight;
-			topRight = center + right * halfWidth + up * halfHeight;
-
-			middleLeft = center - right + up;
-			middleRight = center + right + up;
-
-			off = -up * offsetDistance;
-		}
-
-#ifdef _DEBUG
-		void DrawDebug()
-		{
-			Logger::Log(LogLevel::Info,
-				"Rot=%.0f deg  Up=(%.1f,%.1f)  Pos=(%.1f,%.1f)",
-				gameObject->GetComponent<TransformComponent>()->GetWorldRotation(),
-				up.x, up.y,
-				center.x, center.y);
-
-			DebugDraw::DrawLine(center, center + up * checkDistance, { 1,1,1,1 });
-			//LEFT
-			DebugDraw::DrawLine(topLeft - off, topLeft - off - right * checkDistance, { 1,0,0,1 });
-			DebugDraw::DrawLine(bottomLeft + off, bottomLeft + off - right * checkDistance, { 0,0,1,1 });
-			DebugDraw::DrawLine(middleLeft, middleLeft - right * checkDistance, { 1,1,1,1 });
-			//RIGHT
-			DebugDraw::DrawLine(topRight - off, topRight - off + right * checkDistance, { 0,1,0,1 });
-			DebugDraw::DrawLine(bottomRight + off, bottomRight + off + right * checkDistance, { 1,0,1,1 });
-			DebugDraw::DrawLine(middleRight, middleRight + right * checkDistance, { 1,1,1,1 });
-			//FRONT
-			DebugDraw::DrawLine(topLeft, topLeft + up * 10.f, { 0, 1, 1, 1 });
-			DebugDraw::DrawLine(topRight, topRight + up * 10.f, { 0, 1, 1, 1 });
-		}
-#endif
-
-		void DecideTurn(bool leftClear, bool rightClear)
-		{
-			int randomSide = flipCoinDistribution(rng); // 0 = LEFT 1 = RIGHT
-
-			if (leftClear && rightClear)
-			{
-				if (randomSide == 0)
-					TurnLeft();
-				else
-					TurnRight();
-			}
-			else if (leftClear)
-			{
-				TurnLeft();
-			}
-			else if (rightClear)
-			{
-				TurnRight();
-			}
-			else
-			{
-				TurnBack();
-			}
-		}
-
-		void TurnBack()
-		{
-			auto* transform = gameObject->GetComponent<TransformComponent>();
-			if (!transform) return;
-			transform->SetRotation(transform->GetLocalRotation() - 180);
-		}
-		void TurnRight()
-		{
-			auto* transform = gameObject->GetComponent<TransformComponent>();
-			if (!transform) return;
-			transform->SetRotation(transform->GetLocalRotation() - 90);
-		}
-		void TurnLeft()
-		{
-			auto* transform = gameObject->GetComponent<TransformComponent>();
-			if (!transform) return;
-			transform->SetRotation(transform->GetLocalRotation() + 90);
-		}
-
-		bool RightSideClear()
-		{
-			glm::vec2 topRayStart = topRight - off;
-			glm::vec2 bottomRayStart = bottomRight + off;
-			glm::vec2 middleRayStart = middleRight;
-
-			bool topClear = !CollisionManager::Instance().RaycastWithTag(topRayStart, right, checkDistance, Tags::Wall);
-			bool bottomClear = !CollisionManager::Instance().RaycastWithTag(bottomRayStart, right, checkDistance, Tags::Wall);
-			bool middleClear = !CollisionManager::Instance().RaycastWithTag(middleRayStart, right, checkDistance, Tags::Wall);
-
-			return topClear && bottomClear && middleClear;
-		}
-
-		bool LeftSideClear()
-		{
-			glm::vec2 topRayStart = topLeft - off;
-			glm::vec2 bottomRayStart = bottomLeft + off;
-			glm::vec2 middleRayStart = middleLeft;
-
-			bool topClear = !CollisionManager::Instance().RaycastWithTag(topRayStart, -right, checkDistance, Tags::Wall);
-			bool bottomClear = !CollisionManager::Instance().RaycastWithTag(bottomRayStart, -right, checkDistance, Tags::Wall);
-			bool middleClear = !CollisionManager::Instance().RaycastWithTag(middleRayStart, -right, checkDistance, Tags::Wall);
-
-			return topClear && bottomClear && middleClear;
-		}
-
-		void ResetCooldownTimer()
-		{
-			std::uniform_real_distribution<float> dist(minTurnCooldownTime, maxTurnCooldownTime);
-			turnCooldown = dist(rng);
-		}
+		static constexpr glm::vec2 labelOffset{ -22.f, -34.f };
 	};
 }

@@ -1,9 +1,7 @@
-﻿#pragma once
+#pragma once
 #include "Component.h"
+#include "EnemyPerception.h"
 #include "PrefabRegistry.h"
-#include "CollisionManager.h"
-#include "Logger.h"
-#include "DebugDraw.h"
 #include "SoundHelper.h"
 
 namespace FML
@@ -11,82 +9,56 @@ namespace FML
 	class EnemyShootComponent : public Component
 	{
 	public:
-		explicit EnemyShootComponent() :
-			cooldownTime(0.f),
-			timeBetweenShots(1.f),
-			shootingRange(1000.f),
-			bulletSpeed(250.f)
-		{
-		};
-		~EnemyShootComponent() {};
+		EnemyShootComponent() = default;
 
 		void Update(float deltaTime) override
 		{
 			cooldownTime -= deltaTime;
 
-			auto transform = gameObject->GetComponent<TransformComponent>();
-			auto texture = gameObject->GetComponent<TextureComponent>();
-			if (!transform || !texture)
-			{
+			auto* texture = gameObject->GetComponent<TextureComponent>();
+			if (!texture)
 				return;
-			}
-			float halfWidth = texture->GetDefaultWidth() / 2.f;
-			float halfHeight = texture->GetDefaultHeight() / 2.f;
 
-			glm::vec2 center = transform->GetWorldPosition();
-
-			float worldRotationDegrees = transform->GetWorldRotation();
-			float rotationRadians = glm::radians(worldRotationDegrees + 90.f);
-
-			glm::vec2 up = { -std::cos(rotationRadians), -std::sin(rotationRadians) };
-			glm::vec2 right = { up.y, -up.x };
-
-			glm::vec2 topLeft = center - right * halfWidth + up * halfHeight;
-			glm::vec2 topRight = center + right * halfWidth + up * halfHeight;
-
-			glm::vec2 shootDir = up;
-
-			auto leftHit = CollisionManager::Instance()
-				.RaycastFirstHit(topLeft, shootDir, shootingRange, gameObject, nullptr);
-			auto rightHit = CollisionManager::Instance()
-				.RaycastFirstHit(topRight, shootDir, shootingRange, gameObject, nullptr);
-
-			if (IsPlayerHit(leftHit) || IsPlayerHit(rightHit))
+			if (EnemyPerception::SeePlayerAhead(gameObject, shootingRange))
 			{
 				Shoot(*texture);
 			}
-
 		}
 
 		void SetBulletSpeed(float speed) { bulletSpeed = speed; }
 
 	private:
-		void Shoot(TextureComponent& texture)
+		void Shoot(const TextureComponent& texture)
 		{
 			if (cooldownTime > 0.f)
 				return;
+
+			auto* transform = gameObject->GetComponent<TransformComponent>();
+			if (!transform)
+				return;
+
+			const glm::vec2 forward = texture.GetForwardVector();
+			const glm::vec2 origin = transform->GetWorldPosition();
+
 			SoundHelper::PlayRandomSound({ SoundId::Explosion1, SoundId::Explosion2, SoundId::Explosion3, SoundId::Explosion4 }, .3f);
-			glm::vec2 shootPoint = gameObject->GetComponent<TransformComponent>()->GetWorldPosition() + texture.GetForwardVector() * 25.f;
 
-			SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(shootPoint, texture.GetForwardVector(),bulletSpeed));
+			auto& scene = *SceneManager::Instance().GetCurrentScene();
+			scene.AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(origin + forward * bulletSpawnOffset, forward, bulletSpeed));
 
-			glm::vec2 upVec = texture.GetForwardVector();
-			auto explosion = PrefabRegistry::Instance().CreateTurretShootExplosionPrefab(gameObject->GetComponent<TransformComponent>()->GetWorldPosition() + texture.GetForwardVector() * 55.f);
-			float explosionRotation = glm::degrees(-atan2(upVec.y, upVec.x)) + 270.f;
-			explosion->GetComponent<TransformComponent>()->SetRotation(explosionRotation);
-			SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
+			auto explosion = PrefabRegistry::Instance().CreateTurretShootExplosionPrefab(origin + forward * muzzleFlashOffset);
+			explosion->GetComponent<TransformComponent>()->SetRotation(glm::degrees(-std::atan2(forward.y, forward.x)) + muzzleFlashRotationOffset);
+			scene.AddGameObject(std::move(explosion));
+
 			cooldownTime = timeBetweenShots;
 		}
 
-		bool IsPlayerHit(const std::optional<CollisionManager::RaycastHit>& hit)
-		{
-			return hit && (hit->hitObject->GetTag() == "Player1" || hit->hitObject->GetTag() == "Player2");
-		}
+		float cooldownTime{ 0.f };
+		float timeBetweenShots{ 1.f };
+		float shootingRange{ 1000.f };
+		float bulletSpeed{ 250.f };
 
-	private:
-		float cooldownTime;
-		float timeBetweenShots;
-		float shootingRange;
-		float bulletSpeed;
+		static constexpr float bulletSpawnOffset = 25.f;
+		static constexpr float muzzleFlashOffset = 55.f;
+		static constexpr float muzzleFlashRotationOffset = 270.f;
 	};
 }

@@ -213,7 +213,9 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="HighscoreManager.cpp" />
     <ClCompile Include="InputBindingHelper.cpp" />
     <ClCompile Include="NameEntryScene.cpp" />
-    <ClCompile Include="RecognizerMovementHelper.cpp" />
+    <ClCompile Include="EnemyPerception.cpp" />
+    <ClCompile Include="GridMovement.cpp" />
+    <ClCompile Include="NormalMovingState.cpp" />
     <ClCompile Include="SoloHighscoreScene.cpp" />
     <ClCompile Include="TankLevelScene.cpp" />
     <ClCompile Include="TeleportManager.cpp" />
@@ -257,7 +259,8 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="NameEntryScene.h" />
     <ClInclude Include="NormalMovingState.h" />
     <ClInclude Include="RecognizerCollisionBehaviorComponent.h" />
-    <ClInclude Include="RecognizerMovementHelper.h" />
+    <ClInclude Include="EnemyPerception.h" />
+    <ClInclude Include="GridMovement.h" />
     <ClInclude Include="RecognizerState.h" />
     <ClInclude Include="RecognizerStateComponent.h" />
     <ClInclude Include="ReloadSceneCommand.h" />

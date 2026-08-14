@@ -25,6 +25,7 @@ namespace FML
 		bool Initialize(SDL_Renderer* renderer) override;
 		void InitializeInput() override;
 		void HandleInput(SDL_Event& event) override;
+		void Render(SDL_Renderer* renderer) override;
 		void OnExit() override;
 
 	private:
@@ -35,7 +36,11 @@ namespace FML
 		void InitializeWalls();
 		void InitializeManagers();
 		void InitializeSounds();
+		void ReportDebugStats();
 
 		LevelConfig config;
+
+		static constexpr int hudHeight = 100;
+		static constexpr int navCellSize = 8;
 	};
 }

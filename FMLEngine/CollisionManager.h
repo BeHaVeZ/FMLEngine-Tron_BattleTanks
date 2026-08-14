@@ -33,6 +33,9 @@ namespace FML
         void ClearColliders() { colliders.clear(); }
         void CheckCollisions();
 
+        size_t GetColliderCount() const { return colliders.size(); }
+        void DebugRender() const;
+
         void ResolveCollision(Collider* colliderA, Collider* colliderB);
 
         bool Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude = nullptr, GameObject* excludeParent = nullptr);

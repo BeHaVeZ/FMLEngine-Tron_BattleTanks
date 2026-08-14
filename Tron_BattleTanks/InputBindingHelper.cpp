@@ -4,6 +4,8 @@
 #include "DamageCommand.h"
 #include "ShootCommand.h"
 #include "ChangeVolumeCommand.h"
+#include "DebugOverlay.h"
+#include <utility>
 
 namespace FML
 {
@@ -16,6 +18,26 @@ namespace FML
 		InputHandler::Instance().BindCommand(SDLK_m, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindCommand(SDLK_F2, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_F3, [] { DebugOverlay::Instance().ToggleMaster(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_F4, [] { DebugOverlay::Instance().CycleFocus(); }, InputHandler::KeyAction::KeyUp);
+
+		constexpr std::pair<SDL_Keycode, DebugChannel> debugChannelKeys[]{
+			{ SDLK_1, DebugChannel::NavGrid },
+			{ SDLK_2, DebugChannel::Clearance },
+			{ SDLK_3, DebugChannel::Paths },
+			{ SDLK_4, DebugChannel::Whiskers },
+			{ SDLK_5, DebugChannel::Perception },
+			{ SDLK_6, DebugChannel::AgentState },
+			{ SDLK_7, DebugChannel::Colliders },
+			{ SDLK_8, DebugChannel::Stats },
+		};
+
+		for (const auto& [key, channel] : debugChannelKeys)
+		{
+			InputHandler::Instance().BindFunction(key,
+				[channel] { DebugOverlay::Instance().ToggleChannel(channel); },
+				InputHandler::KeyAction::KeyUp);
+		}
 	}
 
 	void InputBindingHelper::BindSoloModeControls(GameObject* tank)

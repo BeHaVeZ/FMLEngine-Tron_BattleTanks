@@ -15,6 +15,7 @@
 #include "InputHandler.h"
 #include "Logger.h"
 #include "DebugDraw.h"
+#include "DebugOverlay.h"
 #include "../Tron_BattleTanks/SoloScene.h" //This is caused because scenes are being loaded from game but it should not be (GameEngine does not know what scenes any game will have -> abstract
 #include "../Tron_BattleTanks/SoloLevel2.h"
 #include "../Tron_BattleTanks/SoloLevel3.h"
@@ -109,6 +110,7 @@ namespace FML
 		}
 
 		SceneManager::Instance().SetRenderer(renderer);
+		DebugOverlay::Instance().Initialize(renderer, "data/fonts/tron-arcade.ttf", 12);
 
 		ServiceLocator::RegisterSoundSystem(std::make_unique<SDL_SoundSystem>());
 
@@ -183,6 +185,7 @@ namespace FML
 		SceneManager::Instance().Render();
 
 		DebugDraw::Render(renderer);
+		DebugOverlay::Instance().Render(renderer);
 
 		SDL_RenderPresent(renderer);
 	}
@@ -190,6 +193,7 @@ namespace FML
 	void Game::Cleanup()
 	{
 		TextureManager::Instance().Clear();
+		DebugOverlay::Instance().Shutdown();
 
 		if (renderer)
 		{

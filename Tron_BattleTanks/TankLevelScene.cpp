@@ -1,6 +1,9 @@
 #include "TankLevelScene.h"
 #include "BoxCollider.h"
+#include "CollisionManager.h"
 #include "ConfigManager.h"
+#include "DebugOverlay.h"
+#include "GameTags.h"
 #include "EnemyManagerComponent.h"
 #include "FPSComponent.h"
 #include "FileReader.h"
@@ -8,6 +11,7 @@
 #include "GameObject.h"
 #include "InputBindingHelper.h"
 #include "InputHandler.h"
+#include "NavGrid.h"
 #include "PrefabRegistry.h"
 #include "ServiceLocator.h"
 #include "SoundHelper.h"
@@ -74,7 +78,9 @@ namespace FML
 
 	void TankLevelScene::InitializeWalls()
 	{
-		for (const auto& rect : FileReader(config.collisionPath).ReadRectangles())
+		const std::vector<SDL_Rect> walls = FileReader(config.collisionPath).ReadRectangles();
+
+		for (const auto& rect : walls)
 		{
 			auto wall = std::make_unique<GameObject>("Wall");
 			auto collider = std::make_unique<BoxCollider>(rect);
@@ -84,6 +90,14 @@ namespace FML
 			wall->GetComponent<TransformComponent>()->SetPivot({ 0.f, 0.f });
 			AddGameObject(std::move(wall));
 		}
+
+		const SDL_Rect playfield{
+			0,
+			hudHeight,
+			ConfigManager::Instance().GetWindowWidth(),
+			ConfigManager::Instance().GetWindowHeight() - hudHeight
+		};
+		NavGrid::Instance().Build(walls, playfield, navCellSize);
 	}
 
 	void TankLevelScene::InitializeManagers()
@@ -117,6 +131,38 @@ namespace FML
 	void TankLevelScene::HandleInput(SDL_Event& event)
 	{
 		InputHandler::Instance().HandleInput(event);
+	}
+
+	void TankLevelScene::Render(SDL_Renderer* renderer)
+	{
+		NavGrid::Instance().DebugRenderGrid();
+
+		Scene::Render(renderer);
+
+		CollisionManager::Instance().DebugRender();
+		ReportDebugStats();
+	}
+
+	void TankLevelScene::ReportDebugStats()
+	{
+		auto& overlay = DebugOverlay::Instance();
+		if (!overlay.IsEnabled(DebugChannel::Stats))
+			return;
+
+		int enemies = 0;
+		for (const auto& gameObject : gameObjects)
+		{
+			if (Tags::IsEnemyTag(gameObject->GetTag()))
+				++enemies;
+		}
+
+		auto& grid = NavGrid::Instance();
+		overlay.Stat("scene    " + sceneName);
+		overlay.Stat("objects  " + std::to_string(gameObjects.size()));
+		overlay.Stat("enemies  " + std::to_string(enemies));
+		overlay.Stat("colliders " + std::to_string(CollisionManager::Instance().GetColliderCount()));
+		overlay.Stat("paths    " + std::to_string(grid.GetSearchCount()));
+		overlay.Stat("cells/f  " + std::to_string(grid.ConsumeSearchedCellsSinceLastFrame()));
 	}
 
 	void TankLevelScene::OnExit()
