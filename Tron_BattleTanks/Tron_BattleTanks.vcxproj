@@ -90,7 +90,7 @@
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;USE_VLD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;$(SolutionDir)vendor\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -107,6 +107,9 @@
 xcopy "$(SolutionDir)vendor\SDL2-2.30.7\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+xcopy "$(SolutionDir)vendor\Visual Leak Detector\lib\Win32\*.dll" "$(OutputPath)" /R /Y
+xcopy "$(SolutionDir)vendor\Visual Leak Detector\lib\Win32\*.manifest" "$(OutputPath)" /R /Y
+xcopy "$(SolutionDir)vendor\Visual Leak Detector\vld.ini" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>
@@ -148,7 +151,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;USE_VLD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)vendor\SDL2_ttf-2.22.0\include;$(SolutionDir)vendor\glm;$(SolutionDir)vendor\SDL2-2.30.7\include;$(SolutionDir)FMLEngine;$(SolutionDir)vendor\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
@@ -165,6 +168,9 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
 xcopy "$(SolutionDir)vendor\SDL2-2.30.7\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_ttf-2.22.0\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)vendor\SDL2_mixer-2.8.1\lib\$(PlatformTarget)\*.dll" "$(OutputPath)" /R /Y
+xcopy "$(SolutionDir)vendor\Visual Leak Detector\lib\Win64\*.dll" "$(OutputPath)" /R /Y
+xcopy "$(SolutionDir)vendor\Visual Leak Detector\lib\Win64\*.manifest" "$(OutputPath)" /R /Y
+xcopy "$(SolutionDir)vendor\Visual Leak Detector\vld.ini" "$(OutputPath)" /R /Y
 xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PostBuildEvent>
     <PreBuildEvent>

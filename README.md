@@ -89,6 +89,12 @@ msbuild FMLEngine.sln /p:Configuration=Debug /p:Platform=x64 /p:PlatformToolset=
 
 The post-build step copies the SDL DLLs and the `data/` folder next to the executable, so the game must be launched from its output directory (asset paths are relative to the exe).
 
+### Memory leak checking
+
+Debug builds run under [Visual Leak Detector](https://github.com/KindDragon/vld/releases) 2.5.1 and print a leak report to the debugger output on exit. VLD is fully vendored — headers, import libs, and the runtime DLLs (`vld_x64.dll`/`vld_x86.dll` plus `dbghelp.dll`) all live in `vendor/Visual Leak Detector/`, and the post-build step copies them next to the exe along with `vld.ini`. **No local VLD installation is required**, so a fresh clone builds and runs as-is.
+
+It is enabled by the `USE_VLD` preprocessor definition on the Debug configurations. To build Debug without leak detection, remove `USE_VLD` from the Tron_BattleTanks project's **C/C++ → Preprocessor → Preprocessor Definitions**. Release builds never link VLD.
+
 ---
 
 ## Contact

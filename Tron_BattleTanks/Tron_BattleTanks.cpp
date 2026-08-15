@@ -1,6 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(USE_VLD)
 #include <vld.h>
 #endif
 
