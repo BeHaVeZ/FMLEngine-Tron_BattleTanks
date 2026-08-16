@@ -89,12 +89,14 @@ namespace FML
 		gameObjects.push_back(std::move(fpsGameObject));
 
 
+		GameObject* player = FindGameObjectByTag("Player1");
+
 		auto healthUIPlayer1 = std::make_unique<GameObject>("HealthUIPlayer1");
-		auto healthUIComponent = std::make_unique<HealthUIComponent>(3);
+		auto healthUIComponent = std::make_unique<HealthUIComponent>(player->GetComponent<HealthComponent>());
 		healthUIPlayer1->AddComponent(std::move(healthUIComponent));
 		healthUIPlayer1->GetComponent<HealthUIComponent>()->Initialize();
 		healthUIPlayer1->GetComponent<TransformComponent>()->SetPosition({ 10, 30 });
-		FindGameObjectByTag("Player1")->GetSubject().AddObserver(healthUIPlayer1->GetComponent<HealthUIComponent>());
+		player->GetSubject().AddObserver(healthUIPlayer1->GetComponent<HealthUIComponent>());
 		gameObjects.push_back(std::move(healthUIPlayer1));
 	}
 

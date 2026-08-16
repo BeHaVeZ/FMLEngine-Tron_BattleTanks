@@ -25,6 +25,8 @@ namespace FML
 		}
 		virtual size_t GetDebugNextWaypoint() const { return 0; }
 
+		virtual float GetDebugOffPath(const glm::vec2&) const { return 0.f; }
+
 		virtual std::string GetDebugLabel() const = 0;
 	};
 }

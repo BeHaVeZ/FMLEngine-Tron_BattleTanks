@@ -1,4 +1,5 @@
 #pragma once
+#include "PathFollower.h"
 #include "RecognizerState.h"
 #include <glm.hpp>
 #include <vector>
@@ -14,31 +15,24 @@ namespace FML
 		void Update(GameObject* recognizer, GridMovement& movement, float deltaTime) override;
 		void Exit(GameObject* recognizer, GridMovement& movement) override;
 
-		const std::vector<glm::vec2>& GetDebugPath() const override { return path; }
-		size_t GetDebugNextWaypoint() const override { return nextWaypoint; }
+		const std::vector<glm::vec2>& GetDebugPath() const override { return follower.GetPath(); }
+		size_t GetDebugNextWaypoint() const override { return follower.GetNextWaypoint(); }
+		float GetDebugOffPath(const glm::vec2& position) const override { return follower.DistanceFromPath(position); }
 		std::string GetDebugLabel() const override;
 		glm::vec2 GetLastKnownPosition() const { return lastKnownPosition; }
 		bool HasVisualContact() const { return hasVisualContact; }
 
 	private:
-		void Repath(const glm::vec2& from);
-		void AdvancePastReachedWaypoints(const glm::vec2& position);
+		static constexpr float agentRadius = 16.f;
 
 		glm::vec2 lastKnownPosition;
-		glm::vec2 plannedFor{ 0.f, 0.f };
-		std::vector<glm::vec2> path;
-		size_t nextWaypoint{ 0 };
+		PathFollower follower{ agentRadius };
 		float searchTimer{ 0.f };
-		float repathTimer{ 0.f };
 		bool hasVisualContact{ false };
 
 		static constexpr float sightRange = 1000.f;
 		static constexpr float searchDuration = 5.f;
 		static constexpr float chaseSpeedMultiplier = 1.25f;
 		static constexpr float arrivalRadius = 24.f;
-		static constexpr float waypointRadius = 12.f;
-		static constexpr float agentRadius = 16.f;
-		static constexpr float repathInterval = .5f;
-		static constexpr float repathDistanceThreshold = 48.f;
 	};
 }

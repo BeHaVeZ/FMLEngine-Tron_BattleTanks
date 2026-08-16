@@ -45,7 +45,6 @@ namespace FML
 				return;
 
 			NavGrid::Instance().DebugRenderPath(currentState->GetDebugPath(), currentState->GetDebugNextWaypoint());
-			movement.DebugRenderWhiskers();
 
 			if (DebugEnabled(DebugChannel::AgentState))
 			{
@@ -55,6 +54,7 @@ namespace FML
 			overlay.FocusStat(gameObject, "state " + currentState->GetDebugLabel());
 			overlay.FocusStat(gameObject, "pos   " + std::to_string(static_cast<int>(position.x)) + "," + std::to_string(static_cast<int>(position.y)));
 			overlay.FocusStat(gameObject, "path  " + std::to_string(currentState->GetDebugNextWaypoint()) + "/" + std::to_string(currentState->GetDebugPath().size()));
+			overlay.FocusStat(gameObject, "off   " + std::to_string(static_cast<int>(currentState->GetDebugOffPath(position))) + "px");
 		}
 
 		void ChangeState(std::unique_ptr<RecognizerState> newState)

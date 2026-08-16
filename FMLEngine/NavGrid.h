@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <glm.hpp>
 #include <queue>
+#include <random>
 #include <vector>
 
 namespace FML
@@ -25,6 +26,8 @@ namespace FML
 		int GetCellSize() const { return cellSize; }
 
 		bool FindPath(const glm::vec2& start, const glm::vec2& goal, float agentRadius, std::vector<glm::vec2>& outPath);
+
+		bool FindRandomGoal(const glm::vec2& from, float agentRadius, float minDistance, glm::vec2& outGoal);
 
 		bool IsWalkable(const glm::vec2& worldPosition) const;
 
@@ -50,6 +53,7 @@ namespace FML
 		glm::vec2 ToWorldCenter(Cell cell) const;
 
 		void BuildClearanceField();
+		int ClearanceForRadius(float agentRadius) const;
 		bool FindNearestUsableCell(Cell from, int requiredClearance, Cell& outCell) const;
 		bool Search(Cell start, Cell goal, int requiredClearance);
 		void BuildWorldPath(Cell start, Cell goal, std::vector<glm::vec2>& outPath) const;
@@ -76,5 +80,7 @@ namespace FML
 		int lastSearchedCells{ 0 };
 		int searchCount{ 0 };
 		int searchedCellsAccumulator{ 0 };
+
+		std::mt19937 rng{ std::random_device{}() };
 	};
 }

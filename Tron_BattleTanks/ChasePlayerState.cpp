@@ -4,7 +4,6 @@
 #include "RecognizerStateComponent.h"
 #include "GridMovement.h"
 #include "GameObject.h"
-#include "NavGrid.h"
 #include "DebugDraw.h"
 #include "DebugOverlay.h"
 #include "TransformComponent.h"
@@ -17,13 +16,12 @@ namespace FML
 	{
 	}
 
-	void ChasePlayerState::Enter(GameObject* recognizer, GridMovement& movement)
+	void ChasePlayerState::Enter(GameObject*, GridMovement& movement)
 	{
 		searchTimer = searchDuration;
-		repathTimer = 0.f;
 		movement.SetSpeedMultiplier(chaseSpeedMultiplier);
 
-		Repath(recognizer->GetComponent<TransformComponent>()->GetWorldPosition());
+		follower.SetGoal(lastKnownPosition);
 	}
 
 	void ChasePlayerState::Update(GameObject* recognizer, GridMovement& movement, float deltaTime)
@@ -42,17 +40,9 @@ namespace FML
 			searchTimer -= deltaTime;
 		}
 
-		repathTimer -= deltaTime;
-		const bool targetMoved = glm::distance(lastKnownPosition, plannedFor) > repathDistanceThreshold;
-		if (path.empty() || targetMoved || repathTimer <= 0.f)
-		{
-			Repath(position);
-		}
-
-		AdvancePastReachedWaypoints(position);
-
-		const glm::vec2 steeringTarget = (nextWaypoint < path.size()) ? path[nextWaypoint] : lastKnownPosition;
-		movement.Seek(recognizer, steeringTarget, deltaTime);
+		follower.SetGoal(lastKnownPosition);
+		follower.Update(position, deltaTime);
+		movement.FollowPath(recognizer, follower, deltaTime);
 
 		if (searchTimer <= 0.f)
 		{
@@ -82,22 +72,5 @@ namespace FML
 		char buffer[32];
 		std::snprintf(buffer, sizeof(buffer), "%s %.1fs", hasVisualContact ? "CHASE" : "SEARCH", searchTimer);
 		return buffer;
-	}
-
-	void ChasePlayerState::Repath(const glm::vec2& from)
-	{
-		repathTimer = repathInterval;
-		plannedFor = lastKnownPosition;
-		nextWaypoint = 0;
-
-		NavGrid::Instance().FindPath(from, lastKnownPosition, agentRadius, path);
-	}
-
-	void ChasePlayerState::AdvancePastReachedWaypoints(const glm::vec2& position)
-	{
-		while (nextWaypoint < path.size() && glm::distance(position, path[nextWaypoint]) < waypointRadius)
-		{
-			++nextWaypoint;
-		}
 	}
 }

@@ -399,12 +399,14 @@ namespace FML
 		healthUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x,spawnPosition.y });
 
 
+		GameObject* player1 = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1");
+
 		auto healthUIPlayer1 = std::make_unique<GameObject>(tag);
-		auto healthUIComponent = std::make_unique<HealthUIComponent>(GameData::Player1Health);
+		auto healthUIComponent = std::make_unique<HealthUIComponent>(player1->GetComponent<HealthComponent>());
 		healthUIPlayer1->AddComponent(std::move(healthUIComponent));
 		healthUIPlayer1->GetComponent<HealthUIComponent>()->Initialize();
 		healthUIPlayer1->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });
-		SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1")->GetSubject().AddObserver(healthUIPlayer1->GetComponent<HealthUIComponent>());
+		player1->GetSubject().AddObserver(healthUIPlayer1->GetComponent<HealthUIComponent>());
 
 		healthUI->AddChild(std::move(healthUIPlayer1));
 		return healthUI;
@@ -420,12 +422,14 @@ namespace FML
 		healthUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y });
 
 
+		GameObject* player2 = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player2");
+
 		auto healthUIPlayer2 = std::make_unique<GameObject>(tag);
-		auto healthUIComponent = std::make_unique<HealthUIComponent>(GameData::Player2Health, SDL_Color(255, 0, 0, 255));
+		auto healthUIComponent = std::make_unique<HealthUIComponent>(player2->GetComponent<HealthComponent>(), SDL_Color(255, 0, 0, 255));
 		healthUIPlayer2->AddComponent(std::move(healthUIComponent));
 		healthUIPlayer2->GetComponent<HealthUIComponent>()->Initialize();
 		healthUIPlayer2->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });
-		SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player2")->GetSubject().AddObserver(healthUIPlayer2->GetComponent<HealthUIComponent>());
+		player2->GetSubject().AddObserver(healthUIPlayer2->GetComponent<HealthUIComponent>());
 
 		healthUI->AddChild(std::move(healthUIPlayer2));
 		return healthUI;

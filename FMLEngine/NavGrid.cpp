@@ -14,6 +14,11 @@ namespace FML
 	{
 		constexpr int invalidIndex = -1;
 		constexpr uint8_t maxClearance = 255;
+		constexpr int maxRandomGoalAttempts = 64;
+
+		constexpr float turnPenalty = .8f;
+		constexpr int preferredClearance = 5;
+		constexpr float centringWeight = .2f;
 	}
 
 	void NavGrid::Build(const std::vector<SDL_Rect>& blockers, const SDL_Rect& bounds, int newCellSize)
@@ -140,6 +145,41 @@ namespace FML
 		return InBounds(cell) && !blocked[Index(cell)];
 	}
 
+	int NavGrid::ClearanceForRadius(float agentRadius) const
+	{
+		return std::max(1, static_cast<int>(std::ceil(agentRadius / cellSize + 0.5f)));
+	}
+
+	bool NavGrid::FindRandomGoal(const glm::vec2& from, float agentRadius, float minDistance, glm::vec2& outGoal)
+	{
+		if (!IsBuilt())
+			return false;
+
+		const int requiredClearance = ClearanceForRadius(agentRadius);
+		const float minDistanceSquared = minDistance * minDistance;
+
+		std::uniform_int_distribution<int> xDistribution(0, width - 1);
+		std::uniform_int_distribution<int> yDistribution(0, height - 1);
+
+		for (int attempt = 0; attempt < maxRandomGoalAttempts; ++attempt)
+		{
+			const Cell candidate{ xDistribution(rng), yDistribution(rng) };
+			const int index = Index(candidate);
+			if (blocked[index] || clearance[index] < requiredClearance)
+				continue;
+
+			const glm::vec2 world = ToWorldCenter(candidate);
+			const glm::vec2 offset = world - from;
+			if (offset.x * offset.x + offset.y * offset.y < minDistanceSquared)
+				continue;
+
+			outGoal = world;
+			return true;
+		}
+
+		return false;
+	}
+
 	bool NavGrid::FindNearestUsableCell(Cell from, int requiredClearance, Cell& outCell) const
 	{
 		const auto usable = [&](Cell cell)
@@ -195,6 +235,12 @@ namespace FML
 				return static_cast<float>(std::abs(cell.x - goal.x) + std::abs(cell.y - goal.y));
 			};
 
+		const auto centringCost = [&](int index)
+			{
+				const int headroom = clearance[index];
+				return headroom >= preferredClearance ? 0.f : (preferredClearance - headroom) * centringWeight;
+			};
+
 		costFromStart[startIndex] = 0.f;
 		open.push({ heuristic(start), startIndex });
 
@@ -219,6 +265,11 @@ namespace FML
 
 			const Cell currentCell{ current % width, current / width };
 
+			const int parent = cameFrom[current];
+			const Cell incoming = (parent == invalidIndex)
+				? Cell{ 0, 0 }
+				: Cell{ currentCell.x - parent % width, currentCell.y - parent / width };
+
 			for (const Cell& offset : neighbourOffsets)
 			{
 				const Cell neighbour{ currentCell.x + offset.x, currentCell.y + offset.y };
@@ -229,7 +280,12 @@ namespace FML
 				if (blocked[neighbourIndex] || closed[neighbourIndex] || clearance[neighbourIndex] < requiredClearance)
 					continue;
 
-				const float tentativeCost = costFromStart[current] + 1.f;
+				const bool turning = parent != invalidIndex && (offset.x != incoming.x || offset.y != incoming.y);
+
+				const float tentativeCost = costFromStart[current]
+					+ 1.f
+					+ (turning ? turnPenalty : 0.f)
+					+ centringCost(neighbourIndex);
 				if (tentativeCost >= costFromStart[neighbourIndex])
 					continue;
 
@@ -282,7 +338,7 @@ namespace FML
 
 		++searchCount;
 
-		const int desiredClearance = std::max(1, static_cast<int>(std::ceil(agentRadius / cellSize + 0.5f)));
+		const int desiredClearance = ClearanceForRadius(agentRadius);
 
 		for (int requiredClearance = desiredClearance; requiredClearance >= 1; --requiredClearance)
 		{

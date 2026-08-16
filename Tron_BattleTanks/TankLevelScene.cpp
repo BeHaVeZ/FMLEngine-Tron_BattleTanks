@@ -9,6 +9,7 @@
 #include "FileReader.h"
 #include "GameAdmin.h"
 #include "GameObject.h"
+#include "GodMode.h"
 #include "InputBindingHelper.h"
 #include "InputHandler.h"
 #include "NavGrid.h"
@@ -163,6 +164,9 @@ namespace FML
 		overlay.Stat("colliders " + std::to_string(CollisionManager::Instance().GetColliderCount()));
 		overlay.Stat("paths    " + std::to_string(grid.GetSearchCount()));
 		overlay.Stat("cells/f  " + std::to_string(grid.ConsumeSearchedCellsSinceLastFrame()));
+
+		if (GodMode::IsEnabled())
+			overlay.Stat("godmode  ON  (F6)");
 	}
 
 	void TankLevelScene::OnExit()

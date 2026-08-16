@@ -220,6 +220,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="InputBindingHelper.cpp" />
     <ClCompile Include="NameEntryScene.cpp" />
     <ClCompile Include="EnemyPerception.cpp" />
+    <ClCompile Include="GodMode.cpp" />
     <ClCompile Include="GridMovement.cpp" />
     <ClCompile Include="NormalMovingState.cpp" />
     <ClCompile Include="SoloHighscoreScene.cpp" />
@@ -266,6 +267,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="NormalMovingState.h" />
     <ClInclude Include="RecognizerCollisionBehaviorComponent.h" />
     <ClInclude Include="EnemyPerception.h" />
+    <ClInclude Include="GodMode.h" />
     <ClInclude Include="GridMovement.h" />
     <ClInclude Include="RecognizerState.h" />
     <ClInclude Include="RecognizerStateComponent.h" />

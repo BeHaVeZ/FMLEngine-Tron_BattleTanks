@@ -13,8 +13,11 @@ namespace FML
 
 		void HandleEvent(const Event& event) override
 		{
-			if (const auto* damageEvent = dynamic_cast<const DamageEvent*>(&event)) 
+			if (const auto* damageEvent = dynamic_cast<const DamageEvent*>(&event))
 			{
+				if (invulnerable)
+					return;
+
 				CurrentHealth() -= damageEvent->GetDamage();
 				if (CurrentHealth() <= 0 && gameObject)
 				{
@@ -34,10 +37,14 @@ namespace FML
 			return sharedHealth ? *sharedHealth : health;
 		}
 
+		void SetInvulnerable(bool value) { invulnerable = value; }
+		bool IsInvulnerable() const { return invulnerable; }
+
 	private:
 		int& CurrentHealth() { return sharedHealth ? *sharedHealth : health; }
 
 		int health{ 0 };
 		int* sharedHealth{ nullptr };
+		bool invulnerable{ false };
 	};
 }

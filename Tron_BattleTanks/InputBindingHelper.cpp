@@ -5,6 +5,8 @@
 #include "ShootCommand.h"
 #include "ChangeVolumeCommand.h"
 #include "DebugOverlay.h"
+#include "GodMode.h"
+#include "HealthComponent.h"
 #include <utility>
 
 namespace FML
@@ -20,6 +22,7 @@ namespace FML
 		InputHandler::Instance().BindGamepadCommand(0, XINPUT_GAMEPAD_Y, std::make_unique<MuteSoundCommand>(), InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindFunction(SDLK_F3, [] { DebugOverlay::Instance().ToggleMaster(); }, InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindFunction(SDLK_F4, [] { DebugOverlay::Instance().CycleFocus(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_F6, [] { GodMode::Toggle(); }, InputHandler::KeyAction::KeyUp);
 
 		constexpr std::pair<SDL_Keycode, DebugChannel> debugChannelKeys[]{
 			{ SDLK_1, DebugChannel::NavGrid },
@@ -44,6 +47,8 @@ namespace FML
 	{
 		if (!tank) return;
 
+		GodMode::Apply(tank);
+
 		auto turret = tank->FindChildByTag("Turret");
 
 		InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<MoveCommand>(tank, glm::vec2(0, -1), 100.f));
@@ -67,6 +72,9 @@ namespace FML
 	}
 	void InputBindingHelper::BindDuoModeControls(GameObject* tank1, GameObject* tank2)
 	{
+		GodMode::Apply(tank1);
+		GodMode::Apply(tank2);
+
 		if (tank1)
 		{
 			InputHandler::Instance().BindCommand(SDLK_w, std::make_unique<MoveCommand>(tank1, glm::vec2(0, -1), 100.f));

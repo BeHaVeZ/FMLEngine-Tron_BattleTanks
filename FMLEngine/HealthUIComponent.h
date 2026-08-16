@@ -1,16 +1,17 @@
 #pragma once
 #include "TextComponent.h"
 #include "Component.h"
+#include "HealthComponent.h"
 #include "Observer.h"
 #include "SceneManager.h"
 #include "Logger.h"
-#include "DamageEvent.h" 
+#include "DamageEvent.h"
 
 namespace FML {
     class HealthUIComponent : public Component, public Observer {
     public:
-        HealthUIComponent(int health, SDL_Color color = {0,0,255,255}) : currentHealth(health), text(nullptr), color(color) {
-            textComponent = std::make_unique<TextComponent>(std::to_string(currentHealth), "data/fonts/tron-arcade.ttf", 20, SDL_Color{ color }, SceneManager::Instance().GetRenderer());
+        HealthUIComponent(const HealthComponent* source, SDL_Color color = {0,0,255,255}) : healthSource(source), text(nullptr), color(color) {
+            textComponent = std::make_unique<TextComponent>(std::to_string(CurrentHealth()), "data/fonts/tron-arcade.ttf", 20, SDL_Color{ color }, SceneManager::Instance().GetRenderer());
         }
 
         void Initialize() override {
@@ -19,19 +20,20 @@ namespace FML {
         }
 
         void HandleEvent(const Event& event) override {
-            if (const DamageEvent* damageEvent = dynamic_cast<const DamageEvent*>(&event)) {
-                currentHealth -= damageEvent->GetDamage();
+            if (dynamic_cast<const DamageEvent*>(&event)) {
                 if (text) {
-                    text->SetText(std::to_string(currentHealth), SceneManager::Instance().GetRenderer());
-                    Logger::Log(LogLevel::Info, "HealthUIComponent Health updated to %d", currentHealth);
+                    text->SetText(std::to_string(CurrentHealth()), SceneManager::Instance().GetRenderer());
+                    Logger::Log(LogLevel::Info, "HealthUIComponent Health updated to %d", CurrentHealth());
                 }
             }
         }
 
     private:
+        int CurrentHealth() const { return healthSource ? healthSource->GetCurrentHealth() : 0; }
+
         std::unique_ptr<TextComponent> textComponent;
         TextComponent* text;
-        int currentHealth;
+        const HealthComponent* healthSource;
         SDL_Color color;
     };
 }
