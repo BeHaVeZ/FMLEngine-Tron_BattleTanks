@@ -1,4 +1,5 @@
 #pragma once
+#include "AgentAvoidance.h"
 #include "Component.h"
 #include "DebugOverlay.h"
 #include "GameObject.h"
@@ -40,6 +41,9 @@ namespace FML
 			auto& overlay = DebugOverlay::Instance();
 			const glm::vec2 position = gameObject->GetComponent<TransformComponent>()->GetWorldPosition();
 
+			const glm::vec2 heading = currentState->GetDebugHeading(position);
+			AgentAvoidance::Instance().DebugRenderLane(gameObject, heading);
+
 			overlay.SubmitFocusCandidate(gameObject, position, gameObject->GetTag());
 			if (!overlay.IsFocused(gameObject))
 				return;
@@ -55,6 +59,9 @@ namespace FML
 			overlay.FocusStat(gameObject, "pos   " + std::to_string(static_cast<int>(position.x)) + "," + std::to_string(static_cast<int>(position.y)));
 			overlay.FocusStat(gameObject, "path  " + std::to_string(currentState->GetDebugNextWaypoint()) + "/" + std::to_string(currentState->GetDebugPath().size()));
 			overlay.FocusStat(gameObject, "off   " + std::to_string(static_cast<int>(currentState->GetDebugOffPath(position))) + "px");
+
+			const AgentAvoidance::Verdict traffic = AgentAvoidance::Instance().Query(gameObject, heading);
+			overlay.FocusStat(gameObject, "lane  " + std::to_string(static_cast<int>(traffic.speedScale * 100.f)) + "%" + (traffic.giveWay ? " giveway" : ""));
 		}
 
 		void ChangeState(std::unique_ptr<RecognizerState> newState)

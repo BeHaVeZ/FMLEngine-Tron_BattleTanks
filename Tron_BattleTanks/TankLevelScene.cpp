@@ -1,4 +1,5 @@
 #include "TankLevelScene.h"
+#include "AgentAvoidance.h"
 #include "BoxCollider.h"
 #include "CollisionManager.h"
 #include "ConfigManager.h"
@@ -172,5 +173,7 @@ namespace FML
 	void TankLevelScene::OnExit()
 	{
 		GameAdmin::Instance().ResetPlayers();
+
+		AgentAvoidance::Instance().Clear();
 	}
 }

@@ -27,6 +27,8 @@ namespace FML
 
 		virtual float GetDebugOffPath(const glm::vec2&) const { return 0.f; }
 
+		virtual glm::vec2 GetDebugHeading(const glm::vec2&) const { return { 0.f, 0.f }; }
+
 		virtual std::string GetDebugLabel() const = 0;
 	};
 }

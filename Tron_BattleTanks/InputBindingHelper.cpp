@@ -28,7 +28,7 @@ namespace FML
 			{ SDLK_1, DebugChannel::NavGrid },
 			{ SDLK_2, DebugChannel::Clearance },
 			{ SDLK_3, DebugChannel::Paths },
-			{ SDLK_4, DebugChannel::Whiskers },
+			{ SDLK_4, DebugChannel::Avoidance },
 			{ SDLK_5, DebugChannel::Perception },
 			{ SDLK_6, DebugChannel::AgentState },
 			{ SDLK_7, DebugChannel::Colliders },

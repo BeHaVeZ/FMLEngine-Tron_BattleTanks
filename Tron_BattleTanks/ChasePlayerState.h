@@ -18,6 +18,7 @@ namespace FML
 		const std::vector<glm::vec2>& GetDebugPath() const override { return follower.GetPath(); }
 		size_t GetDebugNextWaypoint() const override { return follower.GetNextWaypoint(); }
 		float GetDebugOffPath(const glm::vec2& position) const override { return follower.DistanceFromPath(position); }
+		glm::vec2 GetDebugHeading(const glm::vec2& position) const override { return follower.GetHeading(position); }
 		std::string GetDebugLabel() const override;
 		glm::vec2 GetLastKnownPosition() const { return lastKnownPosition; }
 		bool HasVisualContact() const { return hasVisualContact; }

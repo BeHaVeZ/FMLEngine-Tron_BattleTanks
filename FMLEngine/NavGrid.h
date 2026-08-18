@@ -25,7 +25,8 @@ namespace FML
 		bool IsBuilt() const { return width > 0 && height > 0; }
 		int GetCellSize() const { return cellSize; }
 
-		bool FindPath(const glm::vec2& start, const glm::vec2& goal, float agentRadius, std::vector<glm::vec2>& outPath);
+		bool FindPath(const glm::vec2& start, const glm::vec2& goal, float agentRadius, std::vector<glm::vec2>& outPath,
+			const std::vector<glm::vec2>& occupied = {});
 
 		bool FindRandomGoal(const glm::vec2& from, float agentRadius, float minDistance, glm::vec2& outGoal);
 
@@ -53,6 +54,7 @@ namespace FML
 		glm::vec2 ToWorldCenter(Cell cell) const;
 
 		void BuildClearanceField();
+		void BuildOccupancyField(const std::vector<glm::vec2>& occupied, float radius);
 		int ClearanceForRadius(float agentRadius) const;
 		bool FindNearestUsableCell(Cell from, int requiredClearance, Cell& outCell) const;
 		bool Search(Cell start, Cell goal, int requiredClearance);
@@ -65,6 +67,8 @@ namespace FML
 
 		std::vector<uint8_t> blocked;
 		std::vector<uint8_t> clearance;
+
+		std::vector<float> occupancy;
 
 		struct OpenNode
 		{

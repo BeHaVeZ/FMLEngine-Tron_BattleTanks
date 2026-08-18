@@ -11,7 +11,7 @@ namespace FML
 	public:
 		explicit GridMovement(float speed);
 
-		bool FollowPath(GameObject* agent, PathFollower& follower, float deltaTime);
+		bool FollowPath(GameObject* agent, PathFollower& follower, float deltaTime, float speedScale = 1.f);
 
 		void SetSpeedMultiplier(float multiplier) { speedMultiplier = multiplier; }
 		float GetSpeed() const { return moveSpeed * speedMultiplier; }

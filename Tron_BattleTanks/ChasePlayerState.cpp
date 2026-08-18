@@ -1,4 +1,5 @@
 #include "ChasePlayerState.h"
+#include "AgentAvoidance.h"
 #include "NormalMovingState.h"
 #include "EnemyPerception.h"
 #include "RecognizerStateComponent.h"
@@ -28,6 +29,9 @@ namespace FML
 	{
 		const glm::vec2 position = recognizer->GetComponent<TransformComponent>()->GetWorldPosition();
 
+		auto& avoidance = AgentAvoidance::Instance();
+		avoidance.Register(recognizer, position, agentRadius, AgentAvoidance::Priority::Chasing);
+
 		GameObject* player = EnemyPerception::SeePlayerAhead(recognizer, sightRange);
 		hasVisualContact = player != nullptr;
 		if (player)
@@ -41,8 +45,10 @@ namespace FML
 		}
 
 		follower.SetGoal(lastKnownPosition);
-		follower.Update(position, deltaTime);
-		movement.FollowPath(recognizer, follower, deltaTime);
+		follower.Update(recognizer, position, deltaTime);
+
+		const AgentAvoidance::Verdict traffic = avoidance.Query(recognizer, follower.GetHeading(position));
+		movement.FollowPath(recognizer, follower, deltaTime, traffic.speedScale);
 
 		if (searchTimer <= 0.f)
 		{

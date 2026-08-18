@@ -20,7 +20,7 @@ namespace FML
 			{ DebugChannel::NavGrid,    "1", "Nav grid" },
 			{ DebugChannel::Clearance,  "2", "Clearance" },
 			{ DebugChannel::Paths,      "3", "Paths" },
-			{ DebugChannel::Whiskers,   "4", "Whiskers" },
+			{ DebugChannel::Avoidance,  "4", "Avoidance" },
 			{ DebugChannel::Perception, "5", "Perception" },
 			{ DebugChannel::AgentState, "6", "Agent state" },
 			{ DebugChannel::Colliders,  "7", "Colliders" },

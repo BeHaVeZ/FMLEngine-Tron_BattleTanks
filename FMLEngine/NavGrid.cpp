@@ -19,6 +19,8 @@ namespace FML
 		constexpr float turnPenalty = .8f;
 		constexpr int preferredClearance = 5;
 		constexpr float centringWeight = .2f;
+
+		constexpr float occupancyPenalty = 8.f;
 	}
 
 	void NavGrid::Build(const std::vector<SDL_Rect>& blockers, const SDL_Rect& bounds, int newCellSize)
@@ -59,6 +61,7 @@ namespace FML
 		costFromStart.resize(blocked.size());
 		cameFrom.resize(blocked.size());
 		closed.resize(blocked.size());
+		occupancy.assign(blocked.size(), 0.f);
 
 		Logger::Log(LogLevel::Info, "NavGrid built: %dx%d cells at %dpx from %zu blockers",
 			width, height, cellSize, blockers.size());
@@ -72,6 +75,7 @@ namespace FML
 		origin = { 0, 0 };
 		blocked.clear();
 		clearance.clear();
+		occupancy.clear();
 		costFromStart.clear();
 		cameFrom.clear();
 		closed.clear();
@@ -116,6 +120,35 @@ namespace FML
 				relax(x, y, x, y + 1);
 				relax(x, y, x + 1, y + 1);
 				relax(x, y, x - 1, y + 1);
+			}
+		}
+	}
+
+	void NavGrid::BuildOccupancyField(const std::vector<glm::vec2>& occupied, float radius)
+	{
+		std::fill(occupancy.begin(), occupancy.end(), 0.f);
+
+		const int reach = static_cast<int>(std::ceil(radius / cellSize));
+		const float radiusSquared = radius * radius;
+
+		for (const glm::vec2& centre : occupied)
+		{
+			const Cell cell = ToCell(centre);
+
+			for (int y = cell.y - reach; y <= cell.y + reach; ++y)
+			{
+				for (int x = cell.x - reach; x <= cell.x + reach; ++x)
+				{
+					const Cell candidate{ x, y };
+					if (!InBounds(candidate))
+						continue;
+
+					const glm::vec2 offset = ToWorldCenter(candidate) - centre;
+					if (offset.x * offset.x + offset.y * offset.y > radiusSquared)
+						continue;
+
+					occupancy[Index(candidate)] += occupancyPenalty;
+				}
 			}
 		}
 	}
@@ -285,7 +318,8 @@ namespace FML
 				const float tentativeCost = costFromStart[current]
 					+ 1.f
 					+ (turning ? turnPenalty : 0.f)
-					+ centringCost(neighbourIndex);
+					+ centringCost(neighbourIndex)
+					+ occupancy[neighbourIndex];
 				if (tentativeCost >= costFromStart[neighbourIndex])
 					continue;
 
@@ -329,7 +363,8 @@ namespace FML
 		}
 	}
 
-	bool NavGrid::FindPath(const glm::vec2& start, const glm::vec2& goal, float agentRadius, std::vector<glm::vec2>& outPath)
+	bool NavGrid::FindPath(const glm::vec2& start, const glm::vec2& goal, float agentRadius, std::vector<glm::vec2>& outPath,
+		const std::vector<glm::vec2>& occupied)
 	{
 		outPath.clear();
 
@@ -337,6 +372,8 @@ namespace FML
 			return false;
 
 		++searchCount;
+
+		BuildOccupancyField(occupied, agentRadius * 2.f);
 
 		const int desiredClearance = ClearanceForRadius(agentRadius);
 

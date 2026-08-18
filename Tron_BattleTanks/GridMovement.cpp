@@ -11,7 +11,7 @@ namespace FML
 	{
 	}
 
-	bool GridMovement::FollowPath(GameObject* agent, PathFollower& follower, float deltaTime)
+	bool GridMovement::FollowPath(GameObject* agent, PathFollower& follower, float deltaTime, float speedScale)
 	{
 		auto* transform = agent->GetComponent<TransformComponent>();
 		if (!transform)
@@ -21,7 +21,7 @@ namespace FML
 
 		glm::vec2 nextWorld{};
 		glm::vec2 heading{};
-		if (!follower.Advance(world, GetSpeed() * deltaTime, nextWorld, heading))
+		if (!follower.Advance(world, GetSpeed() * speedScale * deltaTime, nextWorld, heading))
 			return false;
 
 		transform->SetPosition(transform->GetLocalPosition() + (nextWorld - world));

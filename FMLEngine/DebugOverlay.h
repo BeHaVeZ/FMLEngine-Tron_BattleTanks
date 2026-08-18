@@ -15,7 +15,7 @@ namespace FML
 		NavGrid = 1 << 0,
 		Clearance = 1 << 1,
 		Paths = 1 << 2,
-		Whiskers = 1 << 3,
+		Avoidance = 1 << 3,
 		Perception = 1 << 4,
 		AgentState = 1 << 5,
 		Colliders = 1 << 6,

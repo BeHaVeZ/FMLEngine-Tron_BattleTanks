@@ -1,4 +1,5 @@
 #include "PathFollower.h"
+#include "AgentAvoidance.h"
 #include "NavGrid.h"
 #include <algorithm>
 
@@ -46,7 +47,7 @@ namespace FML
 		planFailed = false;
 	}
 
-	void PathFollower::Update(const glm::vec2& position, float deltaTime)
+	void PathFollower::Update(const void* owner, const glm::vec2& position, float deltaTime)
 	{
 		if (!hasGoal)
 			return;
@@ -59,7 +60,7 @@ namespace FML
 
 		if (needsPlan && repathTimer <= 0.f && !ReachedGoal(position))
 		{
-			Repath(position);
+			Repath(owner, position);
 		}
 	}
 
@@ -102,6 +103,17 @@ namespace FML
 		return moved;
 	}
 
+	glm::vec2 PathFollower::GetHeading(const glm::vec2& from) const
+	{
+		if (nextWaypoint >= path.size())
+			return { 0.f, 0.f };
+
+		const glm::vec2 toWaypoint = path[nextWaypoint] - from;
+		const float length = glm::length(toWaypoint);
+
+		return length > waypointEpsilon ? toWaypoint / length : glm::vec2{ 0.f, 0.f };
+	}
+
 	bool PathFollower::ReachedGoal(const glm::vec2& position) const
 	{
 		return hasGoal && glm::distance(position, goal) < arrivalRadius;
@@ -121,14 +133,16 @@ namespace FML
 		return DistanceFromPath(position) > offPathThreshold;
 	}
 
-	void PathFollower::Repath(const glm::vec2& from)
+	void PathFollower::Repath(const void* owner, const glm::vec2& from)
 	{
 		repathTimer = repathInterval;
 		plannedFor = goal;
 		pathOrigin = from;
 		nextWaypoint = 0;
 
-		NavGrid::Instance().FindPath(from, goal, agentRadius, path);
+		AgentAvoidance::Instance().CollectObstacles(owner, obstacles);
+
+		NavGrid::Instance().FindPath(from, goal, agentRadius, path, obstacles);
 		planFailed = path.empty();
 	}
 }

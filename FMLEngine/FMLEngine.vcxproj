@@ -223,6 +223,7 @@ if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="DebugOverlay.cpp" />
+    <ClCompile Include="AgentAvoidance.cpp" />
     <ClCompile Include="NavGrid.cpp" />
     <ClCompile Include="PathFollower.cpp" />
     <ClCompile Include="DebugDraw.cpp" />
@@ -250,6 +251,7 @@ if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     <ClInclude Include="Collider.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="DebugOverlay.h" />
+    <ClInclude Include="AgentAvoidance.h" />
     <ClInclude Include="NavGrid.h" />
     <ClInclude Include="PathFollower.h" />
     <ClInclude Include="DebugDraw.h" />
