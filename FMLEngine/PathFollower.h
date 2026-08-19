@@ -33,6 +33,7 @@ namespace FML
 
 	private:
 		void Repath(const void* owner, const glm::vec2& from);
+		void TrimArrival();
 		void Divert(const void* owner, const glm::vec2& from);
 		bool IsOffPath(const glm::vec2& position) const;
 

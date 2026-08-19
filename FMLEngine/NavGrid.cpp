@@ -197,10 +197,11 @@ namespace FML
 
 		for (int attempt = 0; attempt < maxRandomGoalAttempts; ++attempt)
 		{
-			const Cell candidate{ xDistribution(rng), yDistribution(rng) };
-			const int index = Index(candidate);
-			if (blocked[index] || clearance[index] < requiredClearance)
+			const Cell picked{ xDistribution(rng), yDistribution(rng) };
+			if (blocked[Index(picked)] || clearance[Index(picked)] < requiredClearance)
 				continue;
+
+			const Cell candidate = SpineOfCorridor(picked);
 
 			const glm::vec2 world = ToWorldCenter(candidate);
 			const glm::vec2 offset = world - from;
@@ -212,6 +213,33 @@ namespace FML
 		}
 
 		return false;
+	}
+
+	NavGrid::Cell NavGrid::SpineOfCorridor(Cell cell) const
+	{
+		static constexpr std::array<Cell, 4> offsets{
+			Cell{ 1, 0 }, Cell{ -1, 0 }, Cell{ 0, 1 }, Cell{ 0, -1 }
+		};
+
+		constexpr int maxSteps = 8;
+
+		for (int step = 0; step < maxSteps; ++step)
+		{
+			Cell best = cell;
+			for (const Cell& offset : offsets)
+			{
+				const Cell candidate{ cell.x + offset.x, cell.y + offset.y };
+				if (InBounds(candidate) && clearance[Index(candidate)] > clearance[Index(best)])
+					best = candidate;
+			}
+
+			if (Index(best) == Index(cell))
+				break;
+
+			cell = best;
+		}
+
+		return cell;
 	}
 
 	bool NavGrid::FindNearestUsableCell(Cell from, int requiredClearance, Cell& outCell) const

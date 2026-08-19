@@ -54,6 +54,7 @@ namespace FML
 		glm::vec2 ToWorldCenter(Cell cell) const;
 
 		void BuildClearanceField();
+		Cell SpineOfCorridor(Cell cell) const;
 		void BuildOccupancyField(const std::vector<glm::vec2>& occupied, float radius);
 		int ClearanceForRadius(float agentRadius) const;
 		bool FindNearestUsableCell(Cell from, int requiredClearance, Cell& outCell) const;

@@ -162,5 +162,15 @@ namespace FML
 
 		NavGrid::Instance().FindPath(from, goal, agentRadius, path, obstacles);
 		planFailed = path.empty();
+
+		TrimArrival();
+	}
+
+	void PathFollower::TrimArrival()
+	{
+		while (path.size() > 1 && glm::distance(path[path.size() - 2], goal) < arrivalRadius)
+		{
+			path.pop_back();
+		}
 	}
 }
