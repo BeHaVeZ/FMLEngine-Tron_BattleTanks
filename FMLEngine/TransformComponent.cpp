@@ -7,8 +7,9 @@ namespace FML
 
 	TransformComponent::TransformComponent(glm::vec2 position, float rotation, glm::vec2 pivot)
 		: localPosition(position), localRotation(rotation), pivot(pivot),
-		width(0), height(0), isDirty(true), isMoving(false),
-		localMatrix(1.0f), worldMatrix(1.0f)
+		width(0), height(0), isMoving(false), isDirty(true),
+		localMatrix(1.0f), worldMatrix(1.0f),
+		previousWorldPosition(0.0f), hasPreviousWorldPosition(false)
 	{
 	}
 
@@ -62,18 +63,16 @@ namespace FML
 
 	void TransformComponent::Update(float)
 	{
-		if (isDirty)
-		{
-			UpdateWorldPosition();
-			isDirty = false;
-		}
+		previousWorldPosition = GetWorldPosition();
+		hasPreviousWorldPosition = true;
+
 		if (isMoving)
 		{
 			MarkMoving(false);
 		}
 	}
 
-	void TransformComponent::UpdateWorldPosition()
+	void TransformComponent::UpdateWorldPosition() const
 	{
 		glm::mat3 P(1.0f); 
 		glm::mat3 R(1.0f); 
@@ -89,27 +88,43 @@ namespace FML
 
 		localMatrix = T * R * P;
 
-		if (gameObject->HasParent())
+		worldMatrix = localMatrix;
+
+		if (gameObject && gameObject->HasParent())
 		{
 			auto* parentTransform = gameObject->GetParent()->GetComponent<TransformComponent>();
 			if (parentTransform)
 			{
+				parentTransform->EnsureWorldMatrix();
 				worldMatrix = parentTransform->worldMatrix * localMatrix;
 			}
 		}
-		else
+
+		isDirty = false;
+	}
+
+	void TransformComponent::EnsureWorldMatrix() const
+	{
+		if (isDirty)
 		{
-			worldMatrix = localMatrix;
+			UpdateWorldPosition();
 		}
 	}
 
 	glm::vec2 TransformComponent::GetWorldPosition() const
 	{
+		EnsureWorldMatrix();
 		return glm::vec2(worldMatrix[2][0], worldMatrix[2][1]);
+	}
+
+	glm::vec2 TransformComponent::GetPreviousWorldPosition() const
+	{
+		return hasPreviousWorldPosition ? previousWorldPosition : GetWorldPosition();
 	}
 
 	float TransformComponent::GetWorldRotation() const
 	{
+		EnsureWorldMatrix();
 		float radians = atan2(worldMatrix[0][1], worldMatrix[0][0]);
 		return glm::degrees(radians);
 	}

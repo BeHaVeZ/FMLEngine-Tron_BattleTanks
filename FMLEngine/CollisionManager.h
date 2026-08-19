@@ -49,6 +49,11 @@ namespace FML
         
 	private:
         CollisionManager() {}
+
+        bool SeparateAlongEntryAxis(Collider* a, Collider* b,
+            const glm::vec2& centreA, const glm::vec2& centreB,
+            const glm::vec2& halfA, const glm::vec2& halfB, glm::vec2& outPush) const;
+
         std::vector<Collider*> colliders;
     };
 }

@@ -22,7 +22,7 @@ namespace FML
 
 
 		void Update(float deltaTime) override;
-		void UpdateWorldPosition();
+		void UpdateWorldPosition() const;
 		void MarkDirty();
 		void MarkMoving(bool moving);
 
@@ -32,19 +32,28 @@ namespace FML
 		glm::vec2 GetWorldPosition() const;
 		glm::vec2 GetLocalPosition() const { return localPosition; }
 		glm::vec2 GetPivot() const { return pivot; }
+
+		glm::vec2 GetPreviousWorldPosition() const;
+
 		float GetWorldRotation() const;
 		float GetLocalRotation() const { return localRotation; }
 		float GetWidth() const { return width; }
 		float GetHeight() const { return height; }
 
 	private:
+		void EnsureWorldMatrix() const;
+
 		glm::vec2 localPosition, pivot;
 		float localRotation;
 		float width, height;
-		bool isDirty, isMoving;
+		bool isMoving;
 
-		glm::mat3 localMatrix;
-		glm::mat3 worldMatrix;
+		mutable bool isDirty;
+		mutable glm::mat3 localMatrix;
+		mutable glm::mat3 worldMatrix;
+
+		glm::vec2 previousWorldPosition;
+		bool hasPreviousWorldPosition;
 	};
 
 }

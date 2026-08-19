@@ -6,6 +6,8 @@
 #include "Logger.h"
 #include "TransformComponent.h"
 #include "BoxCollider.h"
+#include "GameObject.h"
+#include <cmath>
 #include <limits>
 
 namespace FML
@@ -93,6 +95,42 @@ namespace FML
 		}
 	}
 
+	bool CollisionManager::SeparateAlongEntryAxis(Collider* a, Collider* b,
+		const glm::vec2& centreA, const glm::vec2& centreB,
+		const glm::vec2& halfA, const glm::vec2& halfB, glm::vec2& outPush) const
+	{
+		const bool movingA = !a->isStatic;
+		if (movingA == !b->isStatic)
+			return false;
+
+		Collider* mover = movingA ? a : b;
+		GameObject* owner = mover->GetOwner();
+		auto* transform = owner ? owner->GetComponent<TransformComponent>() : nullptr;
+		if (!transform)
+			return false;
+
+		const glm::vec2 moverCentre = movingA ? centreA : centreB;
+		const glm::vec2 blockerCentre = movingA ? centreB : centreA;
+		const glm::vec2 combined = halfA + halfB;
+
+		const glm::vec2 entered = moverCentre - blockerCentre
+			+ (transform->GetPreviousWorldPosition() - transform->GetWorldPosition());
+
+		const bool clearedX = std::abs(entered.x) >= combined.x;
+		const bool clearedY = std::abs(entered.y) >= combined.y;
+		if (clearedX == clearedY)
+			return false;
+
+		const int axis = clearedX ? 0 : 1;
+		const float side = entered[axis] < 0.f ? -1.f : 1.f;
+
+		glm::vec2 push{ 0.f, 0.f };
+		push[axis] = blockerCentre[axis] + side * combined[axis] - moverCentre[axis];
+
+		outPush = movingA ? push : -push;
+		return true;
+	}
+
 	void CollisionManager::ResolveCollision(Collider* a, Collider* b)
 	{
 		if ((a->isStatic && b->isStatic) || a->isTrigger || b->isTrigger)
@@ -118,13 +156,16 @@ namespace FML
 
 		glm::vec2 delta = cA - cB;
 		glm::vec2 overlap = hA + hB - glm::abs(delta);
-		if (overlap.x <= 0.f || overlap.y <= 0.f) return; 
+		if (overlap.x <= 0.f || overlap.y <= 0.f) return;
 
 		glm::vec2 push{};
-		if (overlap.x < overlap.y)
-			push.x = (delta.x < 0.f ? -overlap.x : overlap.x);
-		else
-			push.y = (delta.y < 0.f ? -overlap.y : overlap.y);
+		if (!SeparateAlongEntryAxis(a, b, cA, cB, hA, hB, push))
+		{
+			if (overlap.x < overlap.y)
+				push.x = (delta.x < 0.f ? -overlap.x : overlap.x);
+			else
+				push.y = (delta.y < 0.f ? -overlap.y : overlap.y);
+		}
 
 		if (!a->isStatic)
 			tA->SetPosition(tA->GetLocalPosition() + push);

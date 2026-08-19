@@ -46,11 +46,12 @@ namespace FML
 
 	void Scene::UpdateGameObjects(float deltaTime)
 	{
-		for (auto& gameObject : gameObjects)
+		const size_t count = gameObjects.size();
+		for (size_t i = 0; i < count; ++i)
 		{
-			if (!gameObject->IsMarkedForDestruction())
+			if (!gameObjects[i]->IsMarkedForDestruction())
 			{
-				gameObject->Update(deltaTime);
+				gameObjects[i]->Update(deltaTime);
 			}
 		}
 	}
