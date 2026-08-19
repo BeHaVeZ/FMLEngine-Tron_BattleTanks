@@ -50,6 +50,12 @@ namespace FML
 		const AgentAvoidance::Verdict traffic = avoidance.Query(recognizer, follower.GetHeading(position));
 		movement.FollowPath(recognizer, follower, deltaTime, traffic.speedScale);
 
+		if (follower.LastPlanFailed())
+		{
+			recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(std::make_unique<NormalMovingState>());
+			return;
+		}
+
 		if (searchTimer <= 0.f)
 		{
 			recognizer->GetComponent<RecognizerStateComponent>()->ChangeState(std::make_unique<NormalMovingState>());

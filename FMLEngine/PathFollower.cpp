@@ -60,7 +60,9 @@ namespace FML
 		const bool pathExhausted = nextWaypoint >= path.size();
 		const bool needsPlan = pathExhausted || goalMoved || IsOffPath(position);
 
-		if (needsPlan && repathTimer <= 0.f && !ReachedGoal(position))
+		const bool idle = pathExhausted && !planFailed;
+
+		if (needsPlan && (idle || repathTimer <= 0.f) && !ReachedGoal(position))
 		{
 			Repath(owner, position);
 			return;

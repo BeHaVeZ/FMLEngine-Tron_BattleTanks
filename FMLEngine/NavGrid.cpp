@@ -6,7 +6,6 @@
 #include <array>
 #include <cmath>
 #include <limits>
-#include <string>
 #include <utility>
 
 namespace FML
@@ -406,6 +405,12 @@ namespace FML
 
 		const int desiredClearance = ClearanceForRadius(agentRadius);
 
+		if (InBounds(ToCell(start)) && Index(ToCell(start)) == Index(ToCell(goal)))
+		{
+			outPath.push_back(goal);
+			return true;
+		}
+
 		for (int requiredClearance = desiredClearance; requiredClearance >= 1; --requiredClearance)
 		{
 			Cell startCell{};
@@ -416,7 +421,7 @@ namespace FML
 				continue;
 
 			if (Index(startCell) == Index(goalCell))
-				return false;
+				continue;
 
 			if (Search(startCell, goalCell, requiredClearance))
 			{

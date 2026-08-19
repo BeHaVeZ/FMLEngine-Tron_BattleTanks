@@ -40,7 +40,7 @@ namespace FML
 			avoidance.Register(gameObject, position, agentRadius,
 				chasing ? AgentAvoidance::Priority::Chasing : AgentAvoidance::Priority::Patrolling);
 
-			if (chasing)
+			if (chasing && !follower.LastPlanFailed())
 			{
 				follower.SetGoal(lastKnownPlayerPosition);
 			}
