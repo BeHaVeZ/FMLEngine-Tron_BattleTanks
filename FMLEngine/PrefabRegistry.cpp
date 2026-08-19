@@ -5,6 +5,7 @@
 #include "HealthUIComponent.h"
 #include "Collider.h"
 #include "BoxCollider.h"
+#include "TurretAimComponent.h"
 #include "../Tron_BattleTanks/ShootComponent.h"
 #include "../Tron_BattleTanks/BulletMoveComponent.h"
 #include "../Tron_BattleTanks/BulletCollisionBehaviorComponent.h"
@@ -82,6 +83,8 @@ namespace FML
 
 		auto shootComponent = std::make_unique<ShootComponent>(shootAllowanceRange, .5f);
 		turret->AddComponent(std::move(shootComponent));
+
+		turret->AddComponent(std::make_unique<TurretAimComponent>());
 
 		tank->AddChild(std::move(turret));
 
@@ -234,6 +237,8 @@ namespace FML
 		auto shootComponent = std::make_unique<ShootComponent>(shootAllowanceRange, .5f);
 		turret->AddComponent(std::move(shootComponent));
 
+		turret->AddComponent(std::make_unique<TurretAimComponent>());
+
 		tank->AddChild(std::move(turret));
 
 		return tank;
@@ -278,6 +283,8 @@ namespace FML
 
 		auto shootComponent = std::make_unique<ShootComponent>(shootAllowanceRange, .5f);
 		turret->AddComponent(std::move(shootComponent));
+
+		turret->AddComponent(std::make_unique<TurretAimComponent>());
 
 		tank->AddChild(std::move(turret));
 

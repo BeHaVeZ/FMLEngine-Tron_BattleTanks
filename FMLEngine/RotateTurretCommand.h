@@ -2,6 +2,8 @@
 #include "Command.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
+#include "TurretAimComponent.h"
+#include "Timer.h"
 
 namespace FML
 {
@@ -14,16 +16,20 @@ namespace FML
 
 		void Execute() override
 		{
-			if (gameObject) {
-				auto transform = gameObject->GetComponent<TransformComponent>();
-				if (transform) {
-					float currentRotation = transform->GetLocalRotation();
+			if (!gameObject) return;
 
-					float deltaTime = Timer::Instance().GetDeltaTime();
-					currentRotation += rotationSpeed * deltaTime;
+			const float delta = rotationSpeed * Timer::Instance().GetDeltaTime();
 
-					transform->SetRotation(currentRotation);
-				}
+			if (auto* aim = gameObject->GetComponent<TurretAimComponent>())
+			{
+				aim->Rotate(delta);
+				return;
+			}
+
+			auto transform = gameObject->GetComponent<TransformComponent>();
+			if (transform)
+			{
+				transform->SetRotation(transform->GetLocalRotation() + delta);
 			}
 		}
 

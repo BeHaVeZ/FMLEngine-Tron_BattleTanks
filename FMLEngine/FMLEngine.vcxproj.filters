@@ -141,6 +141,9 @@
     <ClInclude Include="TransformComponent.h">
       <Filter>Engine\Components</Filter>
     </ClInclude>
+    <ClInclude Include="TurretAimComponent.h">
+      <Filter>Engine\Components</Filter>
+    </ClInclude>
     <ClInclude Include="TextureComponent.h">
       <Filter>Engine\Components</Filter>
     </ClInclude>
