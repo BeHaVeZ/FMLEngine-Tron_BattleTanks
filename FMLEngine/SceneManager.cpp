@@ -93,13 +93,8 @@ namespace FML
 	{
 		if (!currentScene) return;
 
-		InputHandler::Instance().ClearBindings();
-		ServiceLocator::GetSoundSystem().ClearSounds();
-
-		currentScene->Cleanup();
-		currentScene->Initialize(localRenderer);
-
-		std::cout << "Restarted scene: " << currentScene->GetName() << std::endl;
+		std::cout << "Restarting scene: " << currentScene->GetName() << std::endl;
+		QueueSceneChange(currentScene->GetName());
 	}
 
 	void SceneManager::GoToNextScene()

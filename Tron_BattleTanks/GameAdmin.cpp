@@ -1,6 +1,7 @@
 #include "GameAdmin.h"
 #include "GameData.h"
 #include "SceneManager.h"
+#include "GameTags.h"
 
 namespace FML
 {
@@ -24,6 +25,19 @@ namespace FML
 		CheckForGameOver();
 	}
 
+	int GameAdmin::WinnerNumber() const
+	{
+		if (players.empty() || !players.front())
+		{
+			return 0;
+		}
+
+		const std::string_view survivor = players.front()->GetTag();
+		if (survivor == Tags::Player1) return 1;
+		if (survivor == Tags::Player2) return 2;
+		return 0;
+	}
+
 	void GameAdmin::CheckForGameOver()
 	{
 		switch (GameData::CurrentGameMode)
@@ -42,8 +56,11 @@ namespace FML
 			}
 			break;
 		case GameData::GameMode::Versus:
-			//WIP
-			SceneManager::Instance().QueueSceneChangeWithDelay("MainMenu",2.5f);
+			if (players.size() <= 1)
+			{
+				GameData::VersusWinner = WinnerNumber();
+				SceneManager::Instance().QueueSceneChangeWithDelay("VersusResult", 2.5f);
+			}
 			break;
 		default:
 			break;

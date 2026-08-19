@@ -27,8 +27,11 @@ namespace FML
 		void AddComponent(std::unique_ptr<Component> component);
 
 		void AddChild(std::unique_ptr<GameObject> child);
+		std::unique_ptr<GameObject> DetachChild(GameObject* child);
 		bool RemoveChild(GameObject* child);
 		GameObject* FindChildByTag(const std::string& tag) const;
+
+		void CleanupDestroyedChildren();
 
 
 		void Initialize();

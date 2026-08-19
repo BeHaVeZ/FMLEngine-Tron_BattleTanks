@@ -65,6 +65,9 @@
     <ClCompile Include="SoloHighscoreScene.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
     </ClCompile>
+    <ClCompile Include="VersusResultScene.cpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="HighscoreManager.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
@@ -174,6 +177,9 @@
     </ClInclude>
     <ClInclude Include="SoloHighscoreScene.h">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="VersusResultScene.h">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="HighscoreManager.h">
       <Filter>Header Files\GameManagers</Filter>

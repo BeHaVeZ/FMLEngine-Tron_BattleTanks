@@ -1,4 +1,4 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include "TextureManager.h"
 #include "SceneManager.h"
 #include "TestingScene.h"
@@ -21,6 +21,7 @@
 #include "../Tron_BattleTanks/SoloLevel3.h"
 #include "../Tron_BattleTanks/SoloHighscoreScene.h"
 #include "../Tron_BattleTanks/NameEntryScene.h"
+#include "../Tron_BattleTanks/VersusResultScene.h"
 #include "CollisionManager.h"
 #include "../Tron_BattleTanks/Level404.h"
 #include <filesystem>
@@ -126,6 +127,7 @@ namespace FML
 		SceneManager::Instance().AddScene(std::make_unique<NameEntryScene>());
 		SceneManager::Instance().AddScene(std::make_unique<SoloHighscoreScene>());
 		SceneManager::Instance().AddScene(std::make_unique<TestingScene>());
+		SceneManager::Instance().AddScene(std::make_unique<VersusResultScene>());
 
 		SceneManager::Instance().QueueSceneChange("MainMenu");
 

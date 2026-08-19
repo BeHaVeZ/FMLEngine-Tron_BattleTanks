@@ -81,14 +81,16 @@ namespace FML
 
 	void Scene::CleanupDestroyedGameObjects()
 	{
-		for (auto& gameObject : gameObjects)
+		const size_t count = gameObjects.size();
+		for (size_t i = 0; i < count; ++i)
 		{
-			if (gameObject->IsMarkedForDestruction())
+			if (gameObjects[i]->IsMarkedForDestruction())
 			{
-				gameObject->GetSubject().Notify(GameObjectDestroyedEvent(gameObject.get()));
-				auto collider = gameObject->GetComponent<Collider>();
-				if (collider && gameObject)
-					CollisionManager::Instance().UnregisterCollider(collider);
+				gameObjects[i]->GetSubject().Notify(GameObjectDestroyedEvent(gameObjects[i].get()));
+			}
+			else
+			{
+				gameObjects[i]->CleanupDestroyedChildren();
 			}
 		}
 

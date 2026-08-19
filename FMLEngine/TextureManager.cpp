@@ -5,7 +5,11 @@
 namespace FML
 {
 
-	bool TextureManager::Load(std::string id, std::string filename, SDL_Renderer* renderer) {
+	bool TextureManager::Load(const std::string& id, const std::string& filename, SDL_Renderer* renderer) {
+		if (textureMap.find(id) != textureMap.end()) {
+			return true;
+		}
+
 		SDL_Surface* surface = IMG_Load(filename.c_str());
 		if (!surface) {
 			std::cerr << "Failed to load surface from " << filename << " SDL_Error: " << IMG_GetError() << std::endl;
@@ -24,8 +28,9 @@ namespace FML
 		return true;
 	}
 
-	SDL_Texture* TextureManager::GetTexture(std::string id) {
-		return textureMap[id];
+	SDL_Texture* TextureManager::GetTexture(const std::string& id) {
+		auto it = textureMap.find(id);
+		return it != textureMap.end() ? it->second : nullptr;
 	}
 
 	void TextureManager::Clear() {

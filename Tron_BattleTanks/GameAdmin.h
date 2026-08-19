@@ -21,6 +21,8 @@ namespace FML
         void CheckForGameOver();
 
     private:
+        int WinnerNumber() const;
+
         std::vector<GameObject*> players;
     };
 }

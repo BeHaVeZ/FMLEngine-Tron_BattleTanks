@@ -2,6 +2,7 @@
 #include "TransformComponent.h"
 #include "Collider.h"
 #include "CollisionManager.h"
+#include "GameObjectDestroyedEvent.h"
 
 namespace FML
 {
@@ -25,9 +26,12 @@ namespace FML
 			return;
 		}
 
-		if (child->parent)
+		for (const GameObject* ancestor = parent; ancestor; ancestor = ancestor->parent)
 		{
-			child->parent->RemoveChild(child.get());
+			if (ancestor == child.get())
+			{
+				return;
+			}
 		}
 
 		child->parent = this;
@@ -41,17 +45,53 @@ namespace FML
 		children.push_back(std::move(child));
 	}
 
-
-	bool GameObject::RemoveChild(GameObject* child)
+	std::unique_ptr<GameObject> GameObject::DetachChild(GameObject* child)
 	{
 		auto it = std::find_if(children.begin(), children.end(),
 			[child](const std::unique_ptr<GameObject>& c) { return c.get() == child; });
-		if (it != children.end()) {
-			(*it)->parent = nullptr;
-			children.erase(it);
-			return true;
+		if (it == children.end())
+		{
+			return nullptr;
 		}
-		return false;
+
+		std::unique_ptr<GameObject> detached = std::move(*it);
+		children.erase(it);
+		detached->parent = nullptr;
+
+		if (auto* transform = detached->GetComponent<TransformComponent>())
+		{
+			transform->MarkDirty();
+		}
+
+		return detached;
+	}
+
+	bool GameObject::RemoveChild(GameObject* child)
+	{
+		return DetachChild(child) != nullptr;
+	}
+
+	void GameObject::CleanupDestroyedChildren()
+	{
+		for (auto& child : children)
+		{
+			child->CleanupDestroyedChildren();
+		}
+
+		for (auto& child : children)
+		{
+			if (child->IsMarkedForDestruction())
+			{
+				child->GetSubject().Notify(GameObjectDestroyedEvent(child.get()));
+			}
+		}
+
+		children.erase(
+			std::remove_if(children.begin(), children.end(),
+				[](const std::unique_ptr<GameObject>& child) {
+					return child->IsMarkedForDestruction();
+				}),
+			children.end());
 	}
 
 	GameObject* GameObject::FindChildByTag(const std::string& searchTag) const

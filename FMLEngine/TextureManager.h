@@ -9,9 +9,9 @@ namespace FML
 
 	class TextureManager : public Singleton<TextureManager> {
 	public:
-		bool Load(std::string id, std::string filename, SDL_Renderer* renderer);
+		bool Load(const std::string& id, const std::string& filename, SDL_Renderer* renderer);
 
-		SDL_Texture* GetTexture(std::string id);
+		SDL_Texture* GetTexture(const std::string& id);
 
 		void Clear();
 
