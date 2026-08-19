@@ -20,6 +20,19 @@ namespace FML
 
 			return Tags::IsPlayerTag(hit->hitObject->GetTag()) ? hit->hitObject : nullptr;
 		}
+
+		GameObject* AllyFromHit(const std::optional<CollisionManager::RaycastHit>& hit)
+		{
+			if (!hit || !hit->hitObject)
+				return nullptr;
+
+			return Tags::IsEnemyTag(hit->hitObject->GetTag()) ? hit->hitObject : nullptr;
+		}
+
+		constexpr float lineOfFireMargin = 8.f;
+
+		constexpr glm::vec4 lineOfFireBlockedColor{ 1.f, .55f, .1f, 1.f };
+		constexpr glm::vec4 lineOfFireClearColor{ .3f, 1.f, .45f, .5f };
 	}
 
 	GameObject* EnemyPerception::SeePlayerAhead(GameObject* agent, float range)
@@ -67,5 +80,46 @@ namespace FML
 		}
 
 		return seen;
+	}
+
+	bool EnemyPerception::AllyInLineOfFire(GameObject* shooter, const glm::vec2& origin, const glm::vec2& forward, float range)
+	{
+		if (!shooter)
+			return false;
+
+		const glm::vec2 right{ -forward.y, forward.x };
+		const glm::vec2 muzzleLines[]
+		{
+			origin,
+			origin + right * lineOfFireMargin,
+			origin - right * lineOfFireMargin,
+		};
+
+		auto& collisions = CollisionManager::Instance();
+		const bool drawDebug = DebugEnabled(DebugChannel::Perception) && DebugOverlay::Instance().IsFocused(shooter);
+
+		bool blocked = false;
+		for (const glm::vec2& start : muzzleLines)
+		{
+			const auto hit = collisions.RaycastFirstHit(start, forward, range, shooter, nullptr);
+
+			const bool ally = AllyFromHit(hit) != nullptr;
+			blocked = blocked || ally;
+
+			if (!drawDebug)
+			{
+				if (blocked)
+					break;
+
+				continue;
+			}
+
+			const glm::vec2 end = hit ? hit->hitPoint : start + forward * range;
+			DebugDraw::DrawLine(start, end, ally ? lineOfFireBlockedColor : lineOfFireClearColor);
+			if (ally)
+				DebugDraw::DrawCircle(hit->hitPoint, 4.f, lineOfFireBlockedColor);
+		}
+
+		return blocked;
 	}
 }

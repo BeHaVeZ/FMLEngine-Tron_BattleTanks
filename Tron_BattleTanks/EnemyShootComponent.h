@@ -39,11 +39,15 @@ namespace FML
 
 			const glm::vec2 forward = texture.GetForwardVector();
 			const glm::vec2 origin = transform->GetWorldPosition();
+			const glm::vec2 muzzle = origin + forward * bulletSpawnOffset;
+
+			if (EnemyPerception::AllyInLineOfFire(gameObject, muzzle, forward, shootingRange))
+				return;
 
 			SoundHelper::PlayRandomSound({ SoundId::Explosion1, SoundId::Explosion2, SoundId::Explosion3, SoundId::Explosion4 }, .3f);
 
 			auto& scene = *SceneManager::Instance().GetCurrentScene();
-			scene.AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(origin + forward * bulletSpawnOffset, forward, bulletSpeed));
+			scene.AddGameObject(PrefabRegistry::Instance().CreateEnemyBulletPrefab(muzzle, forward, bulletSpeed));
 
 			auto explosion = PrefabRegistry::Instance().CreateTurretShootExplosionPrefab(origin + forward * muzzleFlashOffset);
 			explosion->GetComponent<TransformComponent>()->SetRotation(glm::degrees(-std::atan2(forward.y, forward.x)) + muzzleFlashRotationOffset);
