@@ -6,6 +6,7 @@
 #include <array>
 #include <cmath>
 #include <limits>
+#include <string>
 #include <utility>
 
 namespace FML
@@ -20,7 +21,7 @@ namespace FML
 		constexpr int preferredClearance = 5;
 		constexpr float centringWeight = .2f;
 
-		constexpr float occupancyPenalty = 8.f;
+		constexpr float occupancyPenalty = 40.f;
 	}
 
 	void NavGrid::Build(const std::vector<SDL_Rect>& blockers, const SDL_Rect& bounds, int newCellSize)

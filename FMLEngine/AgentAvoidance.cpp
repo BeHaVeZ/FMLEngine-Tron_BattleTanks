@@ -62,10 +62,15 @@ namespace FML
 			const float combinedRadius = self->radius + other.radius;
 
 			const float gap = along - combinedRadius;
-			if (gap >= lookaheadDistance)
+			if (gap >= divertDistance)
 				continue;
 
 			if (std::abs(glm::dot(delta, side)) >= combinedRadius)
+				continue;
+
+			verdict.blocked = true;
+
+			if (gap >= lookaheadDistance)
 				continue;
 
 			const float scale = std::clamp((gap - stopDistance) / (lookaheadDistance - stopDistance), 0.f, 1.f);

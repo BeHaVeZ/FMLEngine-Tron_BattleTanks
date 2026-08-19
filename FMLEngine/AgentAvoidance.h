@@ -20,6 +20,8 @@ namespace FML
 
 		struct Verdict
 		{
+			bool blocked{ false };
+
 			float speedScale{ 1.f };
 
 			bool giveWay{ false };
@@ -53,6 +55,8 @@ namespace FML
 		static bool HasRightOfWay(const Entry& other, const Entry& self);
 
 		std::vector<Entry> agents;
+
+		static constexpr float divertDistance = 96.f;
 
 		static constexpr float lookaheadDistance = 44.f;
 		static constexpr float stopDistance = 6.f;

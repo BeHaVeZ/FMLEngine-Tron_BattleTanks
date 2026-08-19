@@ -43,6 +43,7 @@ namespace FML
 		path.clear();
 		nextWaypoint = 0;
 		repathTimer = 0.f;
+		divertTimer = 0.f;
 		hasGoal = false;
 		planFailed = false;
 	}
@@ -53,6 +54,7 @@ namespace FML
 			return;
 
 		repathTimer -= deltaTime;
+		divertTimer -= deltaTime;
 
 		const bool goalMoved = glm::distance(goal, plannedFor) > goalMovedThreshold;
 		const bool pathExhausted = nextWaypoint >= path.size();
@@ -61,6 +63,12 @@ namespace FML
 		if (needsPlan && repathTimer <= 0.f && !ReachedGoal(position))
 		{
 			Repath(owner, position);
+			return;
+		}
+
+		if (AgentAvoidance::Instance().Query(owner, GetHeading(position)).blocked)
+		{
+			Divert(owner, position);
 		}
 	}
 
@@ -131,6 +139,16 @@ namespace FML
 	bool PathFollower::IsOffPath(const glm::vec2& position) const
 	{
 		return DistanceFromPath(position) > offPathThreshold;
+	}
+
+	void PathFollower::Divert(const void* owner, const glm::vec2& from)
+	{
+		if (divertTimer > 0.f || ReachedGoal(from))
+			return;
+
+		divertTimer = divertInterval;
+
+		Repath(owner, from);
 	}
 
 	void PathFollower::Repath(const void* owner, const glm::vec2& from)

@@ -33,6 +33,7 @@ namespace FML
 
 	private:
 		void Repath(const void* owner, const glm::vec2& from);
+		void Divert(const void* owner, const glm::vec2& from);
 		bool IsOffPath(const glm::vec2& position) const;
 
 		std::vector<glm::vec2> path;
@@ -43,10 +44,13 @@ namespace FML
 		size_t nextWaypoint{ 0 };
 		float agentRadius;
 		float repathTimer{ 0.f };
+		float divertTimer{ 0.f };
 		bool hasGoal{ false };
 		bool planFailed{ false };
 
 		static constexpr float repathInterval = .5f;
+
+		static constexpr float divertInterval = .35f;
 		static constexpr float goalMovedThreshold = 48.f;
 		static constexpr float arrivalRadius = 20.f;
 
