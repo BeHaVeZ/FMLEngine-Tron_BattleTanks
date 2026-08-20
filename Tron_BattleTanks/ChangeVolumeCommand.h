@@ -1,7 +1,6 @@
 #pragma once
 #include "Command.h"
-#include "ServiceLocator.h"
-#include <iostream>
+#include "ConfigManager.h"
 
 namespace FML
 {
@@ -12,10 +11,9 @@ namespace FML
 
 		void Execute() override
 		{
-			if (toIncrease)
-				ServiceLocator::GetSoundSystem().SetVolume(ServiceLocator::GetSoundSystem().GetCurrentVolume() + .1f);
-			else
-				ServiceLocator::GetSoundSystem().SetVolume(ServiceLocator::GetSoundSystem().GetCurrentVolume() - .1f);
+			auto& config = ConfigManager::Instance();
+			config.SetMasterVolume(config.GetMasterVolume() + (toIncrease ? .1f : -.1f));
+			config.ApplyVolume();
 		}
 
 	private:

@@ -222,6 +222,7 @@ if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     <ClCompile Include="BoxCollider.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
+    <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="DebugOverlay.cpp" />
     <ClCompile Include="AgentAvoidance.cpp" />
     <ClCompile Include="ScreenShake.cpp" />

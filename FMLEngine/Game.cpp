@@ -75,27 +75,25 @@ namespace FML
 			return false;
 		}
 
+		ConfigManager::Instance().Load();
+
 		if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
 		{
 			Logger::Log(LogLevel::Error, "SDL_image could not initialize! SDL_image Error: %s", IMG_GetError());
 			return false;
 		}
 
-		window = SDL_CreateWindow("Tron Battle Tanks - Alexander Terentyev", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, ConfigManager::Instance().GetWindowWidth(), ConfigManager::Instance().GetWindowHeight(), SDL_WINDOW_SHOWN);
+		Uint32 windowFlags = SDL_WINDOW_SHOWN;
+		if (ConfigManager::Instance().IsFullscreen())
+		{
+			windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+		}
+
+		window = SDL_CreateWindow("Tron Battle Tanks - Alexander Terentyev", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ConfigManager::Instance().GetDisplayWidth(), ConfigManager::Instance().GetDisplayHeight(), windowFlags);
 		if (!window)
 		{
 			Logger::Log(LogLevel::Error, "Window could not be created! SDL_Error: %s", SDL_GetError());
 			return false;
-		}
-
-		SDL_DisplayMode current;
-		if (SDL_GetWindowDisplayMode(window, &current) != 0)
-		{
-			Logger::Log(LogLevel::Error, "Could not get display mode for video display: %s", SDL_GetError());
-			refreshRate = 60;
-		}
-		else {
-			refreshRate = current.refresh_rate > 0 ? current.refresh_rate : 60;
 		}
 
 		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -104,6 +102,9 @@ namespace FML
 			Logger::Log(LogLevel::Error, "Renderer could not be created! SDL_Error: %s", SDL_GetError());
 			return false;
 		}
+
+		ConfigManager::Instance().AttachWindow(window, renderer);
+		ConfigManager::Instance().ApplyScaling();
 
 		if (TTF_Init() == -1)
 		{
@@ -117,6 +118,7 @@ namespace FML
 		ServiceLocator::RegisterSoundSystem(std::make_unique<SDL_SoundSystem>());
 
 		ServiceLocator::GetSoundSystem().StartUp();
+		ConfigManager::Instance().ApplyVolume();
 
 		SceneManager::Instance().AddScene(std::make_unique<MainMenuScene>());
 		SceneManager::Instance().AddScene(std::make_unique<SoloScene>());
@@ -138,8 +140,6 @@ namespace FML
 
 	void Game::Run()
 	{
-		const int frameDelay = 1000 / refreshRate;
-
 		Timer::Instance().Start();
 		while (GameStateManager::Instance().IsRunning()) {
 			Timer::Instance().Update();
@@ -150,7 +150,11 @@ namespace FML
 			Update(deltaTime);
 			Render();
 
-			int frameTime = SDL_GetTicks() - Timer::Instance().GetLastTick();
+			const int fpsLimit = ConfigManager::Instance().GetFpsLimit();
+			if (fpsLimit <= 0) continue;
+
+			const int frameDelay = 1000 / fpsLimit;
+			const int frameTime = SDL_GetTicks() - Timer::Instance().GetLastTick();
 
 			if (frameDelay > frameTime) 
 			{
@@ -196,6 +200,8 @@ namespace FML
 
 	void Game::Cleanup()
 	{
+		ConfigManager::Instance().Save();
+
 		TextureManager::Instance().Clear();
 		DebugOverlay::Instance().Shutdown();
 

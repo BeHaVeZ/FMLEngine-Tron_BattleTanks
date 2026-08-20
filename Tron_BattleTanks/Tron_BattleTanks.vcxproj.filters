@@ -115,9 +115,6 @@
     <ClInclude Include="..\FMLEngine\MuteSoundCommand.h">
       <Filter>Header Files\GameCommands</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\SelectMenuOptionCommand.h">
-      <Filter>Header Files\GameCommands\MainMenuCommands</Filter>
-    </ClInclude>
     <ClInclude Include="..\FMLEngine\PrefabRegistry.h">
       <Filter>Header Files\GameManagers</Filter>
     </ClInclude>

@@ -112,6 +112,9 @@
     <ClCompile Include="CollisionManager.cpp">
       <Filter>Engine\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="ConfigManager.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
     <ClCompile Include="SpriteAnimatorComponent.cpp">
       <Filter>Engine\Components</Filter>
     </ClCompile>

@@ -10,7 +10,6 @@
 #include "ConfigManager.h"
 #include "ServiceLocator.h"
 #include "RotateCommand.h"
-#include "SelectMenuOptionCommand.h"
 #include "MuteSoundCommand.h"
 #include "../Tron_BattleTanks/InputBindingHelper.h"
 #include "HighscoreManager.h"
@@ -104,7 +103,6 @@ namespace FML
 
 	void SoloHighscoreScene::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().SetVolume(0.f);
 		ServiceLocator::GetSoundSystem().AddSound("Menu_Music.mp3", SoundId::Music, true);
 		ServiceLocator::GetSoundSystem().PlaySound(SoundId::Music, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
