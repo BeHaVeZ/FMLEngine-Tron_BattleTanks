@@ -16,6 +16,7 @@
 #include "Logger.h"
 #include "DebugDraw.h"
 #include "DebugOverlay.h"
+#include "ScreenShake.h"
 #include "../Tron_BattleTanks/SoloScene.h" //This is caused because scenes are being loaded from game but it should not be (GameEngine does not know what scenes any game will have -> abstract
 #include "../Tron_BattleTanks/SoloLevel2.h"
 #include "../Tron_BattleTanks/SoloLevel3.h"
@@ -176,6 +177,7 @@ namespace FML
 
 	void Game::Update(float deltaTime)
 	{
+		ScreenShake::Instance().Update(deltaTime);
 		SceneManager::Instance().Update(deltaTime);
 	}
 

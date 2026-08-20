@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "InputHandler.h"
 #include "ServiceLocator.h"
+#include "ScreenShake.h"
 
 namespace FML
 {
@@ -25,6 +26,7 @@ namespace FML
 			InputHandler::Instance().ClearBindings();
 			ServiceLocator::GetSoundSystem().ClearSounds();
 			ServiceLocator::GetSoundSystem().ClearQueue();
+			ScreenShake::Instance().Clear();
 
 			if (currentScene) 
 			{

@@ -6,6 +6,7 @@
 #include "Observer.h"
 #include "PrefabRegistry.h"
 #include "SceneManager.h"
+#include "ScreenShake.h"
 #include "TeleportManager.h"
 #include "TransformComponent.h"
 
@@ -28,6 +29,8 @@ namespace FML
 			{
 				return;
 			}
+
+			ScreenShake::Instance().TriggerPlayerHit();
 
 			scene->AddGameObject(PrefabRegistry::Instance().CreateTankExplosionPrefab(transform->GetWorldPosition()));
 			transform->SetPosition(TeleportManager::Instance().GetRandomTeleportPosition());

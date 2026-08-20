@@ -5,6 +5,7 @@
 #include "GameAdmin.h"
 #include "Logger.h"
 #include "GameTags.h"
+#include "ScreenShake.h"
 
 namespace FML
 {
@@ -36,6 +37,8 @@ namespace FML
 
 				const glm::vec2 deathPosition = destroyed->GetComponent<TransformComponent>()->GetWorldPosition();
 
+				ScreenShake::Instance().TriggerNpcDeath();
+
 				auto explosion = PrefabRegistry::Instance().CreateTankExplosionPrefab(deathPosition);
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
 
@@ -45,6 +48,8 @@ namespace FML
 			else if (Tags::IsPlayerTag(destroyed->GetTag()))
 			{
 				GameAdmin::Instance().OnPlayerDestroyed(destroyed);
+
+				ScreenShake::Instance().TriggerPlayerDeath();
 
 				auto explosion = PrefabRegistry::Instance().CreatePlayerExplosionPrefab(destroyed->GetComponent<TransformComponent>()->GetWorldPosition());
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));

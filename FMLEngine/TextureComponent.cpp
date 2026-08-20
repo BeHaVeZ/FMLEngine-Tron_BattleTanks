@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "TransformComponent.h"
 #include "Logger.h"
+#include "ScreenShake.h"
 
 namespace FML
 {
@@ -44,8 +45,10 @@ namespace FML
 					static_cast<int>(transform->GetPivot().y * destRect.h)
 				};
 
-				destRect.x = static_cast<int>(transform->GetWorldPosition().x - center.x);
-				destRect.y = static_cast<int>(transform->GetWorldPosition().y - center.y);
+				const glm::vec2 shake = ScreenShake::Instance().GetOffset();
+
+				destRect.x = static_cast<int>(transform->GetWorldPosition().x - center.x + shake.x);
+				destRect.y = static_cast<int>(transform->GetWorldPosition().y - center.y + shake.y);
 
 				SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect,
 					transform->GetWorldRotation(), &center, SDL_FLIP_NONE);
