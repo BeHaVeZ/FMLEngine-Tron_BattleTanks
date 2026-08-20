@@ -45,13 +45,8 @@ namespace FML
 			const glm::vec2 shootPoint = pivotPosition + rayDirection * maxRayLength;
 			GameObject* parent = gameObject->GetParent();
 
-			if (CollisionManager::Instance().Raycast(pivotPosition, rayDirection, maxRayLength, gameObject, parent))
+			if (!CollisionManager::Instance().Raycast(pivotPosition, rayDirection, maxRayLength, gameObject, parent))
 			{
-				Logger::Log(LogLevel::Info, "There is something in front of the turret so can't shoot");
-			}
-			else 
-			{
-				Logger::Log(LogLevel::Debug, "Shooting from %s", gameObject->GetParent()->GetTag().c_str());
 				SoundHelper::PlayRandomSound({ SoundId::Explosion1, SoundId::Explosion2, SoundId::Explosion3, SoundId::Explosion4 }, .3f);
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateBulletPrefab({shootPoint},rayDirection,"Bullet"));
 

@@ -32,7 +32,6 @@ namespace FML
 				if (text) 
 				{
 					text->SetText(std::to_string(currentScore), SceneManager::Instance().GetRenderer());
-					Logger::Log(LogLevel::Info, "HealthUIComponent Health updated to %d", currentScore);
 				}
 			}
 		}

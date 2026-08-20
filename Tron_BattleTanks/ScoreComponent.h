@@ -22,7 +22,6 @@ namespace FML
 			{
 				GameData::CurrentScore += blueTankKilledEvent->GetScore();
 				currentScore = GameData::CurrentScore;
-				Logger::Log(LogLevel::Info, "ScoreComponent Score updated to %d", GameData::CurrentScore);
 			}
 		}
 

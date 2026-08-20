@@ -8,7 +8,6 @@
 #include "GodMode.h"
 #include "HealthComponent.h"
 #include "PauseMenu.h"
-#include <utility>
 
 namespace FML
 {
@@ -25,21 +24,10 @@ namespace FML
 		InputHandler::Instance().BindFunction(SDLK_F4, [] { DebugOverlay::Instance().CycleFocus(); }, InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindFunction(SDLK_F6, [] { GodMode::Toggle(); }, InputHandler::KeyAction::KeyUp);
 
-		constexpr std::pair<SDL_Keycode, DebugChannel> debugChannelKeys[]{
-			{ SDLK_1, DebugChannel::NavGrid },
-			{ SDLK_2, DebugChannel::Clearance },
-			{ SDLK_3, DebugChannel::Paths },
-			{ SDLK_4, DebugChannel::Avoidance },
-			{ SDLK_5, DebugChannel::Perception },
-			{ SDLK_6, DebugChannel::AgentState },
-			{ SDLK_7, DebugChannel::Colliders },
-			{ SDLK_8, DebugChannel::Stats },
-		};
-
-		for (const auto& [key, channel] : debugChannelKeys)
+		for (const DebugChannelInfo& info : DebugChannelInfos)
 		{
-			InputHandler::Instance().BindFunction(key,
-				[channel] { DebugOverlay::Instance().ToggleChannel(channel); },
+			InputHandler::Instance().BindFunction(info.key,
+				[channel = info.channel] { DebugOverlay::Instance().ToggleChannel(channel); },
 				InputHandler::KeyAction::KeyUp);
 		}
 	}

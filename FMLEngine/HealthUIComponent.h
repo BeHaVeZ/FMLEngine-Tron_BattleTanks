@@ -4,7 +4,6 @@
 #include "HealthComponent.h"
 #include "Observer.h"
 #include "SceneManager.h"
-#include "Logger.h"
 #include "DamageEvent.h"
 
 namespace FML {
@@ -23,7 +22,6 @@ namespace FML {
             if (dynamic_cast<const DamageEvent*>(&event)) {
                 if (text) {
                     text->SetText(std::to_string(CurrentHealth()), SceneManager::Instance().GetRenderer());
-                    Logger::Log(LogLevel::Info, "HealthUIComponent Health updated to %d", CurrentHealth());
                 }
             }
         }

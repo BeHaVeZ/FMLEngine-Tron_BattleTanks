@@ -3,7 +3,6 @@
 #include "Component.h"
 #include "GameObjectDestroyedEvent.h"
 #include "GameAdmin.h"
-#include "Logger.h"
 #include "GameTags.h"
 #include "ScreenShake.h"
 
@@ -33,7 +32,6 @@ namespace FML
 				}
 				gameObject->GetSubject().Notify(BlueTankKilledEvent(killScore));
 
-				Logger::Log(LogLevel::Info, "Enemy destroyed: spawning explosion at %.1f.", destroyed->GetComponent<TransformComponent>()->GetWorldPosition().x);
 
 				const glm::vec2 deathPosition = destroyed->GetComponent<TransformComponent>()->GetWorldPosition();
 
@@ -55,8 +53,6 @@ namespace FML
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
 
 				SoundHelper::PlayRandomSound({ SoundId::PlayerExplosion1, SoundId::PlayerExplosion2 }, .3f);
-
-				Logger::Log(LogLevel::Error, "Player destroyed: Spawning explosion.");
 			}
 		};
 	};

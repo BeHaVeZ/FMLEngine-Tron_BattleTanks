@@ -218,6 +218,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="GameAdmin.cpp" />
     <ClCompile Include="HighscoreManager.cpp" />
     <ClCompile Include="InputBindingHelper.cpp" />
+    <ClCompile Include="DebugControls.cpp" />
     <ClCompile Include="NameEntryScene.cpp" />
     <ClCompile Include="EnemyPerception.cpp" />
     <ClCompile Include="GodMode.cpp" />
@@ -264,6 +265,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="TankLevelScene.h" />
     <ClInclude Include="HighscoreManager.h" />
     <ClInclude Include="InputBindingHelper.h" />
+    <ClInclude Include="DebugControls.h" />
     <ClInclude Include="Level404.h" />
     <ClInclude Include="NameEntryScene.h" />
     <ClInclude Include="NormalMovingState.h" />

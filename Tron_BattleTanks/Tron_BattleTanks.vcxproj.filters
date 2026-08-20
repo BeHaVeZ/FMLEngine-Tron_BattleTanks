@@ -62,6 +62,9 @@
     <ClCompile Include="InputBindingHelper.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
+    <ClCompile Include="DebugControls.cpp">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClCompile>
     <ClCompile Include="SoloHighscoreScene.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
     </ClCompile>
@@ -161,6 +164,9 @@
       <Filter>Header Files\GameCommands</Filter>
     </ClInclude>
     <ClInclude Include="InputBindingHelper.h">
+      <Filter>Header Files\GameManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugControls.h">
       <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
     <ClInclude Include="ChangeVolumeCommand.h">

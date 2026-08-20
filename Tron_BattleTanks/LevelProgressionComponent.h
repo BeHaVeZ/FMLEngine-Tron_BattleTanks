@@ -28,7 +28,6 @@ namespace FML
 			}
 
 			--remainingEnemies;
-			Logger::Log(LogLevel::Info, "Enemy destroyed. Remaining enemies to kill: %d", remainingEnemies);
 			if (remainingEnemies > 0 || GameData::CurrentGameMode != GameData::GameMode::Solo)
 			{
 				return;

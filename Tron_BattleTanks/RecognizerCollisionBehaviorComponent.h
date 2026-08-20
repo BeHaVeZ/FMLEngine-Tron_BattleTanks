@@ -2,7 +2,6 @@
 #include "Component.h"
 #include "Collider.h"
 #include "HealthComponent.h"
-#include "Logger.h"
 
 namespace FML
 {
@@ -22,7 +21,6 @@ namespace FML
                 auto hc = otherGO->GetComponent<HealthComponent>();
                 if (hc)
                 {
-                    Logger::Log(LogLevel::Info, "Recognizer collided with %s, applying damage.", tag.c_str());
                     hc->Damage(1);
                 }
             }
