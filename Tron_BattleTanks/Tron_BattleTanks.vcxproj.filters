@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -70,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="SoloHighscoreScene.cpp">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="CoopResultScene.cpp">
+      <Filter>Header Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="VersusResultScene.cpp">
       <Filter>Header Files\Scenes</Filter>
@@ -157,9 +160,6 @@
     <ClInclude Include="ScoreUIComponent.h">
       <Filter>Header Files\GameComponents</Filter>
     </ClInclude>
-    <ClInclude Include="BlueTankKilledEvent.h">
-      <Filter>Header Files\GameEvents</Filter>
-    </ClInclude>
     <ClInclude Include="SkipLevelCommand.h">
       <Filter>Header Files\GameCommands</Filter>
     </ClInclude>
@@ -192,6 +192,9 @@
     </ClInclude>
     <ClInclude Include="SoloHighscoreScene.h">
       <Filter>Header Files\Scenes\SoloModeScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="CoopResultScene.h">
+      <Filter>Header Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="VersusResultScene.h">
       <Filter>Header Files\Scenes</Filter>

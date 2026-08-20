@@ -51,8 +51,7 @@ namespace FML
 		case GameData::GameMode::Coop:
 			if (players.empty())
 			{
-				SceneManager::Instance().QueueSceneChangeWithDelay("MainMenu",2.5f);
-				//Game over screen and show score WIP
+				SceneManager::Instance().QueueSceneChangeWithDelay("CoopResult",2.5f);
 			}
 			break;
 		case GameData::GameMode::Versus:

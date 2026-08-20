@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -226,6 +226,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="GridMovement.cpp" />
     <ClCompile Include="NormalMovingState.cpp" />
     <ClCompile Include="SoloHighscoreScene.cpp" />
+    <ClCompile Include="CoopResultScene.cpp" />
     <ClCompile Include="VersusResultScene.cpp" />
     <ClCompile Include="TankLevelScene.cpp" />
     <ClCompile Include="TeleportManager.cpp" />
@@ -245,7 +246,6 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="..\FMLEngine\RotateTurretCommand.h" />
     <ClInclude Include="..\FMLEngine\SoundHelper.h" />
     <ClInclude Include="..\FMLEngine\VersusScene.h" />
-    <ClInclude Include="BlueTankKilledEvent.h" />
     <ClInclude Include="BulletCollisionBehaviorComponent.h" />
     <ClInclude Include="BulletHitEvent.h" />
     <ClInclude Include="BulletMoveComponent.h" />
@@ -285,6 +285,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="ShootComponent.h" />
     <ClInclude Include="SkipLevelCommand.h" />
     <ClInclude Include="SoloHighscoreScene.h" />
+    <ClInclude Include="CoopResultScene.h" />
     <ClInclude Include="VersusResultScene.h" />
     <ClInclude Include="SoloLevel2.h" />
     <ClInclude Include="SoloLevel3.h" />

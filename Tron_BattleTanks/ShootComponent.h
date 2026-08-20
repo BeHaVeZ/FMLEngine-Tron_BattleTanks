@@ -8,6 +8,7 @@
 #include "ServiceLocator.h"
 #include "SoundHelper.h"
 #include "SceneManager.h"
+#include "GameTags.h"
 #include <cmath>
 
 namespace FML
@@ -48,7 +49,8 @@ namespace FML
 			if (!CollisionManager::Instance().Raycast(pivotPosition, rayDirection, maxRayLength, gameObject, parent))
 			{
 				SoundHelper::PlayRandomSound({ SoundId::Explosion1, SoundId::Explosion2, SoundId::Explosion3, SoundId::Explosion4 }, .3f);
-				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateBulletPrefab({shootPoint},rayDirection,"Bullet"));
+				const int ownerPlayer = parent ? Tags::PlayerNumberForTag(parent->GetTag()) : 0;
+				SceneManager::Instance().GetCurrentScene()->AddGameObject(PrefabRegistry::Instance().CreateBulletPrefab({shootPoint},rayDirection,"Bullet",ownerPlayer));
 
 				auto explosion = PrefabRegistry::Instance().CreateTurretShootExplosionPrefab(shootPoint);
 				float explosionRotation = glm::degrees(-atan2(rayDirection.y, rayDirection.x)) + 270.f;

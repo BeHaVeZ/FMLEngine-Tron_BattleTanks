@@ -49,6 +49,9 @@ namespace FML
 		void SetInvulnerable(bool value) { invulnerable = value; }
 		bool IsInvulnerable() const { return invulnerable; }
 
+		void SetLastAttacker(int attackerId) { lastAttackerId = attackerId; }
+		int GetLastAttacker() const { return lastAttackerId; }
+
 		void MakeInvulnerableFor(float seconds) { invulnerabilityTimer = seconds; }
 		bool IsInInvulnerabilityWindow() const { return invulnerabilityTimer > 0.f; }
 
@@ -57,6 +60,7 @@ namespace FML
 
 		int health{ 0 };
 		int* sharedHealth{ nullptr };
+		int lastAttackerId{ 0 };
 		bool invulnerable{ false };
 		float invulnerabilityTimer{ 0.f };
 	};

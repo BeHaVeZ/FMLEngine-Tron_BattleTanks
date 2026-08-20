@@ -24,6 +24,7 @@
 #include "../Tron_BattleTanks/SoloHighscoreScene.h"
 #include "../Tron_BattleTanks/NameEntryScene.h"
 #include "../Tron_BattleTanks/VersusResultScene.h"
+#include "../Tron_BattleTanks/CoopResultScene.h"
 #include "CollisionManager.h"
 #include "../Tron_BattleTanks/Level404.h"
 #include <filesystem>
@@ -132,6 +133,7 @@ namespace FML
 		SceneManager::Instance().AddScene(std::make_unique<SoloHighscoreScene>());
 		SceneManager::Instance().AddScene(std::make_unique<TestingScene>());
 		SceneManager::Instance().AddScene(std::make_unique<VersusResultScene>());
+		SceneManager::Instance().AddScene(std::make_unique<CoopResultScene>());
 
 		SceneManager::Instance().QueueSceneChange("MainMenu");
 

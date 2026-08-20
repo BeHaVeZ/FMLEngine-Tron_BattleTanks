@@ -58,8 +58,8 @@ namespace FML
 		tank->AddComponent(std::move(respawn));
 
 		auto playerScore = std::make_unique<ScoreComponent>();
-		tank->GetSubject().AddObserver(playerScore.get());
 		tank->AddComponent(std::move(playerScore));
+		tank->GetComponent<ScoreComponent>()->Initialize();
 
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
@@ -215,8 +215,8 @@ namespace FML
 		tank->AddComponent(std::move(respawn));
 
 		auto playerScore = std::make_unique<ScoreComponent>();
-		tank->GetSubject().AddObserver(playerScore.get());
 		tank->AddComponent(std::move(playerScore));
+		tank->GetComponent<ScoreComponent>()->Initialize();
 
 		tank->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
@@ -277,8 +277,8 @@ namespace FML
 		tank->AddComponent(std::move(respawn));
 
 		auto playerScore = std::make_unique<ScoreComponent>();
-		tank->GetSubject().AddObserver(playerScore.get());
 		tank->AddComponent(std::move(playerScore));
+		tank->GetComponent<ScoreComponent>()->Initialize();
 
 		auto turret = std::make_unique<GameObject>("Turret");
 
@@ -309,7 +309,7 @@ namespace FML
 		return tank;
 	}
 
-	std::unique_ptr<GameObject> PrefabRegistry::CreateBulletPrefab(glm::vec2 spawnPosition, glm::vec2 moveDirection, const std::string tag) const
+	std::unique_ptr<GameObject> PrefabRegistry::CreateBulletPrefab(glm::vec2 spawnPosition, glm::vec2 moveDirection, const std::string tag, int ownerPlayer) const
 	{
 		auto bullet = std::make_unique<GameObject>(tag);
 
@@ -326,6 +326,7 @@ namespace FML
 		bullet->AddComponent(std::move(bulletMoveComponent));
 
 		auto bulletBehavior = std::make_unique<BulletCollisionBehaviorComponent>();
+		bulletBehavior->SetOwnerPlayer(ownerPlayer);
 		bullet->AddComponent(std::move(bulletBehavior));
 
 		auto bulletCollider = std::make_unique<BoxCollider>(SDL_Rect{ 0, 0,bullet->GetComponent<TextureComponent>()->GetDefaultWidth(),bullet->GetComponent<TextureComponent>()->GetDefaultHeight() });
@@ -481,26 +482,30 @@ namespace FML
 		return highScoreUIText;
 	}
 
-	std::unique_ptr<GameObject> PrefabRegistry::CreateCurrentScoreUI(glm::vec2 spawnPosition, const std::string tag) const
+	std::unique_ptr<GameObject> PrefabRegistry::CreateScoreUI(glm::vec2 spawnPosition, const std::string& label, const int* source, SDL_Color color, const std::string tag) const
 	{
 		int numberOffset = 30;
-		auto currentScoreUIText = std::make_unique<GameObject>(tag);
-		auto highScoreTextComponent = std::make_unique<TextComponent>("Current score", "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,255,0,255 }, SceneManager::Instance().GetRenderer());
+		auto scoreUIText = std::make_unique<GameObject>(tag);
+		auto labelTextComponent = std::make_unique<TextComponent>(label, "data/fonts/tron-arcade.ttf", 20, color, SceneManager::Instance().GetRenderer());
 
-		currentScoreUIText->AddComponent(std::move(highScoreTextComponent));
-		currentScoreUIText->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
+		scoreUIText->AddComponent(std::move(labelTextComponent));
+		scoreUIText->GetComponent<TransformComponent>()->SetPosition(spawnPosition);
 
 
-		auto currentScoreUI = std::make_unique<GameObject>(tag);
-		auto currentScoreUITextComponent = std::make_unique<ScoreUIComponent>(GameData::CurrentScore);
-		currentScoreUI->AddComponent(std::move(currentScoreUITextComponent));
-		currentScoreUI->GetComponent<ScoreUIComponent>()->Initialize();
-		currentScoreUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });
-		SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag("Player1")->GetSubject().AddObserver(currentScoreUI->GetComponent<ScoreUIComponent>());
+		auto scoreUI = std::make_unique<GameObject>(tag);
+		auto scoreUIComponent = std::make_unique<ScoreUIComponent>(source, color);
+		scoreUI->AddComponent(std::move(scoreUIComponent));
+		scoreUI->GetComponent<ScoreUIComponent>()->Initialize();
+		scoreUI->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y + numberOffset });
 
-		currentScoreUIText->AddChild(std::move(currentScoreUI));
+		scoreUIText->AddChild(std::move(scoreUI));
 
-		return currentScoreUIText;
+		return scoreUIText;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateCurrentScoreUI(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		return CreateScoreUI(spawnPosition, "Current score", &GameData::CurrentScore, SDL_Color{ 255,255,0,255 }, tag);
 	}
 
 	std::unique_ptr<GameObject> PrefabRegistry::CreateFloatingScorePrefab(glm::vec2 spawnPosition, int score, const std::string tag) const

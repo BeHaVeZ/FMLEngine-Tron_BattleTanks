@@ -36,4 +36,22 @@ namespace FML::Tags
 	{
 		return tag == Player1 || tag == Player2;
 	}
+
+	constexpr int PlayerNumberForTag(const std::string_view tag)
+	{
+		if (tag == Player1)
+			return 1;
+		if (tag == Player2)
+			return 2;
+		return 0;
+	}
+
+	constexpr std::string_view TagForPlayerNumber(const int playerNumber)
+	{
+		if (playerNumber == 1)
+			return Player1;
+		if (playerNumber == 2)
+			return Player2;
+		return {};
+	}
 }

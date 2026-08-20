@@ -168,17 +168,23 @@ namespace FML
 	{
 		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, "HealthUIPlayer1");
 		gameObjects.push_back(std::move(healthUIPlayer1));
-		auto healthUIPlayer2 = PrefabRegistry::Instance().CreateHealthUIForPlayer2({ 200,30 }, "HealthUIPlayer2");
+		auto healthUIPlayer2 = PrefabRegistry::Instance().CreateHealthUIForPlayer2({ 180,30 }, "HealthUIPlayer2");
 		gameObjects.push_back(std::move(healthUIPlayer2));
 	}
 
 	void CoopScene::InitializeScoreUI()
 	{
-		auto highScoreUI = PrefabRegistry::Instance().CreateHighScoreUI({ 400,30 }, "HighScoreUI");
-		gameObjects.push_back(std::move(highScoreUI));
+		auto scoreUIPlayer1 = PrefabRegistry::Instance().CreateScoreUI(
+			{ 370,30 }, "Score P1", &GameData::Player1Stats.score, SDL_Color{ 0,0,255,255 }, "ScoreUIPlayer1");
+		gameObjects.push_back(std::move(scoreUIPlayer1));
 
-		auto currentScoreUI = PrefabRegistry::Instance().CreateCurrentScoreUI({ 750,30 }, "CurrentScoreUI");
-		gameObjects.push_back(std::move(currentScoreUI));
+		auto scoreUIPlayer2 = PrefabRegistry::Instance().CreateScoreUI(
+			{ 580,30 }, GameData::Player2IsAI ? "Score AI" : "Score P2", &GameData::Player2Stats.score, SDL_Color{ 255,0,0,255 }, "ScoreUIPlayer2");
+		gameObjects.push_back(std::move(scoreUIPlayer2));
+
+		auto totalScoreUI = PrefabRegistry::Instance().CreateScoreUI(
+			{ 790,30 }, "Total", &GameData::CurrentScore, SDL_Color{ 255,255,0,255 }, "TotalScoreUI");
+		gameObjects.push_back(std::move(totalScoreUI));
 	}
 
 	void CoopScene::InitializeCenterTP()
