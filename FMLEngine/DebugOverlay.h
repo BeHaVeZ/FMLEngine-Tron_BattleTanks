@@ -21,6 +21,7 @@ namespace FML
 		AgentState = 1 << 5,
 		Colliders = 1 << 6,
 		Stats = 1 << 7,
+		Prediction = 1 << 8,
 	};
 
 	struct DebugChannelInfo
@@ -31,7 +32,7 @@ namespace FML
 		const char* name;
 	};
 
-	inline constexpr std::array<DebugChannelInfo, 8> DebugChannelInfos{ {
+	inline constexpr std::array<DebugChannelInfo, 9> DebugChannelInfos{ {
 		{ DebugChannel::NavGrid,    SDLK_1, "1", "Nav grid"    },
 		{ DebugChannel::Clearance,  SDLK_2, "2", "Clearance"   },
 		{ DebugChannel::Paths,      SDLK_3, "3", "Paths"       },
@@ -40,6 +41,7 @@ namespace FML
 		{ DebugChannel::AgentState, SDLK_6, "6", "Agent state" },
 		{ DebugChannel::Colliders,  SDLK_7, "7", "Colliders"   },
 		{ DebugChannel::Stats,      SDLK_8, "8", "Stats"       },
+		{ DebugChannel::Prediction, SDLK_9, "9", "Prediction"  },
 	} };
 
 	class DebugOverlay

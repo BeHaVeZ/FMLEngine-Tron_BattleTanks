@@ -15,6 +15,9 @@ namespace FML
 		float decisionInterval;
 		float preferredRange;
 		float adaptationRate;
+		int bankBounces;
+		float bankSearchStep;
+		float bankInterval;
 	};
 
 	inline constexpr AIDifficultyProfile EasyProfile
@@ -29,6 +32,9 @@ namespace FML
 		.decisionInterval = 3.5f,
 		.preferredRange = 260.f,
 		.adaptationRate = .25f,
+		.bankBounces = 1,
+		.bankSearchStep = 9.f,
+		.bankInterval = .9f,
 	};
 
 	inline constexpr AIDifficultyProfile NormalProfile
@@ -43,6 +49,9 @@ namespace FML
 		.decisionInterval = 2.f,
 		.preferredRange = 220.f,
 		.adaptationRate = .6f,
+		.bankBounces = 2,
+		.bankSearchStep = 5.f,
+		.bankInterval = .5f,
 	};
 
 	inline constexpr AIDifficultyProfile HardProfile
@@ -57,6 +66,9 @@ namespace FML
 		.decisionInterval = 1.f,
 		.preferredRange = 190.f,
 		.adaptationRate = 1.f,
+		.bankBounces = 3,
+		.bankSearchStep = 3.f,
+		.bankInterval = .3f,
 	};
 
 	constexpr const AIDifficultyProfile& ProfileFor(GameData::AIDifficulty difficulty)

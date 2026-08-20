@@ -30,6 +30,28 @@ namespace FML
 		void Render(SDL_Renderer* renderer) override;
 
 	private:
+		enum class ShotOutcome
+		{
+			Miss,
+			HitTarget,
+			HitSelf,
+			HitAlly,
+		};
+
+		struct ShotResult
+		{
+			ShotOutcome outcome{ ShotOutcome::Miss };
+			int bounces{ 0 };
+			float pathLength{ 0.f };
+		};
+
+		struct FiringSolution
+		{
+			float aimAngle{ 0.f };
+			int bounces{ 0 };
+			bool valid{ false };
+		};
+
 		struct Threat
 		{
 			glm::vec2 impactPoint{ 0.f, 0.f };
@@ -51,8 +73,20 @@ namespace FML
 		void Replan(const glm::vec2& position, const glm::vec2& goal);
 		void MoveOneAxis(const glm::vec2& position, const glm::vec2& desired, float deltaTime);
 
+		void BuildWallCache();
+		ShotResult SimulateShot(const glm::vec2& origin, const glm::vec2& direction, int maxBounces,
+			std::vector<glm::vec2>* outPath = nullptr) const;
+		bool FindWallBounce(const glm::vec2& point, const glm::vec2& direction, glm::vec2& outNormal, float& outDepth) const;
+		glm::vec2 MuzzlePoint(const glm::vec2& forward) const;
+
+		void UpdateFiringSolution(const glm::vec2& position, float deltaTime);
+		float DirectAimAngle(const glm::vec2& position, float flightTime) const;
+		float AimTargetAngle() const;
+
 		void UpdateAim(const glm::vec2& position, float deltaTime);
-		void TryFire(const glm::vec2& position);
+		void TryFire();
+		bool BarrelShot(glm::vec2& outMuzzle, glm::vec2& outForward) const;
+		void RenderPrediction();
 
 		void SampleTargetBehaviour(const glm::vec2& position, float deltaTime);
 
@@ -95,6 +129,16 @@ namespace FML
 		Stance stance{ Stance::Press };
 		int threatCount{ 0 };
 
+		std::vector<SDL_Rect> wallRects;
+		std::vector<std::vector<int>> wallBuckets;
+		bool wallCacheBuilt{ false };
+
+		FiringSolution solution;
+		ShotOutcome lastDirectOutcome{ ShotOutcome::Miss };
+		float solutionTimer{ 0.f };
+		std::vector<glm::vec2> debugPath;
+		int selfBlockedCount{ 0 };
+
 		static constexpr float agentRadius = 16.f;
 		static constexpr float moveSpeed = 100.f;
 		static constexpr float hitRadius = 18.f;
@@ -111,6 +155,19 @@ namespace FML
 		static constexpr float flankOffset = 140.f;
 		static constexpr float minEngageRange = 78.f;
 		static constexpr std::string_view teleportTag = "TPCenter";
+		static constexpr float simStep = 250.f / 60.f;
+		static constexpr float simMaxPath = 1400.f;
+		static constexpr float bulletHalfWidth = 3.f;
+		static constexpr float bulletHalfHeight = 2.5f;
+		static constexpr int bulletBoxWidth = 6;
+		static constexpr int bulletBoxHeight = 5;
+		static constexpr float separationBias = 1.f;
+		static constexpr float muzzleOffset = 28.f;
+		static constexpr int bucketSize = 64;
+		static constexpr float selfMarginMax = 56.f;
+		static constexpr float selfMarginScale = .55f;
+		static constexpr int bucketColumns = 1024 / bucketSize + 1;
+		static constexpr int bucketRows = 768 / bucketSize + 1;
 		static constexpr glm::vec2 labelOffset{ -22.f, -40.f };
 	};
 }

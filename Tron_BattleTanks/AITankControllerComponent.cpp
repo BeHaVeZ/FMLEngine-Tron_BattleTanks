@@ -1,10 +1,9 @@
 #include "AITankControllerComponent.h"
 #include "AgentAvoidance.h"
 #include "BulletMoveComponent.h"
-#include "CollisionManager.h"
+#include "Collider.h"
 #include "DebugDraw.h"
 #include "DebugOverlay.h"
-#include "EnemyPerception.h"
 #include "GameData.h"
 #include "GameObject.h"
 #include "GameTags.h"
@@ -60,9 +59,57 @@ namespace FML
 			return glm::distance(point, start + segment * t);
 		}
 
-		bool IsBulletTag(std::string_view tag)
+		bool BoxesOverlap(const SDL_Rect& a, const SDL_Rect& b)
 		{
-			return tag == Tags::Bullet || tag == Tags::EnemyBullet;
+			return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+		}
+
+		bool EntryFace(const SDL_Rect& bullet, const SDL_Rect& wall, const glm::vec2& direction,
+			glm::vec2& outNormal, float& outDepth)
+		{
+			const float lengthSquared = glm::dot(direction, direction);
+			if (lengthSquared < 1e-8f)
+				return false;
+
+			const glm::vec2 unit = direction / std::sqrt(lengthSquared);
+
+			const float bulletMin[2]{ static_cast<float>(bullet.x), static_cast<float>(bullet.y) };
+			const float bulletMax[2]{ static_cast<float>(bullet.x + bullet.w), static_cast<float>(bullet.y + bullet.h) };
+			const float wallMin[2]{ static_cast<float>(wall.x), static_cast<float>(wall.y) };
+			const float wallMax[2]{ static_cast<float>(wall.x + wall.w), static_cast<float>(wall.y + wall.h) };
+
+			int entryAxis = -1;
+			float shortestTravel = 0.f;
+			float entryDepth = 0.f;
+
+			for (int axis = 0; axis < 2; ++axis)
+			{
+				if (std::abs(unit[axis]) < 1e-4f)
+					continue;
+
+				const float depth = unit[axis] > 0.f
+					? bulletMax[axis] - wallMin[axis]
+					: wallMax[axis] - bulletMin[axis];
+
+				if (depth <= 0.f)
+					continue;
+
+				const float travel = depth / std::abs(unit[axis]);
+				if (entryAxis < 0 || travel < shortestTravel)
+				{
+					entryAxis = axis;
+					shortestTravel = travel;
+					entryDepth = depth;
+				}
+			}
+
+			if (entryAxis < 0)
+				return false;
+
+			outNormal = { 0.f, 0.f };
+			outNormal[entryAxis] = unit[entryAxis] > 0.f ? -1.f : 1.f;
+			outDepth = entryDepth;
+			return true;
 		}
 	}
 
@@ -103,6 +150,9 @@ namespace FML
 
 		if (!NavGrid::Instance().IsBuilt())
 			return;
+
+		if (!wallCacheBuilt)
+			BuildWallCache();
 
 		const glm::vec2 position = transform->GetWorldPosition();
 
@@ -178,8 +228,9 @@ namespace FML
 			Replan(position, desiredGoal);
 
 		StepAlongPath(position, deltaTime);
+		UpdateFiringSolution(position, deltaTime);
 		UpdateAim(position, deltaTime);
-		TryFire(position);
+		TryFire();
 	}
 
 	GameObject* AITankControllerComponent::AcquireTarget() const
@@ -472,74 +523,415 @@ namespace FML
 		transform->SetRotation(glm::degrees(std::atan2(-axis.y, axis.x)) - 90.f);
 	}
 
+	void AITankControllerComponent::BuildWallCache()
+	{
+		Scene* scene = SceneManager::Instance().GetCurrentScene();
+		if (!scene)
+			return;
+
+		wallRects.clear();
+		wallBuckets.assign(static_cast<size_t>(bucketColumns) * bucketRows, {});
+
+		for (GameObject* wall : scene->FindGameObjectsByTag(Tags::Wall))
+		{
+			if (auto* collider = wall->GetComponent<Collider>())
+				wallRects.push_back(collider->GetBoundingBox());
+		}
+
+		for (int index = 0; index < static_cast<int>(wallRects.size()); ++index)
+		{
+			const SDL_Rect& rect = wallRects[static_cast<size_t>(index)];
+
+			const int minX = std::clamp(rect.x / bucketSize, 0, bucketColumns - 1);
+			const int minY = std::clamp(rect.y / bucketSize, 0, bucketRows - 1);
+			const int maxX = std::clamp((rect.x + rect.w - 1) / bucketSize, 0, bucketColumns - 1);
+			const int maxY = std::clamp((rect.y + rect.h - 1) / bucketSize, 0, bucketRows - 1);
+
+			for (int y = minY; y <= maxY; ++y)
+			{
+				for (int x = minX; x <= maxX; ++x)
+					wallBuckets[static_cast<size_t>(y) * bucketColumns + x].push_back(index);
+			}
+		}
+
+		wallCacheBuilt = true;
+	}
+
+	bool AITankControllerComponent::FindWallBounce(const glm::vec2& point, const glm::vec2& direction,
+		glm::vec2& outNormal, float& outDepth) const
+	{
+		const SDL_Rect bullet{
+			static_cast<int>(point.x - bulletHalfWidth),
+			static_cast<int>(point.y - bulletHalfHeight),
+			bulletBoxWidth,
+			bulletBoxHeight
+		};
+
+		const int minX = std::clamp(bullet.x / bucketSize, 0, bucketColumns - 1);
+		const int minY = std::clamp(bullet.y / bucketSize, 0, bucketRows - 1);
+		const int maxX = std::clamp((bullet.x + bullet.w) / bucketSize, 0, bucketColumns - 1);
+		const int maxY = std::clamp((bullet.y + bullet.h) / bucketSize, 0, bucketRows - 1);
+
+		int chosen = -1;
+
+		for (int y = minY; y <= maxY; ++y)
+		{
+			for (int x = minX; x <= maxX; ++x)
+			{
+				for (int index : wallBuckets[static_cast<size_t>(y) * bucketColumns + x])
+				{
+					if (chosen >= 0 && index > chosen)
+						continue;
+
+					const SDL_Rect& wall = wallRects[static_cast<size_t>(index)];
+					if (!BoxesOverlap(bullet, wall))
+						continue;
+
+					glm::vec2 normal{};
+					float depth = 0.f;
+					if (!EntryFace(bullet, wall, direction, normal, depth))
+						continue;
+
+					chosen = index;
+					outNormal = normal;
+					outDepth = depth;
+				}
+			}
+		}
+
+		return chosen >= 0;
+	}
+
+	glm::vec2 AITankControllerComponent::MuzzlePoint(const glm::vec2& forward) const
+	{
+		if (!turret)
+			return { 0.f, 0.f };
+
+		auto* turretTransform = turret->GetComponent<TransformComponent>();
+		if (!turretTransform)
+			return { 0.f, 0.f };
+
+		return turretTransform->GetWorldPosition() + turretTransform->GetPivot() + forward * muzzleOffset;
+	}
+
+	AITankControllerComponent::ShotResult AITankControllerComponent::SimulateShot(const glm::vec2& origin,
+		const glm::vec2& direction, int maxBounces, std::vector<glm::vec2>* outPath) const
+	{
+		ShotResult result{};
+
+		if (outPath)
+		{
+			outPath->clear();
+			outPath->push_back(origin);
+		}
+
+		Scene* scene = SceneManager::Instance().GetCurrentScene();
+		if (!scene || !wallCacheBuilt || glm::dot(direction, direction) <= 0.f)
+			return result;
+
+		struct TankBox
+		{
+			SDL_Rect box;
+			ShotOutcome outcome;
+		};
+
+		std::vector<TankBox> tanks;
+		SDL_Rect selfBox{ 0, 0, 0, 0 };
+
+		const auto boxOf = [](GameObject* object, SDL_Rect& out)
+			{
+				auto* collider = object ? object->GetComponent<Collider>() : nullptr;
+				if (!collider)
+					return false;
+
+				out = collider->GetBoundingBox();
+				return true;
+			};
+
+		if (!boxOf(gameObject, selfBox))
+			return result;
+
+		const bool versus = GameData::CurrentGameMode == GameData::GameMode::Versus;
+
+		if (versus)
+		{
+			if (GameObject* human = scene->FindGameObjectByTag(std::string(Tags::Player1)))
+			{
+				SDL_Rect box{};
+				if (boxOf(human, box))
+					tanks.push_back({ box, ShotOutcome::HitTarget });
+			}
+		}
+		else
+		{
+			if (GameObject* ally = scene->FindGameObjectByTag(std::string(Tags::Player1)))
+			{
+				SDL_Rect box{};
+				if (boxOf(ally, box))
+					tanks.push_back({ box, ShotOutcome::HitAlly });
+			}
+
+			for (std::string_view tag : { Tags::BlueTank, Tags::PinkTank, Tags::Recognizer })
+			{
+				for (GameObject* enemy : scene->FindGameObjectsByTag(tag))
+				{
+					SDL_Rect box{};
+					if (boxOf(enemy, box))
+						tanks.push_back({ box, ShotOutcome::HitTarget });
+				}
+			}
+		}
+
+		SDL_Rect teleportBox{ 0, 0, 0, 0 };
+		const bool hasTeleport = boxOf(scene->FindGameObjectByTag(std::string(teleportTag)), teleportBox);
+
+		glm::vec2 point = origin;
+		glm::vec2 heading = glm::normalize(direction);
+		float travelled = 0.f;
+		int bounces = 0;
+		bool leftSelf = false;
+
+		while (travelled < simMaxPath)
+		{
+			point += heading * simStep;
+			travelled += simStep;
+
+			const SDL_Rect bulletBox{
+				static_cast<int>(point.x - bulletHalfWidth),
+				static_cast<int>(point.y - bulletHalfHeight),
+				bulletBoxWidth,
+				bulletBoxHeight
+			};
+
+			if (!leftSelf && !BoxesOverlap(bulletBox, selfBox))
+				leftSelf = true;
+
+			if (hasTeleport && BoxesOverlap(bulletBox, teleportBox))
+				break;
+
+			const float margin = std::min(selfMarginMax, (travelled / bulletSpeed) * moveSpeed * selfMarginScale);
+			const SDL_Rect riskBox{
+				selfBox.x - static_cast<int>(margin),
+				selfBox.y - static_cast<int>(margin),
+				selfBox.w + static_cast<int>(margin) * 2,
+				selfBox.h + static_cast<int>(margin) * 2
+			};
+
+			if (leftSelf && BoxesOverlap(bulletBox, riskBox))
+			{
+				result.outcome = ShotOutcome::HitSelf;
+				result.bounces = bounces;
+				result.pathLength = travelled;
+				if (outPath)
+					outPath->push_back(point);
+
+				return result;
+			}
+
+			bool struckTank = false;
+			for (const TankBox& tank : tanks)
+			{
+				if (!BoxesOverlap(bulletBox, tank.box))
+					continue;
+
+				result.outcome = tank.outcome;
+				result.bounces = bounces;
+				result.pathLength = travelled;
+				struckTank = true;
+				break;
+			}
+
+			if (struckTank)
+			{
+				if (outPath)
+					outPath->push_back(point);
+
+				return result;
+			}
+
+			glm::vec2 normal{};
+			float depth = 0.f;
+			if (FindWallBounce(point, heading, normal, depth))
+			{
+				if (bounces >= maxBounces)
+					break;
+
+				point += normal * (depth + separationBias);
+				heading = glm::normalize(glm::reflect(heading, normal));
+				++bounces;
+
+				if (outPath)
+					outPath->push_back(point);
+			}
+		}
+
+		result.bounces = bounces;
+		result.pathLength = travelled;
+
+		if (outPath)
+			outPath->push_back(point);
+
+		return result;
+	}
+
+	float AITankControllerComponent::DirectAimAngle(const glm::vec2& position, float flightTime) const
+	{
+		const glm::vec2 aimPoint = targetPosition + targetVelocity * flightTime * profile.leadPrediction;
+		const glm::vec2 toAim = aimPoint - position;
+
+		if (glm::dot(toAim, toAim) <= 0.f)
+			return turretAim ? turretAim->GetAim() : 0.f;
+
+		return AimAngleFor(glm::normalize(toAim));
+	}
+
+	float AITankControllerComponent::AimTargetAngle() const
+	{
+		return NormalizeAngle(solution.aimAngle + aimBias);
+	}
+
+	void AITankControllerComponent::UpdateFiringSolution(const glm::vec2& position, float deltaTime)
+	{
+		solutionTimer -= deltaTime;
+
+		if (!hasTarget || !turretAim)
+		{
+			solution.valid = false;
+			return;
+		}
+
+		const float range = glm::distance(position, targetPosition);
+		const float directAngle = DirectAimAngle(position, range / bulletSpeed);
+
+		const glm::vec2 directHeading = DirectionForAim(directAngle);
+		lastDirectOutcome = SimulateShot(MuzzlePoint(directHeading), directHeading, bulletMaxBounces).outcome;
+		if (lastDirectOutcome == ShotOutcome::HitTarget)
+		{
+			solution = { directAngle, 0, true };
+			return;
+		}
+
+		if (solution.valid)
+		{
+			const glm::vec2 heldHeading = DirectionForAim(solution.aimAngle);
+			if (SimulateShot(MuzzlePoint(heldHeading), heldHeading, bulletMaxBounces).outcome == ShotOutcome::HitTarget)
+				return;
+		}
+
+		if (solutionTimer > 0.f)
+			return;
+
+		solutionTimer = profile.bankInterval;
+
+		FiringSolution best{};
+		float bestPath = 0.f;
+
+		for (float angle = -180.f; angle < 180.f; angle += profile.bankSearchStep)
+		{
+			const glm::vec2 heading = DirectionForAim(angle);
+			const ShotResult shot = SimulateShot(MuzzlePoint(heading), heading, profile.bankBounces);
+
+			if (shot.outcome != ShotOutcome::HitTarget)
+				continue;
+
+			if (!best.valid || shot.pathLength < bestPath)
+			{
+				best = { angle, shot.bounces, true };
+				bestPath = shot.pathLength;
+			}
+		}
+
+		solution = best;
+	}
+
 	void AITankControllerComponent::UpdateAim(const glm::vec2& position, float deltaTime)
 	{
 		if (!turretAim || !hasTarget)
 			return;
 
-		glm::vec2 toTarget = targetPosition - position;
-		const float range = glm::length(toTarget);
-		if (range <= 0.f)
-			return;
+		const float desired = solution.valid
+			? AimTargetAngle()
+			: NormalizeAngle(DirectAimAngle(position, glm::distance(position, targetPosition) / bulletSpeed) + aimBias);
 
-		const float flightTime = range / bulletSpeed;
-		const glm::vec2 aimPoint = targetPosition + targetVelocity * flightTime * profile.leadPrediction;
-
-		toTarget = aimPoint - position;
-		if (glm::dot(toTarget, toTarget) <= 0.f)
-			return;
-
-		const float desired = NormalizeAngle(AimAngleFor(glm::normalize(toTarget)) + aimBias);
 		const float difference = NormalizeAngle(desired - turretAim->GetAim());
 		const float maxStep = profile.turretTurnRate * deltaTime;
 
 		turretAim->Rotate(std::clamp(difference, -maxStep, maxStep));
 	}
 
-	void AITankControllerComponent::TryFire(const glm::vec2& position)
+	bool AITankControllerComponent::BarrelShot(glm::vec2& outMuzzle, glm::vec2& outForward) const
 	{
-		if (!shooting || !turretAim || !turret || !hasTarget)
-			return;
-
-		const glm::vec2 toTarget = targetPosition - position;
-		if (glm::dot(toTarget, toTarget) <= 0.f)
-			return;
-
-		const float desired = AimAngleFor(glm::normalize(toTarget));
-		if (std::abs(NormalizeAngle(desired - turretAim->GetAim())) > profile.fireTolerance)
-			return;
-
-		auto* turretTransform = turret->GetComponent<TransformComponent>();
+		auto* turretTransform = turret ? turret->GetComponent<TransformComponent>() : nullptr;
 		if (!turretTransform)
+			return false;
+
+		const float barrelRadians = glm::radians(turretTransform->GetWorldRotation() - 90.f);
+		outForward = { std::cos(barrelRadians), std::sin(barrelRadians) };
+		outMuzzle = turretTransform->GetWorldPosition() + turretTransform->GetPivot() + outForward * muzzleOffset;
+		return true;
+	}
+
+	void AITankControllerComponent::TryFire()
+	{
+		if (!shooting || !turretAim || !turret || !hasTarget || !solution.valid)
 			return;
 
-		const glm::vec2 forward = DirectionForAim(turretAim->GetAim());
-		const glm::vec2 muzzle = turretTransform->GetWorldPosition() + turretTransform->GetPivot();
-
-		const bool versus = GameData::CurrentGameMode == GameData::GameMode::Versus;
-
-		if (!versus && EnemyPerception::BlockerInLineOfFire(gameObject, muzzle, forward, sightRange,
-			[](std::string_view tag) { return tag == Tags::Player1; }))
+		glm::vec2 muzzle{};
+		glm::vec2 forward{};
+		if (!BarrelShot(muzzle, forward))
 			return;
 
-		const auto hit = CollisionManager::Instance().RaycastFirstHit(muzzle, forward, sightRange, turret, gameObject);
-		if (!hit || !hit->hitObject)
+		if (std::abs(NormalizeAngle(AimTargetAngle() - AimAngleFor(forward))) > profile.fireTolerance)
 			return;
 
-		const std::string_view hitTag = hit->hitObject->GetTag();
-		if (!IsBulletTag(hitTag) && hitTag != teleportTag)
+		const ShotResult shot = SimulateShot(muzzle, forward, bulletMaxBounces);
+
+		if (shot.outcome == ShotOutcome::HitSelf || shot.outcome == ShotOutcome::HitAlly)
 		{
-			if (versus ? !Tags::IsPlayerTag(hitTag) : !Tags::IsEnemyTag(hitTag))
-				return;
+			++selfBlockedCount;
+			return;
 		}
 
 		shooting->Shoot();
+	}
+
+	void AITankControllerComponent::RenderPrediction()
+	{
+		glm::vec2 muzzle{};
+		glm::vec2 forward{};
+		if (!BarrelShot(muzzle, forward))
+			return;
+
+		const ShotResult shot = SimulateShot(muzzle, forward, bulletMaxBounces, &debugPath);
+		if (debugPath.size() < 2)
+			return;
+
+		glm::vec4 color{ .55f, .65f, .85f, .65f };
+		if (shot.outcome == ShotOutcome::HitTarget)
+			color = { .3f, 1.f, .45f, 1.f };
+		else if (shot.outcome == ShotOutcome::HitSelf)
+			color = { 1.f, .2f, .2f, 1.f };
+		else if (shot.outcome == ShotOutcome::HitAlly)
+			color = { 1.f, .55f, .1f, 1.f };
+
+		for (size_t i = 1; i < debugPath.size(); ++i)
+			DebugDraw::DrawLine(debugPath[i - 1], debugPath[i], color);
+
+		DebugDraw::DrawCircle(debugPath.front(), 3.f, color);
+
+		for (size_t i = 1; i + 1 < debugPath.size(); ++i)
+			DebugDraw::DrawCircle(debugPath[i], 5.f, color);
+
+		DebugDraw::DrawCircle(debugPath.back(), 8.f, color);
 	}
 
 	void AITankControllerComponent::Render(SDL_Renderer*)
 	{
 		if (!transform)
 			return;
+
+		if (DebugEnabled(DebugChannel::Prediction))
+			RenderPrediction();
 
 		const glm::vec2 position = transform->GetWorldPosition();
 
@@ -563,6 +955,21 @@ namespace FML
 		DebugOverlay::Instance().FocusStat(gameObject, std::string("stance ") + stanceName);
 		DebugOverlay::Instance().FocusStat(gameObject, "bullets " + std::to_string(threatCount));
 		DebugOverlay::Instance().FocusStat(gameObject, dodging ? "dodging" : "steady");
+
+		const char* directName =
+			lastDirectOutcome == ShotOutcome::HitTarget ? "target" :
+			lastDirectOutcome == ShotOutcome::HitSelf ? "self" :
+			lastDirectOutcome == ShotOutcome::HitAlly ? "ally" : "miss";
+
+		DebugOverlay::Instance().FocusStat(gameObject, std::string("direct ") + directName);
+		DebugOverlay::Instance().FocusStat(gameObject, "selfblocked " + std::to_string(selfBlockedCount));
+
+		if (!solution.valid)
+			DebugOverlay::Instance().FocusStat(gameObject, "shot none");
+		else if (solution.bounces == 0)
+			DebugOverlay::Instance().FocusStat(gameObject, "shot direct");
+		else
+			DebugOverlay::Instance().FocusStat(gameObject, "shot bank x" + std::to_string(solution.bounces));
 
 		if (DebugEnabled(DebugChannel::AgentState))
 			DebugDraw::DrawCircle(position + labelOffset, 3.f, { .4f, 1.f, .6f, 1.f });
