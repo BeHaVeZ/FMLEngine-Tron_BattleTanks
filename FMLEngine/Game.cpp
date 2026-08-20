@@ -17,6 +17,7 @@
 #include "DebugDraw.h"
 #include "DebugOverlay.h"
 #include "ScreenShake.h"
+#include "PauseMenu.h"
 #include "../Tron_BattleTanks/SoloScene.h" //This is caused because scenes are being loaded from game but it should not be (GameEngine does not know what scenes any game will have -> abstract
 #include "../Tron_BattleTanks/SoloLevel2.h"
 #include "../Tron_BattleTanks/SoloLevel3.h"
@@ -181,6 +182,12 @@ namespace FML
 
 	void Game::Update(float deltaTime)
 	{
+		if (GameStateManager::Instance().IsPaused())
+		{
+			InputHandler::Instance().Update();
+			return;
+		}
+
 		ScreenShake::Instance().Update(deltaTime);
 		SceneManager::Instance().Update(deltaTime);
 	}
@@ -194,6 +201,7 @@ namespace FML
 
 		DebugDraw::Render(renderer);
 		DebugOverlay::Instance().Render(renderer);
+		PauseMenu::Instance().Render(renderer);
 
 		SDL_RenderPresent(renderer);
 	}
@@ -201,6 +209,7 @@ namespace FML
 	void Game::Cleanup()
 	{
 		ConfigManager::Instance().Save();
+		PauseMenu::Instance().Close();
 
 		TextureManager::Instance().Clear();
 		DebugOverlay::Instance().Shutdown();

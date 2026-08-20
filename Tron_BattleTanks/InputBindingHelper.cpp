@@ -7,6 +7,7 @@
 #include "DebugOverlay.h"
 #include "GodMode.h"
 #include "HealthComponent.h"
+#include "PauseMenu.h"
 #include <utility>
 
 namespace FML
@@ -41,6 +42,27 @@ namespace FML
 				[channel] { DebugOverlay::Instance().ToggleChannel(channel); },
 				InputHandler::KeyAction::KeyUp);
 		}
+	}
+
+	void InputBindingHelper::BindPauseControls()
+	{
+		auto& input = InputHandler::Instance();
+		constexpr int controllerId = 0;
+
+		input.BindFunction(SDLK_ESCAPE, [] { PauseMenu::Instance().Toggle(); }, InputHandler::KeyAction::KeyUp);
+		input.BindGamepadFunction(controllerId, XINPUT_GAMEPAD_START, [] { PauseMenu::Instance().Toggle(); }, InputHandler::KeyAction::KeyUp);
+
+		input.BindFunction(SDLK_w, [] { PauseMenu::Instance().MoveSelection(-1); }, InputHandler::KeyAction::KeyUp);
+		input.BindFunction(SDLK_UP, [] { PauseMenu::Instance().MoveSelection(-1); }, InputHandler::KeyAction::KeyUp);
+		input.BindFunction(SDLK_s, [] { PauseMenu::Instance().MoveSelection(1); }, InputHandler::KeyAction::KeyUp);
+		input.BindFunction(SDLK_DOWN, [] { PauseMenu::Instance().MoveSelection(1); }, InputHandler::KeyAction::KeyUp);
+
+		input.BindFunction(SDLK_RETURN, [] { PauseMenu::Instance().Activate(); }, InputHandler::KeyAction::KeyUp);
+		input.BindFunction(SDLK_SPACE, [] { PauseMenu::Instance().Activate(); }, InputHandler::KeyAction::KeyUp);
+
+		input.BindGamepadFunction(controllerId, XINPUT_GAMEPAD_DPAD_UP, [] { PauseMenu::Instance().MoveSelection(-1); }, InputHandler::KeyAction::KeyUp);
+		input.BindGamepadFunction(controllerId, XINPUT_GAMEPAD_DPAD_DOWN, [] { PauseMenu::Instance().MoveSelection(1); }, InputHandler::KeyAction::KeyUp);
+		input.BindGamepadFunction(controllerId, XINPUT_GAMEPAD_A, [] { PauseMenu::Instance().Activate(); }, InputHandler::KeyAction::KeyUp);
 	}
 
 	void InputBindingHelper::BindSoloModeControls(GameObject* tank)

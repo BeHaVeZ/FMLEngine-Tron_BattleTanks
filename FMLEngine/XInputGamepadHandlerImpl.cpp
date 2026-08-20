@@ -68,6 +68,7 @@ namespace FML
 	void XInputGamepadHandlerImpl::ClearBindings()
 	{
 		commandsCleared = true;
+		commandsSuspended = false;
 		for (auto& [controllerId, commands] : gamepadCommands)
 		{
 			commands.downCommands.clear();
@@ -95,25 +96,28 @@ namespace FML
 			auto& commands = gamepadCommands[dwUserIndex];
 			auto& functions = gamepadFunctions[dwUserIndex];
 
-			for (const auto& [button, command] : commands.downCommands)
+			if (!commandsSuspended)
 			{
-				bool isPressed = (newState.Gamepad.wButtons & button) != 0;
-				if (isPressed && command)
+				for (const auto& [button, command] : commands.downCommands)
 				{
-					command->Execute();
-					if (commandsCleared) return;
+					bool isPressed = (newState.Gamepad.wButtons & button) != 0;
+					if (isPressed && command)
+					{
+						command->Execute();
+						if (commandsCleared) return;
+					}
 				}
-			}
 
-			for (const auto& [button, command] : commands.upCommands)
-			{
-				bool wasPressed = (gamepadStates[dwUserIndex].Gamepad.wButtons & button) != 0;
-				bool isPressed = (newState.Gamepad.wButtons & button) != 0;
-
-				if (wasPressed && !isPressed && command)
+				for (const auto& [button, command] : commands.upCommands)
 				{
-					command->Execute();
-					if (commandsCleared) return;
+					bool wasPressed = (gamepadStates[dwUserIndex].Gamepad.wButtons & button) != 0;
+					bool isPressed = (newState.Gamepad.wButtons & button) != 0;
+
+					if (wasPressed && !isPressed && command)
+					{
+						command->Execute();
+						if (commandsCleared) return;
+					}
 				}
 			}
 

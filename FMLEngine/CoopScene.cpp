@@ -122,6 +122,7 @@ namespace FML
 	void CoopScene::InitializeInput()
 	{
 		InputBindingHelper::BindGlobalCommands();
+		InputBindingHelper::BindPauseControls();
 
 		auto tankP1 = FindGameObjectByTag("Player1");
 		auto tankP2 = FindGameObjectByTag("Player2");

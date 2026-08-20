@@ -10,6 +10,7 @@ namespace FML
 	{
 	public:
 		static void BindGlobalCommands();
+		static void BindPauseControls();
 		static void BindSoloModeControls(GameObject* tank1);
 		static void BindDuoModeControls(GameObject* tank1, GameObject* tank2);
 	};

@@ -33,6 +33,10 @@ namespace FML
 
 		void Update();
 		void ClearBindings();
+
+		void SetCommandsSuspended(bool suspended);
+		bool AreCommandsSuspended() const { return commandsSuspended; }
+
 		void HandleInput(SDL_Event& event);
 
 		InputHandler(const InputHandler&) = delete;
@@ -41,6 +45,8 @@ namespace FML
 	private:
 		InputHandler() = default;
 		~InputHandler() = default;
+
+		bool commandsSuspended = false;
 
 		std::map<SDL_Keycode, bool> keyStates;
 		std::map<SDL_Keycode, std::unique_ptr<Command>> keyDownCommands;

@@ -130,6 +130,7 @@ namespace FML
 			{
 				Mix_Volume(-1, 0);
 				m_IsMuted = true;
+				ApplyMusicVolume();
 			}
 		}
 
@@ -141,6 +142,7 @@ namespace FML
 				sdlVolume = std::clamp(sdlVolume, 0, MIX_MAX_VOLUME);
 				Mix_Volume(-1, sdlVolume);
 				m_IsMuted = false;
+				ApplyMusicVolume();
 			}
 		}
 
@@ -155,6 +157,14 @@ namespace FML
 				sdlVolume = std::clamp(sdlVolume, 0, MIX_MAX_VOLUME);
 				Mix_Volume(-1, sdlVolume);
 			}
+
+			ApplyMusicVolume();
+		}
+
+		void SetMusicVolumeScale(float scale)
+		{
+			m_MusicVolumeScale = std::clamp(scale, 0.f, 1.f);
+			ApplyMusicVolume();
 		}
 
 		void ClearQueue()
@@ -182,6 +192,7 @@ namespace FML
 			Mix_Chunk* pChunk;
 			bool isLoaded;
 			bool doLoop;
+			int channel{ -1 };
 		};
 
 		std::map<SoundId, Sound> m_Sounds;
@@ -196,6 +207,23 @@ namespace FML
 		std::atomic_bool m_IsShutdown{ true };
 		bool m_IsMuted{ false };
 		float m_CurrentVolume{ .5f };
+		float m_MusicVolumeScale{ 1.f };
+
+		void ApplyMusicVolumeUnlocked()
+		{
+			const auto soundIt = m_Sounds.find(SoundId::Music);
+			if (soundIt == m_Sounds.end() || soundIt->second.channel < 0) return;
+
+			const float target = m_IsMuted ? 0.f : m_CurrentVolume * m_MusicVolumeScale;
+			const int sdlVolume = std::clamp(static_cast<int>(std::round(target * MIX_MAX_VOLUME)), 0, MIX_MAX_VOLUME);
+			Mix_Volume(soundIt->second.channel, sdlVolume);
+		}
+
+		void ApplyMusicVolume()
+		{
+			std::lock_guard<std::mutex> lock(m_SoundsMutex);
+			ApplyMusicVolumeUnlocked();
+		}
 
 		void Update()
 		{
@@ -262,6 +290,11 @@ namespace FML
 					{
 						Logger::Log(LogLevel::Error, "Failed to play sound ID [%d]: %s", static_cast<unsigned int>(message.id), Mix_GetError());
 					}
+					else
+					{
+						soundIt->second.channel = channel;
+						if (message.id == SoundId::Music) ApplyMusicVolumeUnlocked();
+					}
 				}
 			}
 		};
@@ -323,6 +356,10 @@ namespace FML
 	void SDL_SoundSystem::SetVolume(float newVolume)
 	{
 		m_pImpl->SetVolume(newVolume);
+	}
+	void SDL_SoundSystem::SetMusicVolumeScale(float scale)
+	{
+		m_pImpl->SetMusicVolumeScale(scale);
 	}
 	void SDL_SoundSystem::ClearQueue()
 	{

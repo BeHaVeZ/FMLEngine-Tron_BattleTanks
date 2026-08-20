@@ -19,6 +19,7 @@ namespace FML
 		void UnbindGamepadFunction(int controllerId, int button, InputHandler::KeyAction action);
 		void UpdateGamepadStates();
 		void ClearBindings();
+		void SetCommandsSuspended(bool suspended) { commandsSuspended = suspended; }
 
 	private:
 		void UpdateSingleGamepadState(DWORD dwUserIndex);
@@ -38,6 +39,7 @@ namespace FML
 		std::map<int, GamepadCommands> gamepadCommands;
 		std::map<int, GamepadFunctions> gamepadFunctions;
 		bool commandsCleared = false;
+		bool commandsSuspended = false;
 	};
 
 }
