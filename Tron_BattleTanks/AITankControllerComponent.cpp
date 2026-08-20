@@ -48,6 +48,14 @@ namespace FML
 			return { 0.f, direction.y >= 0.f ? 1.f : -1.f };
 		}
 
+		glm::vec2 SecondaryAxis(const glm::vec2& direction)
+		{
+			if (std::abs(direction.x) >= std::abs(direction.y))
+				return { 0.f, direction.y > 0.f ? 1.f : (direction.y < 0.f ? -1.f : 0.f) };
+
+			return { direction.x > 0.f ? 1.f : (direction.x < 0.f ? -1.f : 0.f), 0.f };
+		}
+
 		float DistanceToSegment(const glm::vec2& point, const glm::vec2& start, const glm::vec2& end)
 		{
 			const glm::vec2 segment = end - start;
@@ -138,8 +146,7 @@ namespace FML
 		if (auto* health = gameObject->GetComponent<HealthComponent>())
 			lastSeenHealth = health->GetCurrentHealth();
 
-		aimBias = profile.aimError;
-		aimBiasTimer = aimBiasInterval;
+		RollAimBias();
 		decisionTimer = profile.decisionInterval;
 	}
 
@@ -162,6 +169,7 @@ namespace FML
 			nextWaypoint = 0;
 			hasGoal = false;
 			dodging = false;
+			heldMoveAxisValid = false;
 		}
 		lastPosition = position;
 
@@ -175,50 +183,141 @@ namespace FML
 			if (GameObject* target = AcquireTarget())
 			{
 				const glm::vec2 seenAt = target->GetComponent<TransformComponent>()->GetWorldPosition();
-				if (hasTarget)
+				if (hasTarget && glm::distance(seenAt, lastTargetPosition) <= teleportThreshold)
 					targetVelocity = (seenAt - lastTargetPosition) / std::max(profile.reactionDelay, .016f);
+				else
+					targetVelocity = { 0.f, 0.f };
 
 				lastTargetPosition = seenAt;
 				targetPosition = seenAt;
 				hasTarget = true;
+
+				auto* targetHealth = target->GetComponent<HealthComponent>();
+				targetInvulnerable = targetHealth && targetHealth->IsInInvulnerabilityWindow();
 			}
 			else
 			{
 				hasTarget = false;
+				targetInvulnerable = false;
 				targetVelocity = { 0.f, 0.f };
 			}
 		}
 
 		SampleTargetBehaviour(position, deltaTime);
 
-		aimBiasTimer -= deltaTime;
-		if (aimBiasTimer <= 0.f)
-		{
-			aimBiasTimer = aimBiasInterval;
-			aimBias = -aimBias;
-		}
+		fireDelayTimer -= deltaTime;
 
 		Threat threat{};
 		const bool threatened = ScanForThreats(position, threat);
 
-		dodgeTimer -= deltaTime;
-		if (threatened && threat.timeToImpact <= profile.threatHorizon)
+		dodgeHold -= deltaTime;
+		if (threatened && threat.timeToImpact <= dodgeReactWindow)
 		{
-			const glm::vec2 escape = DodgeDestination(position, threat);
-			if (escape != position)
+			++threatSeenCount;
+
+			if (dodging)
 			{
-				dodgeDestination = escape;
-				dodgeTimer = dodgeDuration * profile.dodgeCommitment;
-				dodging = true;
+				dodgeHold = dodgeHoldTime * profile.dodgeCommitment;
+			}
+			else
+			{
+				int axisIndex = -1;
+				if (!EscapeDirection(position, threat, dodgeBlockedMask, preferredDodgeAxis, axisIndex))
+				{
+					++escapeFailCount;
+				}
+				else
+				{
+					++dodgeCount;
+
+					if (preferredDodgeAxis >= 0 && axisIndex == (preferredDodgeAxis ^ 1))
+						++dodgeReversalCount;
+
+					dodgeAxisIndex = axisIndex;
+					preferredDodgeAxis = axisIndex;
+					dodgeAxis = EscapeAxis(axisIndex);
+					dodgeTarget = position + dodgeAxis * escapeProbe;
+					dodgeProgressPosition = position;
+					dodgeStuckTimer = 0.f;
+					heldMoveAxisValid = false;
+					axisHoldTimer = 0.f;
+					dodgeHold = dodgeHoldTime * profile.dodgeCommitment;
+					dodging = true;
+				}
+			}
+		}
+		else if (dodgeHold <= 0.f)
+		{
+			dodging = false;
+			dodgeAxisIndex = -1;
+			preferredDodgeAxis = -1;
+			dodgeBlockedMask = 0;
+		}
+
+		if (dodging)
+		{
+			dodgeStuckTimer += deltaTime;
+			if (dodgeStuckTimer >= dodgeStuckWindow)
+			{
+				const bool stalled = glm::distance(position, dodgeProgressPosition) < dodgeStuckDistance;
+				dodgeProgressPosition = position;
+				dodgeStuckTimer = 0.f;
+
+				if (stalled)
+				{
+					++dodgeStallCount;
+
+					if (dodgeAxisIndex >= 0)
+						dodgeBlockedMask |= 1 << dodgeAxisIndex;
+
+					dodging = false;
+					dodgeAxisIndex = -1;
+				}
+			}
+
+			if (dodging && glm::distance(position, dodgeTarget) < waypointRadius)
+			{
+				dodging = false;
+				dodgeAxisIndex = -1;
 			}
 		}
 
-		if (dodgeTimer <= 0.f || glm::distance(position, dodgeDestination) < waypointRadius)
-			dodging = false;
-
 		UpdateStance(position, deltaTime);
 
-		const glm::vec2 desiredGoal = dodging ? dodgeDestination : ChooseGoal(position);
+		progressTimer += deltaTime;
+		if (progressTimer >= progressWindow)
+		{
+			const bool shouldBeMoving = dodging || nextWaypoint < path.size();
+			const bool stalled = shouldBeMoving
+				&& intendedTravel >= progressDistance * 2.f
+				&& glm::distance(position, progressPosition) < progressDistance;
+
+			progressPosition = position;
+			progressTimer = 0.f;
+			intendedTravel = 0.f;
+
+			if (stalled)
+			{
+				++movementStallCount;
+
+				path.clear();
+				nextWaypoint = 0;
+				hasGoal = false;
+				replanTimer = 0.f;
+
+				strafeSign = -strafeSign;
+				strafeTimer = strafeFlipInterval;
+
+				if (dodgeAxisIndex >= 0)
+					dodgeBlockedMask |= 1 << dodgeAxisIndex;
+
+				dodging = false;
+				dodgeAxisIndex = -1;
+				heldMoveAxisValid = false;
+			}
+		}
+
+		const glm::vec2 desiredGoal = ChooseGoal(position);
 
 		replanTimer -= deltaTime;
 		const bool goalMoved = !hasGoal || glm::distance(desiredGoal, goal) > goalMovedThreshold;
@@ -227,7 +326,19 @@ namespace FML
 		if ((goalMoved || pathDone) && (replanTimer <= 0.f || pathDone))
 			Replan(position, desiredGoal);
 
-		StepAlongPath(position, deltaTime);
+		strafeTimer -= deltaTime;
+		if (strafeTimer <= 0.f)
+		{
+			strafeTimer = strafeFlipInterval;
+			strafeSign = -strafeSign;
+		}
+
+		if (dodging)
+			MoveOneAxis(position, dodgeTarget, deltaTime);
+		else if (!TryKite(position, deltaTime) && !TryStrafe(position, deltaTime))
+			StepAlongPath(position, deltaTime);
+
+		GatherShotContext();
 		UpdateFiringSolution(position, deltaTime);
 		UpdateAim(position, deltaTime);
 		TryFire();
@@ -314,7 +425,7 @@ namespace FML
 	bool AITankControllerComponent::PredictBullet(const glm::vec2& origin, const glm::vec2& direction, float speed,
 		int bouncesLeft, const glm::vec2& position, Threat& outThreat) const
 	{
-		if (speed <= 0.f || glm::dot(direction, direction) <= 0.f)
+		if (speed <= 0.f || glm::dot(direction, direction) <= 0.f || !wallCacheBuilt)
 			return false;
 
 		glm::vec2 point = origin;
@@ -324,63 +435,199 @@ namespace FML
 
 		while (travelled < maxTravel)
 		{
-			const glm::vec2 next = point + heading * predictionStep;
+			const glm::vec2 previous = point;
+			const int bouncesBefore = bouncesLeft;
 
-			if (DistanceToSegment(position, point, next) < hitRadius)
+			if (!StepBullet(point, heading, bouncesLeft))
+				return false;
+
+			travelled += simStep;
+
+			const bool bounced = bouncesLeft != bouncesBefore;
+			const float distance = bounced
+				? glm::distance(position, point)
+				: DistanceToSegment(position, previous, point);
+
+			if (distance < hitRadius)
 			{
-				outThreat.impactPoint = next;
+				outThreat.impactPoint = point;
 				outThreat.travelDirection = heading;
 				outThreat.timeToImpact = travelled / speed;
 				return true;
 			}
-
-			if (!NavGrid::Instance().IsWalkable(next))
-			{
-				if (bouncesLeft <= 0)
-					return false;
-
-				const bool blockedX = !NavGrid::Instance().IsWalkable({ next.x, point.y });
-				const bool blockedY = !NavGrid::Instance().IsWalkable({ point.x, next.y });
-
-				if (blockedX)
-					heading.x = -heading.x;
-				if (blockedY)
-					heading.y = -heading.y;
-				if (!blockedX && !blockedY)
-					heading = -heading;
-
-				--bouncesLeft;
-				travelled += predictionStep;
-				continue;
-			}
-
-			point = next;
-			travelled += predictionStep;
 		}
 
 		return false;
 	}
 
-	glm::vec2 AITankControllerComponent::DodgeDestination(const glm::vec2& position, const Threat& threat) const
+	glm::vec2 AITankControllerComponent::EscapeAxis(int index)
 	{
-		const glm::vec2 perpendicular{ -threat.travelDirection.y, threat.travelDirection.x };
-		const float distance = 64.f;
-
-		for (float sign : { 1.f, -1.f })
+		switch (index)
 		{
-			const glm::vec2 candidate = position + perpendicular * sign * distance;
-			if (NavGrid::Instance().IsWalkable(candidate) && NavGrid::Instance().IsWalkable(position + perpendicular * sign * (distance * .5f)))
-				return candidate;
+		case 0:
+			return { 1.f, 0.f };
+		case 1:
+			return { -1.f, 0.f };
+		case 2:
+			return { 0.f, 1.f };
+		default:
+			return { 0.f, -1.f };
+		}
+	}
+
+	bool AITankControllerComponent::PathIsClear(const glm::vec2& from, const glm::vec2& axis, float distance) const
+	{
+		constexpr int samples = 4;
+
+		const glm::vec2 side{ -axis.y, axis.x };
+		auto& grid = NavGrid::Instance();
+
+		for (int i = 0; i <= samples; ++i)
+		{
+			const float travelled = agentRadius + distance * static_cast<float>(i) / samples;
+			const glm::vec2 centre = from + axis * travelled;
+
+			if (!grid.IsWalkable(centre) || !grid.IsWalkable(centre + side * bodyProbe) || !grid.IsWalkable(centre - side * bodyProbe))
+				return false;
 		}
 
-		for (float sign : { 1.f, -1.f })
+		return true;
+	}
+
+	bool AITankControllerComponent::EscapeDirection(const glm::vec2& position, const Threat& threat, int blockedMask, int preferredIndex, int& outIndex) const
+	{
+		const float reach = std::min(escapeProbe, moveSpeed * std::max(threat.timeToImpact, .05f));
+		const glm::vec2 lineStart = threat.impactPoint - threat.travelDirection * 600.f;
+		const glm::vec2 lineEnd = threat.impactPoint + threat.travelDirection * 600.f;
+
+		bool found = false;
+		float bestScore = 0.f;
+
+		for (int index = 0; index < escapeAxisCount; ++index)
 		{
-			const glm::vec2 candidate = position - threat.travelDirection * sign * distance;
-			if (NavGrid::Instance().IsWalkable(candidate))
-				return candidate;
+			if (blockedMask & (1 << index))
+				continue;
+
+			const glm::vec2 axis = EscapeAxis(index);
+			if (!PathIsClear(position, axis, escapeProbe))
+				continue;
+
+			const glm::vec2 destination = position + axis * reach;
+			const float clearance = DistanceToSegment(destination, lineStart, lineEnd);
+			const float lateral = 1.f - std::abs(glm::dot(axis, threat.travelDirection));
+			const float score = clearance + lateral * escapeClearance + (index == preferredIndex ? dodgeStickiness : 0.f);
+
+			if (!found || score > bestScore)
+			{
+				bestScore = score;
+				outIndex = index;
+				found = true;
+			}
 		}
 
-		return position;
+		return found;
+	}
+
+	bool AITankControllerComponent::TryKite(const glm::vec2& position, float deltaTime)
+	{
+		const bool wasKiting = kiting;
+		kiting = false;
+
+		if (GameData::CurrentGameMode != GameData::GameMode::Coop)
+			return false;
+
+		Scene* scene = SceneManager::Instance().GetCurrentScene();
+		if (!scene)
+			return false;
+
+		glm::vec2 nearest{ 0.f, 0.f };
+		float nearestDistance = kiteRadius;
+		bool found = false;
+
+		for (GameObject* recognizer : scene->FindGameObjectsByTag(Tags::Recognizer))
+		{
+			auto* recognizerTransform = recognizer->GetComponent<TransformComponent>();
+			if (!recognizerTransform)
+				continue;
+
+			const glm::vec2 at = recognizerTransform->GetWorldPosition();
+			const float distance = glm::distance(position, at);
+			if (distance < nearestDistance)
+			{
+				nearestDistance = distance;
+				nearest = at;
+				found = true;
+			}
+		}
+
+		if (!found)
+			return false;
+
+		const glm::vec2 away = position - nearest;
+		if (glm::dot(away, away) <= 0.f)
+			return false;
+
+		const glm::vec2 retreat = glm::normalize(away);
+
+		int bestIndex = -1;
+		float bestScore = 0.f;
+
+		for (int index = 0; index < escapeAxisCount; ++index)
+		{
+			const glm::vec2 axis = EscapeAxis(index);
+			const float score = glm::dot(axis, retreat);
+
+			if (score <= 0.f || !PathIsClear(position, axis, strafeProbe))
+				continue;
+
+			if (bestIndex < 0 || score > bestScore)
+			{
+				bestScore = score;
+				bestIndex = index;
+			}
+		}
+
+		if (bestIndex < 0)
+			return false;
+
+		kiting = true;
+		if (!wasKiting)
+			++kiteCount;
+
+		MoveOneAxis(position, position + EscapeAxis(bestIndex) * strafeProbe, deltaTime);
+		return true;
+	}
+
+	bool AITankControllerComponent::TryStrafe(const glm::vec2& position, float deltaTime)
+	{
+		if (profile.strafeAmount <= 0.f || !hasTarget || !solution.valid)
+			return false;
+
+		const float range = glm::distance(position, targetPosition);
+		if (range > profile.engageRange * 1.4f || range < profile.engageRange * .6f)
+			return false;
+
+		if (strafeTimer < strafeFlipInterval * (1.f - profile.strafeAmount))
+			return true;
+
+		const glm::vec2 toTarget = targetPosition - position;
+		if (glm::dot(toTarget, toTarget) <= 0.f)
+			return false;
+
+		const glm::vec2 forward = glm::normalize(toTarget);
+		glm::vec2 axis = DominantAxis(glm::vec2{ -forward.y, forward.x } * strafeSign);
+
+		if (!PathIsClear(position, axis, strafeProbe))
+		{
+			strafeSign = -strafeSign;
+			axis = -axis;
+
+			if (!PathIsClear(position, axis, strafeProbe))
+				return false;
+		}
+
+		MoveOneAxis(position, position + axis * strafeProbe, deltaTime);
+		return true;
 	}
 
 	void AITankControllerComponent::SampleTargetBehaviour(const glm::vec2& position, float deltaTime)
@@ -407,7 +654,12 @@ namespace FML
 				bullets += scene->FindGameObjectsByTag(tag).size();
 
 			if (bullets > lastSeenBulletCount)
-				targetFireRate += static_cast<float>(bullets - lastSeenBulletCount);
+			{
+				const int appeared = static_cast<int>(bullets - lastSeenBulletCount);
+				const int ownShots = std::min(appeared, pendingOwnShots);
+				pendingOwnShots -= ownShots;
+				targetFireRate += static_cast<float>(appeared - ownShots);
+			}
 
 			lastSeenBulletCount = bullets;
 		}
@@ -454,7 +706,7 @@ namespace FML
 		glm::vec2 candidate = targetPosition;
 
 		if (glm::dot(away, away) > 0.f)
-			candidate = targetPosition + glm::normalize(away) * minEngageRange;
+			candidate = targetPosition + glm::normalize(away) * profile.engageRange;
 
 		if (stance == Stance::Hold)
 		{
@@ -514,10 +766,38 @@ namespace FML
 
 		const AgentAvoidance::Verdict traffic = AgentAvoidance::Instance().Query(gameObject, glm::normalize(delta));
 
-		const glm::vec2 axis = DominantAxis(delta);
 		const float step = moveSpeed * traffic.speedScale * deltaTime;
 		if (step <= 0.f)
 			return;
+
+		intendedTravel += step;
+		axisHoldTimer -= deltaTime;
+
+		glm::vec2 axis{ 0.f, 0.f };
+		const bool heldClear = heldMoveAxisValid && PathIsClear(position, heldMoveAxis, moveProbe);
+		const bool heldProductive = heldMoveAxisValid && glm::dot(delta, heldMoveAxis) >= axisReleaseDistance;
+
+		if (heldClear && (heldProductive || axisHoldTimer > 0.f))
+		{
+			axis = heldMoveAxis;
+		}
+		else
+		{
+			axis = DominantAxis(delta);
+			if (!PathIsClear(position, axis, moveProbe))
+			{
+				const glm::vec2 alternate = SecondaryAxis(delta);
+				if (glm::dot(alternate, alternate) > 0.f && PathIsClear(position, alternate, moveProbe))
+					axis = alternate;
+			}
+
+			if (heldMoveAxisValid && (axis.x != heldMoveAxis.x || axis.y != heldMoveAxis.y))
+				++axisFlipCount;
+
+			heldMoveAxis = axis;
+			heldMoveAxisValid = true;
+			axisHoldTimer = minAxisHold;
+		}
 
 		transform->SetPosition(transform->GetLocalPosition() + axis * step);
 		transform->SetRotation(glm::degrees(std::atan2(-axis.y, axis.x)) - 90.f);
@@ -602,6 +882,24 @@ namespace FML
 		return chosen >= 0;
 	}
 
+	bool AITankControllerComponent::StepBullet(glm::vec2& point, glm::vec2& heading, int& bouncesLeft) const
+	{
+		point += heading * simStep;
+
+		glm::vec2 normal{};
+		float depth = 0.f;
+		if (!FindWallBounce(point, heading, normal, depth))
+			return true;
+
+		if (bouncesLeft <= 0)
+			return false;
+
+		point += normal * (depth + separationBias);
+		heading = glm::normalize(glm::reflect(heading, normal));
+		--bouncesLeft;
+		return true;
+	}
+
 	glm::vec2 AITankControllerComponent::MuzzlePoint(const glm::vec2& forward) const
 	{
 		if (!turret)
@@ -612,6 +910,59 @@ namespace FML
 			return { 0.f, 0.f };
 
 		return turretTransform->GetWorldPosition() + turretTransform->GetPivot() + forward * muzzleOffset;
+	}
+
+	void AITankControllerComponent::GatherShotContext()
+	{
+		shotTanks.clear();
+		shotSelfValid = false;
+		shotTeleportValid = false;
+
+		Scene* scene = SceneManager::Instance().GetCurrentScene();
+		if (!scene)
+			return;
+
+		const auto boxOf = [](GameObject* object, SDL_Rect& out)
+			{
+				auto* collider = object ? object->GetComponent<Collider>() : nullptr;
+				if (!collider)
+					return false;
+
+				out = collider->GetBoundingBox();
+				return true;
+			};
+
+		shotSelfValid = boxOf(gameObject, shotSelfBox);
+		shotTeleportValid = boxOf(scene->FindGameObjectByTag(std::string(teleportTag)), shotTeleportBox);
+
+		if (GameData::CurrentGameMode == GameData::GameMode::Versus)
+		{
+			if (GameObject* human = scene->FindGameObjectByTag(std::string(Tags::Player1)))
+			{
+				SDL_Rect box{};
+				if (boxOf(human, box))
+					shotTanks.push_back({ box, ShotOutcome::HitTarget });
+			}
+
+			return;
+		}
+
+		if (GameObject* ally = scene->FindGameObjectByTag(std::string(Tags::Player1)))
+		{
+			SDL_Rect box{};
+			if (boxOf(ally, box))
+				shotTanks.push_back({ box, ShotOutcome::HitAlly });
+		}
+
+		for (std::string_view tag : { Tags::BlueTank, Tags::PinkTank, Tags::Recognizer })
+		{
+			for (GameObject* enemy : scene->FindGameObjectsByTag(tag))
+			{
+				SDL_Rect box{};
+				if (boxOf(enemy, box))
+					shotTanks.push_back({ box, ShotOutcome::HitTarget });
+			}
+		}
 	}
 
 	AITankControllerComponent::ShotResult AITankControllerComponent::SimulateShot(const glm::vec2& origin,
@@ -625,76 +976,30 @@ namespace FML
 			outPath->push_back(origin);
 		}
 
-		Scene* scene = SceneManager::Instance().GetCurrentScene();
-		if (!scene || !wallCacheBuilt || glm::dot(direction, direction) <= 0.f)
+		if (!wallCacheBuilt || !shotSelfValid || glm::dot(direction, direction) <= 0.f)
 			return result;
-
-		struct TankBox
-		{
-			SDL_Rect box;
-			ShotOutcome outcome;
-		};
-
-		std::vector<TankBox> tanks;
-		SDL_Rect selfBox{ 0, 0, 0, 0 };
-
-		const auto boxOf = [](GameObject* object, SDL_Rect& out)
-			{
-				auto* collider = object ? object->GetComponent<Collider>() : nullptr;
-				if (!collider)
-					return false;
-
-				out = collider->GetBoundingBox();
-				return true;
-			};
-
-		if (!boxOf(gameObject, selfBox))
-			return result;
-
-		const bool versus = GameData::CurrentGameMode == GameData::GameMode::Versus;
-
-		if (versus)
-		{
-			if (GameObject* human = scene->FindGameObjectByTag(std::string(Tags::Player1)))
-			{
-				SDL_Rect box{};
-				if (boxOf(human, box))
-					tanks.push_back({ box, ShotOutcome::HitTarget });
-			}
-		}
-		else
-		{
-			if (GameObject* ally = scene->FindGameObjectByTag(std::string(Tags::Player1)))
-			{
-				SDL_Rect box{};
-				if (boxOf(ally, box))
-					tanks.push_back({ box, ShotOutcome::HitAlly });
-			}
-
-			for (std::string_view tag : { Tags::BlueTank, Tags::PinkTank, Tags::Recognizer })
-			{
-				for (GameObject* enemy : scene->FindGameObjectsByTag(tag))
-				{
-					SDL_Rect box{};
-					if (boxOf(enemy, box))
-						tanks.push_back({ box, ShotOutcome::HitTarget });
-				}
-			}
-		}
-
-		SDL_Rect teleportBox{ 0, 0, 0, 0 };
-		const bool hasTeleport = boxOf(scene->FindGameObjectByTag(std::string(teleportTag)), teleportBox);
 
 		glm::vec2 point = origin;
 		glm::vec2 heading = glm::normalize(direction);
 		float travelled = 0.f;
+		int bouncesLeft = maxBounces;
 		int bounces = 0;
 		bool leftSelf = false;
 
 		while (travelled < simMaxPath)
 		{
-			point += heading * simStep;
+			const int bouncesBefore = bouncesLeft;
+			if (!StepBullet(point, heading, bouncesLeft))
+				break;
+
 			travelled += simStep;
+
+			if (bouncesLeft != bouncesBefore)
+			{
+				++bounces;
+				if (outPath)
+					outPath->push_back(point);
+			}
 
 			const SDL_Rect bulletBox{
 				static_cast<int>(point.x - bulletHalfWidth),
@@ -703,18 +1008,18 @@ namespace FML
 				bulletBoxHeight
 			};
 
-			if (!leftSelf && !BoxesOverlap(bulletBox, selfBox))
+			if (!leftSelf && !BoxesOverlap(bulletBox, shotSelfBox))
 				leftSelf = true;
 
-			if (hasTeleport && BoxesOverlap(bulletBox, teleportBox))
+			if (shotTeleportValid && BoxesOverlap(bulletBox, shotTeleportBox))
 				break;
 
 			const float margin = std::min(selfMarginMax, (travelled / bulletSpeed) * moveSpeed * selfMarginScale);
 			const SDL_Rect riskBox{
-				selfBox.x - static_cast<int>(margin),
-				selfBox.y - static_cast<int>(margin),
-				selfBox.w + static_cast<int>(margin) * 2,
-				selfBox.h + static_cast<int>(margin) * 2
+				shotSelfBox.x - static_cast<int>(margin),
+				shotSelfBox.y - static_cast<int>(margin),
+				shotSelfBox.w + static_cast<int>(margin) * 2,
+				shotSelfBox.h + static_cast<int>(margin) * 2
 			};
 
 			if (leftSelf && BoxesOverlap(bulletBox, riskBox))
@@ -729,7 +1034,7 @@ namespace FML
 			}
 
 			bool struckTank = false;
-			for (const TankBox& tank : tanks)
+			for (const TankBox& tank : shotTanks)
 			{
 				if (!BoxesOverlap(bulletBox, tank.box))
 					continue;
@@ -749,20 +1054,6 @@ namespace FML
 				return result;
 			}
 
-			glm::vec2 normal{};
-			float depth = 0.f;
-			if (FindWallBounce(point, heading, normal, depth))
-			{
-				if (bounces >= maxBounces)
-					break;
-
-				point += normal * (depth + separationBias);
-				heading = glm::normalize(glm::reflect(heading, normal));
-				++bounces;
-
-				if (outPath)
-					outPath->push_back(point);
-			}
 		}
 
 		result.bounces = bounces;
@@ -788,6 +1079,12 @@ namespace FML
 	float AITankControllerComponent::AimTargetAngle() const
 	{
 		return NormalizeAngle(solution.aimAngle + aimBias);
+	}
+
+	void AITankControllerComponent::RollAimBias()
+	{
+		std::uniform_real_distribution<float> spread(-profile.aimError, profile.aimError);
+		aimBias = spread(rng);
 	}
 
 	void AITankControllerComponent::UpdateFiringSolution(const glm::vec2& position, float deltaTime)
@@ -876,6 +1173,9 @@ namespace FML
 		if (!shooting || !turretAim || !turret || !hasTarget || !solution.valid)
 			return;
 
+		if (fireDelayTimer > 0.f || targetInvulnerable)
+			return;
+
 		glm::vec2 muzzle{};
 		glm::vec2 forward{};
 		if (!BarrelShot(muzzle, forward))
@@ -893,6 +1193,9 @@ namespace FML
 		}
 
 		shooting->Shoot();
+		++pendingOwnShots;
+		fireDelayTimer = profile.fireDelay;
+		RollAimBias();
 	}
 
 	void AITankControllerComponent::RenderPrediction()
@@ -954,7 +1257,7 @@ namespace FML
 
 		DebugOverlay::Instance().FocusStat(gameObject, std::string("stance ") + stanceName);
 		DebugOverlay::Instance().FocusStat(gameObject, "bullets " + std::to_string(threatCount));
-		DebugOverlay::Instance().FocusStat(gameObject, dodging ? "dodging" : "steady");
+		DebugOverlay::Instance().FocusStat(gameObject, dodging ? "dodging" : (kiting ? "kiting" : "steady"));
 
 		const char* directName =
 			lastDirectOutcome == ShotOutcome::HitTarget ? "target" :
@@ -963,6 +1266,14 @@ namespace FML
 
 		DebugOverlay::Instance().FocusStat(gameObject, std::string("direct ") + directName);
 		DebugOverlay::Instance().FocusStat(gameObject, "selfblocked " + std::to_string(selfBlockedCount));
+		DebugOverlay::Instance().FocusStat(gameObject, "threats " + std::to_string(threatSeenCount)
+			+ " dodges " + std::to_string(dodgeCount)
+			+ " stalls " + std::to_string(dodgeStallCount)
+			+ " noesc " + std::to_string(escapeFailCount)
+			+ " mstall " + std::to_string(movementStallCount)
+			+ " rev " + std::to_string(dodgeReversalCount)
+			+ " flips " + std::to_string(axisFlipCount)
+			+ " kites " + std::to_string(kiteCount));
 
 		if (!solution.valid)
 			DebugOverlay::Instance().FocusStat(gameObject, "shot none");

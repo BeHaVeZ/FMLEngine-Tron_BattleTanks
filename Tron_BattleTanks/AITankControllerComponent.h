@@ -2,6 +2,7 @@
 #include "Component.h"
 #include "AIDifficultyProfile.h"
 #include <glm.hpp>
+#include <random>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -59,6 +60,12 @@ namespace FML
 			float timeToImpact{ 0.f };
 		};
 
+		struct TankBox
+		{
+			SDL_Rect box{ 0, 0, 0, 0 };
+			ShotOutcome outcome{ ShotOutcome::Miss };
+		};
+
 		GameObject* AcquireTarget() const;
 
 		bool ScanForThreats(const glm::vec2& position, Threat& outThreat);
@@ -67,7 +74,12 @@ namespace FML
 
 		void UpdateStance(const glm::vec2& position, float deltaTime);
 		glm::vec2 ChooseGoal(const glm::vec2& position) const;
-		glm::vec2 DodgeDestination(const glm::vec2& position, const Threat& threat) const;
+		bool EscapeDirection(const glm::vec2& position, const Threat& threat, int blockedMask, int preferredIndex, int& outIndex) const;
+		bool PathIsClear(const glm::vec2& from, const glm::vec2& axis, float distance) const;
+		static glm::vec2 EscapeAxis(int index);
+		bool TryStrafe(const glm::vec2& position, float deltaTime);
+		bool TryKite(const glm::vec2& position, float deltaTime);
+		void GatherShotContext();
 
 		void StepAlongPath(const glm::vec2& position, float deltaTime);
 		void Replan(const glm::vec2& position, const glm::vec2& goal);
@@ -77,11 +89,13 @@ namespace FML
 		ShotResult SimulateShot(const glm::vec2& origin, const glm::vec2& direction, int maxBounces,
 			std::vector<glm::vec2>* outPath = nullptr) const;
 		bool FindWallBounce(const glm::vec2& point, const glm::vec2& direction, glm::vec2& outNormal, float& outDepth) const;
+		bool StepBullet(glm::vec2& point, glm::vec2& heading, int& bouncesLeft) const;
 		glm::vec2 MuzzlePoint(const glm::vec2& forward) const;
 
 		void UpdateFiringSolution(const glm::vec2& position, float deltaTime);
 		float DirectAimAngle(const glm::vec2& position, float flightTime) const;
 		float AimTargetAngle() const;
+		void RollAimBias();
 
 		void UpdateAim(const glm::vec2& position, float deltaTime);
 		void TryFire();
@@ -108,16 +122,40 @@ namespace FML
 		glm::vec2 targetVelocity{ 0.f, 0.f };
 		glm::vec2 lastTargetPosition{ 0.f, 0.f };
 		bool hasTarget{ false };
+		bool targetInvulnerable{ false };
 
-		glm::vec2 dodgeDestination{ 0.f, 0.f };
-		float dodgeTimer{ 0.f };
+		std::vector<TankBox> shotTanks;
+		SDL_Rect shotSelfBox{ 0, 0, 0, 0 };
+		SDL_Rect shotTeleportBox{ 0, 0, 0, 0 };
+		bool shotSelfValid{ false };
+		bool shotTeleportValid{ false };
+		int pendingOwnShots{ 0 };
+		bool kiting{ false };
+
+		glm::vec2 dodgeAxis{ 0.f, 0.f };
+		glm::vec2 dodgeTarget{ 0.f, 0.f };
+		glm::vec2 dodgeProgressPosition{ 0.f, 0.f };
+		glm::vec2 progressPosition{ 0.f, 0.f };
+		float progressTimer{ 0.f };
+		float intendedTravel{ 0.f };
+		glm::vec2 heldMoveAxis{ 0.f, 0.f };
+		float axisHoldTimer{ 0.f };
+		bool heldMoveAxisValid{ false };
+		float dodgeHold{ 0.f };
+		float dodgeStuckTimer{ 0.f };
+		int dodgeAxisIndex{ -1 };
+		int preferredDodgeAxis{ -1 };
+		int dodgeBlockedMask{ 0 };
 		bool dodging{ false };
 
 		float reactionTimer{ 0.f };
 		float replanTimer{ 0.f };
 		float decisionTimer{ 0.f };
 		float aimBias{ 0.f };
-		float aimBiasTimer{ 0.f };
+		float fireDelayTimer{ 0.f };
+		float strafeTimer{ 0.f };
+		float strafeSign{ 1.f };
+		std::mt19937 rng{ std::random_device{}() };
 
 		float targetApproachRate{ 0.f };
 		float targetFireRate{ 0.f };
@@ -138,22 +176,43 @@ namespace FML
 		float solutionTimer{ 0.f };
 		std::vector<glm::vec2> debugPath;
 		int selfBlockedCount{ 0 };
+		int dodgeCount{ 0 };
+		int dodgeStallCount{ 0 };
+		int escapeFailCount{ 0 };
+		int movementStallCount{ 0 };
+		int dodgeReversalCount{ 0 };
+		int axisFlipCount{ 0 };
+		int kiteCount{ 0 };
+		int threatSeenCount{ 0 };
 
 		static constexpr float agentRadius = 16.f;
 		static constexpr float moveSpeed = 100.f;
-		static constexpr float hitRadius = 18.f;
+		static constexpr float hitRadius = 22.f;
 		static constexpr float replanInterval = .4f;
 		static constexpr float goalMovedThreshold = 40.f;
 		static constexpr float waypointRadius = 6.f;
 		static constexpr float teleportThreshold = 120.f;
-		static constexpr float dodgeDuration = .6f;
+		static constexpr float dodgeHoldTime = .15f;
+		static constexpr float dodgeReactWindow = .5f;
+		static constexpr float escapeClearance = 26.f;
+		static constexpr float escapeProbe = 40.f;
+		static constexpr float bodyProbe = agentRadius - 3.f;
+		static constexpr int escapeAxisCount = 4;
+		static constexpr float dodgeStuckWindow = .12f;
+		static constexpr float dodgeStuckDistance = 6.f;
+		static constexpr float dodgeStickiness = 30.f;
+		static constexpr float moveProbe = 14.f;
+		static constexpr float axisReleaseDistance = 6.f;
+		static constexpr float minAxisHold = .22f;
+		static constexpr float progressWindow = .4f;
+		static constexpr float progressDistance = 8.f;
+		static constexpr float strafeFlipInterval = 1.1f;
+		static constexpr float strafeProbe = 44.f;
 		static constexpr float bulletSpeed = 250.f;
 		static constexpr int bulletMaxBounces = 4;
-		static constexpr float predictionStep = 4.f;
-		static constexpr float sightRange = 1000.f;
-		static constexpr float aimBiasInterval = 1.2f;
+
+		static constexpr float kiteRadius = 150.f;
 		static constexpr float flankOffset = 140.f;
-		static constexpr float minEngageRange = 78.f;
 		static constexpr std::string_view teleportTag = "TPCenter";
 		static constexpr float simStep = 250.f / 60.f;
 		static constexpr float simMaxPath = 1400.f;

@@ -14,6 +14,9 @@ namespace FML
 		float dodgeCommitment;
 		float decisionInterval;
 		float preferredRange;
+		float engageRange;
+		float fireDelay;
+		float strafeAmount;
 		float adaptationRate;
 		int bankBounces;
 		float bankSearchStep;
@@ -24,13 +27,16 @@ namespace FML
 	{
 		.reactionDelay = .55f,
 		.turretTurnRate = 70.f,
-		.aimError = 14.f,
-		.leadPrediction = .15f,
-		.fireTolerance = 12.f,
-		.threatHorizon = .35f,
-		.dodgeCommitment = .45f,
+		.aimError = 22.f,
+		.leadPrediction = .1f,
+		.fireTolerance = 10.f,
+		.threatHorizon = 1.4f,
+		.dodgeCommitment = 1.f,
 		.decisionInterval = 3.5f,
-		.preferredRange = 260.f,
+		.preferredRange = 280.f,
+		.engageRange = 200.f,
+		.fireDelay = .6f,
+		.strafeAmount = 0.f,
 		.adaptationRate = .25f,
 		.bankBounces = 1,
 		.bankSearchStep = 9.f,
@@ -44,10 +50,13 @@ namespace FML
 		.aimError = 6.f,
 		.leadPrediction = .6f,
 		.fireTolerance = 7.f,
-		.threatHorizon = .8f,
-		.dodgeCommitment = .75f,
+		.threatHorizon = 1.5f,
+		.dodgeCommitment = 1.f,
 		.decisionInterval = 2.f,
-		.preferredRange = 220.f,
+		.preferredRange = 200.f,
+		.engageRange = 140.f,
+		.fireDelay = .15f,
+		.strafeAmount = .5f,
 		.adaptationRate = .6f,
 		.bankBounces = 2,
 		.bankSearchStep = 5.f,
@@ -58,17 +67,20 @@ namespace FML
 	{
 		.reactionDelay = .08f,
 		.turretTurnRate = 150.f,
-		.aimError = 1.5f,
+		.aimError = 2.f,
 		.leadPrediction = 1.f,
 		.fireTolerance = 4.f,
-		.threatHorizon = 1.5f,
+		.threatHorizon = 1.6f,
 		.dodgeCommitment = 1.f,
-		.decisionInterval = 1.f,
-		.preferredRange = 190.f,
+		.decisionInterval = .6f,
+		.preferredRange = 170.f,
+		.engageRange = 90.f,
+		.fireDelay = 0.f,
+		.strafeAmount = 1.f,
 		.adaptationRate = 1.f,
 		.bankBounces = 3,
-		.bankSearchStep = 3.f,
-		.bankInterval = .3f,
+		.bankSearchStep = 2.5f,
+		.bankInterval = .25f,
 	};
 
 	constexpr const AIDifficultyProfile& ProfileFor(GameData::AIDifficulty difficulty)
