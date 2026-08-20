@@ -36,6 +36,11 @@ namespace FML
 			transform->SetPosition(TeleportManager::Instance().GetRandomTeleportPosition());
 			transform->UpdateWorldPosition();
 			scene->AddGameObject(PrefabRegistry::Instance().CreateTpEffect(transform->GetWorldPosition()));
+
+			health->MakeInvulnerableFor(respawnInvulnerabilityDuration);
 		}
+
+	private:
+		static constexpr float respawnInvulnerabilityDuration{ 4.f };
 	};
 }

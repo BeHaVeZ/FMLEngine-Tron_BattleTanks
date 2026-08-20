@@ -27,8 +27,17 @@ namespace FML
 			}
 		}
 
+		void Update(float deltaTime) override
+		{
+			if (invulnerabilityTimer > 0.f)
+				invulnerabilityTimer -= deltaTime;
+		}
+
 		void Damage(int damage)
 		{
+			if (invulnerabilityTimer > 0.f)
+				return;
+
 			gameObject->GetSubject().Notify(DamageEvent(damage));
 		}
 
@@ -40,11 +49,15 @@ namespace FML
 		void SetInvulnerable(bool value) { invulnerable = value; }
 		bool IsInvulnerable() const { return invulnerable; }
 
+		void MakeInvulnerableFor(float seconds) { invulnerabilityTimer = seconds; }
+		bool IsInInvulnerabilityWindow() const { return invulnerabilityTimer > 0.f; }
+
 	private:
 		int& CurrentHealth() { return sharedHealth ? *sharedHealth : health; }
 
 		int health{ 0 };
 		int* sharedHealth{ nullptr };
 		bool invulnerable{ false };
+		float invulnerabilityTimer{ 0.f };
 	};
 }

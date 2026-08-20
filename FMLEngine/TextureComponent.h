@@ -24,6 +24,9 @@ namespace FML
 		void SetSourceRect(const SDL_Rect& rect);
 		SDL_Rect GetSourceRect() const;
 
+		void SetAlpha(Uint8 newAlpha);
+		Uint8 GetAlpha() const { return alpha; }
+
 	private:
 		SDL_Texture* texture{ nullptr };
 		SDL_Rect destRect{};
@@ -31,6 +34,7 @@ namespace FML
 
 		int defaultWidth{ 0 };
 		int defaultHeight{ 0 };
+		Uint8 alpha{ 255 };
 	};
 
 

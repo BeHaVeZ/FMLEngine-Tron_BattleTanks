@@ -26,6 +26,7 @@
 #include "../Tron_BattleTanks/RecognizerStateComponent.h"
 #include "../Tron_BattleTanks/NormalMovingState.h"
 #include "../Tron_BattleTanks/PlayerRespawnComponent.h"
+#include "../Tron_BattleTanks/InvulnerabilityFlickerComponent.h"
 #include "../Tron_BattleTanks/LevelProgressionComponent.h"
 #include "../Tron_BattleTanks/FloatingScoreComponent.h"
 
@@ -88,6 +89,10 @@ namespace FML
 		turret->AddComponent(std::make_unique<TurretAimComponent>());
 
 		tank->AddChild(std::move(turret));
+
+		auto flicker = std::make_unique<InvulnerabilityFlickerComponent>();
+		tank->AddComponent(std::move(flicker));
+		tank->GetComponent<InvulnerabilityFlickerComponent>()->Initialize();
 
 		return tank;
 	}
@@ -242,6 +247,10 @@ namespace FML
 
 		tank->AddChild(std::move(turret));
 
+		auto flicker = std::make_unique<InvulnerabilityFlickerComponent>();
+		tank->AddComponent(std::move(flicker));
+		tank->GetComponent<InvulnerabilityFlickerComponent>()->Initialize();
+
 		return tank;
 	}
 
@@ -292,6 +301,10 @@ namespace FML
 		SDL_Rect tankBox = { 0,0,tank->GetComponent<TextureComponent>()->GetDefaultWidth(),tank->GetComponent<TextureComponent>()->GetDefaultHeight() };
 		auto playerCollider = std::make_unique<BoxCollider>(tankBox);
 		tank->AddComponent(std::move(playerCollider));
+
+		auto flicker = std::make_unique<InvulnerabilityFlickerComponent>();
+		tank->AddComponent(std::move(flicker));
+		tank->GetComponent<InvulnerabilityFlickerComponent>()->Initialize();
 
 		return tank;
 	}

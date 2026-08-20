@@ -260,6 +260,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameTags.h" />
     <ClInclude Include="LevelProgressionComponent.h" />
+    <ClInclude Include="InvulnerabilityFlickerComponent.h" />
     <ClInclude Include="PlayerRespawnComponent.h" />
     <ClInclude Include="TankLevelScene.h" />
     <ClInclude Include="HighscoreManager.h" />

@@ -29,6 +29,8 @@ namespace FML
 		defaultWidth = width;
 		defaultHeight = height;
 
+		SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+
 		destRect = { 0, 0, width, height };
 		srcRect = { 0, 0, defaultWidth, defaultHeight };
 	}
@@ -50,10 +52,17 @@ namespace FML
 				destRect.x = static_cast<int>(transform->GetWorldPosition().x - center.x + shake.x);
 				destRect.y = static_cast<int>(transform->GetWorldPosition().y - center.y + shake.y);
 
+				SDL_SetTextureAlphaMod(texture, alpha);
+
 				SDL_RenderCopyEx(renderer, texture, &srcRect, &destRect,
 					transform->GetWorldRotation(), &center, SDL_FLIP_NONE);
 			}
 		}
+	}
+
+	void TextureComponent::SetAlpha(Uint8 newAlpha)
+	{
+		alpha = newAlpha;
 	}
 
 	void TextureComponent::SetSourceRect(const SDL_Rect& rect)

@@ -42,9 +42,13 @@ namespace FML
 
 			if (Tags::IsEnemyTag(tag) || Tags::IsPlayerTag(tag))
 			{
+				auto healthComponent = otherGO->GetComponent<HealthComponent>();
+
+				if (healthComponent && healthComponent->IsInInvulnerabilityWindow())
+					return;
+
 				self->GetSubject().Notify(BulletHitEvent(otherGO, self->GetComponent<TransformComponent>()->GetWorldPosition()));
 
-				auto healthComponent = otherGO->GetComponent<HealthComponent>();
 				if (healthComponent)
 				{
 					SoundHelper::PlayRandomSound({ SoundId::Hit1, SoundId::Hit2, SoundId::Hit3 }, .3f);

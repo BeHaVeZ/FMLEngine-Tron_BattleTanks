@@ -199,6 +199,9 @@
     <ClInclude Include="LevelProgressionComponent.h">
       <Filter>Header Files\GameComponents</Filter>
     </ClInclude>
+    <ClInclude Include="InvulnerabilityFlickerComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
     <ClInclude Include="PlayerRespawnComponent.h">
       <Filter>Header Files\GameComponents</Filter>
     </ClInclude>
