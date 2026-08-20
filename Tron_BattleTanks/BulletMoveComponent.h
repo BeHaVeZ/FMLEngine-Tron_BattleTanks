@@ -37,6 +37,8 @@ namespace FML
 
 		glm::vec2 GetMoveDirection() const { return moveDirection; }
 		void SetMoveDirection(const glm::vec2& dir) { moveDirection = dir; }
+		float GetSpeed() const { return bulletSpeed; }
+		int GetBouncesLeft() const { return maxBounces - bounceCount; }
 
 	private:
 		glm::vec2 moveDirection;

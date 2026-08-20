@@ -20,6 +20,11 @@
 #include "../Tron_BattleTanks/InputBindingHelper.h"
 #include "../Tron_BattleTanks/GameData.h"
 #include "../Tron_BattleTanks/EnemyManagerComponent.h"
+#include "../Tron_BattleTanks/AITankControllerComponent.h"
+#include "../Tron_BattleTanks/GodMode.h"
+#include "AgentAvoidance.h"
+#include "NavGrid.h"
+#include "CollisionManager.h"
 #include "TestCommand.h"
 
 namespace FML
@@ -109,13 +114,20 @@ namespace FML
 
 	void CoopScene::InitializeFirstTank()
 	{
-		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 514,428 }, "Player1");
+		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 71,722 }, "Player1");
 		gameObjects.push_back(std::move(tank));
 	}
 
 	void CoopScene::InitializeSecondTank()
 	{
-		auto tank = PrefabRegistry::Instance().CreateYellowTankPrefab({ 514,428 }, "Player2");
+		auto tank = PrefabRegistry::Instance().CreateYellowTankPrefab({ 480,722 }, "Player2");
+
+		if (GameData::Player2IsAI)
+		{
+			tank->AddComponent(std::make_unique<AITankControllerComponent>(GameData::AiDifficulty));
+			tank->GetComponent<AITankControllerComponent>()->Initialize();
+		}
+
 		gameObjects.push_back(std::move(tank));
 	}
 
@@ -126,6 +138,20 @@ namespace FML
 
 		auto tankP1 = FindGameObjectByTag("Player1");
 		auto tankP2 = FindGameObjectByTag("Player2");
+
+		if (GameData::Player2IsAI)
+		{
+			if (tankP1)
+			{
+				InputBindingHelper::BindSoloModeControls(tankP1);
+			}
+			if (tankP2)
+			{
+				GodMode::Apply(tankP2);
+			}
+			return;
+		}
+
 		if (tankP1 && tankP2)
 		{
 			InputBindingHelper::BindDuoModeControls(tankP1, tankP2);
@@ -180,6 +206,14 @@ namespace FML
 
 			AddGameObject(std::move(wall));
 		}
+
+		const SDL_Rect playfield{
+			0,
+			hudHeight,
+			ConfigManager::Instance().GetWindowWidth(),
+			ConfigManager::Instance().GetWindowHeight() - hudHeight
+		};
+		NavGrid::Instance().Build(walls, playfield, navCellSize);
 	}
 
 	void CoopScene::InitializeSounds()
@@ -211,11 +245,16 @@ namespace FML
 
 	void CoopScene::Render(SDL_Renderer* renderer)
 	{
+		NavGrid::Instance().DebugRenderGrid();
+
 		Scene::Render(renderer);
+
+		CollisionManager::Instance().DebugRender();
 	}
 	void CoopScene::OnExit()
 	{
 		GameAdmin::Instance().ResetPlayers();
+		AgentAvoidance::Instance().Clear();
 	}
 }
 

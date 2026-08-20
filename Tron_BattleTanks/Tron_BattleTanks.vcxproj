@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -220,6 +220,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="InputBindingHelper.cpp" />
     <ClCompile Include="DebugControls.cpp" />
     <ClCompile Include="NameEntryScene.cpp" />
+    <ClCompile Include="AITankControllerComponent.cpp" />
     <ClCompile Include="EnemyPerception.cpp" />
     <ClCompile Include="GodMode.cpp" />
     <ClCompile Include="GridMovement.cpp" />
@@ -270,6 +271,8 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="NameEntryScene.h" />
     <ClInclude Include="NormalMovingState.h" />
     <ClInclude Include="RecognizerCollisionBehaviorComponent.h" />
+    <ClInclude Include="AIDifficultyProfile.h" />
+    <ClInclude Include="AITankControllerComponent.h" />
     <ClInclude Include="EnemyPerception.h" />
     <ClInclude Include="GodMode.h" />
     <ClInclude Include="GridMovement.h" />

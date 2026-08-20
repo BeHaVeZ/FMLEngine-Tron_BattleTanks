@@ -1,6 +1,7 @@
 #include "DebugControls.h"
 #include "DebugOverlay.h"
 #include "GodMode.h"
+#include "AIDifficultyProfile.h"
 #include <iomanip>
 #include <iostream>
 
@@ -33,10 +34,17 @@ namespace FML
 		Entry("R", "Damage self");
 
 		Heading("=== PLAYER 2 ===");
-		Entry("Arrow keys", "Move");
-		Entry("[ / ]", "Rotate turret");
-		Entry("Right Ctrl", "Shoot");
-		Entry("P", "Damage self");
+		if (GameData::Player2IsAI)
+		{
+			Entry("AI", DifficultyName(GameData::AiDifficulty));
+		}
+		else
+		{
+			Entry("Arrow keys", "Move");
+			Entry("[ / ]", "Rotate turret");
+			Entry("Right Ctrl", "Shoot");
+			Entry("P", "Damage self");
+		}
 
 		Heading("=== GAMEPAD ===");
 		Entry("D-Pad", "Move");

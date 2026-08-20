@@ -21,12 +21,12 @@ namespace FML
 			return Tags::IsPlayerTag(hit->hitObject->GetTag()) ? hit->hitObject : nullptr;
 		}
 
-		GameObject* AllyFromHit(const std::optional<CollisionManager::RaycastHit>& hit)
+		GameObject* BlockerFromHit(const std::optional<CollisionManager::RaycastHit>& hit, EnemyPerception::TagPredicate isBlocker)
 		{
 			if (!hit || !hit->hitObject)
 				return nullptr;
 
-			return Tags::IsEnemyTag(hit->hitObject->GetTag()) ? hit->hitObject : nullptr;
+			return isBlocker(hit->hitObject->GetTag()) ? hit->hitObject : nullptr;
 		}
 
 		constexpr float lineOfFireMargin = 8.f;
@@ -84,7 +84,12 @@ namespace FML
 
 	bool EnemyPerception::AllyInLineOfFire(GameObject* shooter, const glm::vec2& origin, const glm::vec2& forward, float range)
 	{
-		if (!shooter)
+		return BlockerInLineOfFire(shooter, origin, forward, range, [](std::string_view tag) { return Tags::IsEnemyTag(tag); });
+	}
+
+	bool EnemyPerception::BlockerInLineOfFire(GameObject* shooter, const glm::vec2& origin, const glm::vec2& forward, float range, TagPredicate isBlocker)
+	{
+		if (!shooter || !isBlocker)
 			return false;
 
 		const glm::vec2 right{ -forward.y, forward.x };
@@ -103,7 +108,7 @@ namespace FML
 		{
 			const auto hit = collisions.RaycastFirstHit(start, forward, range, shooter, nullptr);
 
-			const bool ally = AllyFromHit(hit) != nullptr;
+			const bool ally = BlockerFromHit(hit, isBlocker) != nullptr;
 			blocked = blocked || ally;
 
 			if (!drawDebug)

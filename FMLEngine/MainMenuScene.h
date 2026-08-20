@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "../Tron_BattleTanks/GameData.h"
 #include <functional>
 #include <memory>
 #include <string>
@@ -25,6 +26,7 @@ namespace FML
 		{
 			Root,
 			Play,
+			Difficulty,
 			Settings
 		};
 
@@ -44,7 +46,9 @@ namespace FML
 		void BuildPage(MenuPage page);
 		void BuildRootItems();
 		void BuildPlayItems();
+		void BuildDifficultyItems();
 		void BuildSettingsItems();
+		static MenuPage ParentOf(MenuPage page);
 		void SpawnItemObjects();
 		void ClearItemObjects();
 
@@ -67,6 +71,9 @@ namespace FML
 		MenuPage currentPage = MenuPage::Root;
 		MenuPage pendingPage = MenuPage::Root;
 		bool hasPendingPage = false;
+
+		GameData::GameMode pendingMode = GameData::GameMode::Versus;
+		std::string pendingSceneName;
 
 		SDL_Renderer* storedRenderer;
 

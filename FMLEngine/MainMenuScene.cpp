@@ -135,9 +135,10 @@ namespace FML
 
 		switch (page)
 		{
-		case MenuPage::Root:     BuildRootItems();     break;
-		case MenuPage::Play:     BuildPlayItems();     break;
-		case MenuPage::Settings: BuildSettingsItems(); break;
+		case MenuPage::Root:       BuildRootItems();       break;
+		case MenuPage::Play:       BuildPlayItems();       break;
+		case MenuPage::Difficulty: BuildDifficultyItems(); break;
+		case MenuPage::Settings:   BuildSettingsItems();   break;
 		}
 
 		SpawnItemObjects();
@@ -155,23 +156,61 @@ namespace FML
 	{
 		items.push_back({ "SOLO", { 0, 255, 255, 255 }, []()
 			{
+				GameData::Player2IsAI = false;
 				GameData::CurrentGameMode = GameData::GameMode::Solo;
 				SceneManager::Instance().QueueSceneChange("Solo");
 			}, nullptr, nullptr });
 
 		items.push_back({ "COOP", { 0, 255, 0, 255 }, []()
 			{
+				GameData::Player2IsAI = false;
 				GameData::CurrentGameMode = GameData::GameMode::Coop;
 				SceneManager::Instance().QueueSceneChange("Coop");
 			}, nullptr, nullptr });
 
+		items.push_back({ "COOP AI", { 0, 255, 0, 255 }, [this]()
+			{
+				pendingMode = GameData::GameMode::Coop;
+				pendingSceneName = "Coop";
+				QueuePage(MenuPage::Difficulty);
+			}, nullptr, nullptr });
+
 		items.push_back({ "VERSUS", { 255, 0, 0, 255 }, []()
 			{
+				GameData::Player2IsAI = false;
 				GameData::CurrentGameMode = GameData::GameMode::Versus;
 				SceneManager::Instance().QueueSceneChange("Versus");
 			}, nullptr, nullptr });
 
+		items.push_back({ "VERSUS AI", { 255, 0, 0, 255 }, [this]()
+			{
+				pendingMode = GameData::GameMode::Versus;
+				pendingSceneName = "Versus";
+				QueuePage(MenuPage::Difficulty);
+			}, nullptr, nullptr });
+
 		items.push_back({ "BACK", { 0, 255, 255, 255 }, [this]() {GoBack(); }, nullptr, nullptr });
+	}
+
+	void MainMenuScene::BuildDifficultyItems()
+	{
+		const auto start = [this](GameData::AIDifficulty difficulty)
+			{
+				GameData::Player2IsAI = true;
+				GameData::AiDifficulty = difficulty;
+				GameData::CurrentGameMode = pendingMode;
+				SceneManager::Instance().QueueSceneChange(pendingSceneName);
+			};
+
+		items.push_back({ "EASY", { 0, 255, 255, 255 }, [start]() {start(GameData::AIDifficulty::Easy); }, nullptr, nullptr });
+		items.push_back({ "NORMAL", { 255, 255, 0, 255 }, [start]() {start(GameData::AIDifficulty::Normal); }, nullptr, nullptr });
+		items.push_back({ "HARD", { 255, 0, 0, 255 }, [start]() {start(GameData::AIDifficulty::Hard); }, nullptr, nullptr });
+		items.push_back({ "BACK", { 0, 255, 255, 255 }, [this]() {GoBack(); }, nullptr, nullptr });
+	}
+
+	MainMenuScene::MenuPage MainMenuScene::ParentOf(MenuPage page)
+	{
+		return page == MenuPage::Difficulty ? MenuPage::Play : MenuPage::Root;
 	}
 
 	void MainMenuScene::BuildSettingsItems()
@@ -371,7 +410,7 @@ namespace FML
 			ConfigManager::Instance().Save();
 		}
 
-		QueuePage(MenuPage::Root);
+		QueuePage(ParentOf(currentPage));
 	}
 
 	void MainMenuScene::HandleMouseInput(const SDL_Event& event)

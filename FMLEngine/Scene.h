@@ -5,6 +5,7 @@
 #include <glm.hpp>
 #include "GameObject.h"
 #include <string>
+#include <string_view>
 
 namespace FML 
 {
@@ -29,6 +30,7 @@ namespace FML
 		void AddGameObject(std::unique_ptr<GameObject> gameObject, const glm::vec2& position);
 
         GameObject* FindGameObjectByTag(const std::string& tag);
+        std::vector<GameObject*> FindGameObjectsByTag(std::string_view tag) const;
         void CleanupDestroyedGameObjects();
 
         virtual void OnEnter();

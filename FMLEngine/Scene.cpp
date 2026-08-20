@@ -79,6 +79,19 @@ namespace FML
 		return nullptr;
 	}
 
+	std::vector<GameObject*> Scene::FindGameObjectsByTag(std::string_view tag) const
+	{
+		std::vector<GameObject*> found;
+		for (const auto& gameObject : gameObjects)
+		{
+			if (gameObject->GetTag() == tag && !gameObject->IsMarkedForDestruction())
+			{
+				found.push_back(gameObject.get());
+			}
+		}
+		return found;
+	}
+
 	void Scene::CleanupDestroyedGameObjects()
 	{
 		const size_t count = gameObjects.size();
