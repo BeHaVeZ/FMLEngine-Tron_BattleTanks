@@ -7,11 +7,11 @@ namespace FML
 	class BlueTankKilledEvent : public Event
 	{
 	public:
-		BlueTankKilledEvent() = default;
+		explicit BlueTankKilledEvent(int score) : scoreForBlueTankKilled(score) {}
 
 		int GetScore() const { return scoreForBlueTankKilled; }
 	private:
-		int scoreForBlueTankKilled{ 100 };
+		int scoreForBlueTankKilled;
 	};
 
 }

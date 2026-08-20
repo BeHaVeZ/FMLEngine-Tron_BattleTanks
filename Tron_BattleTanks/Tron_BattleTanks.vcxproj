@@ -255,6 +255,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="EnemyMovementComponent.h" />
     <ClInclude Include="EnemyShootComponent.h" />
     <ClInclude Include="FileReader.h" />
+    <ClInclude Include="FloatingScoreComponent.h" />
     <ClInclude Include="GameAdmin.h" />
     <ClInclude Include="GameData.h" />
     <ClInclude Include="GameTags.h" />

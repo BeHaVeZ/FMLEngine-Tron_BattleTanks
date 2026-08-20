@@ -31,6 +31,8 @@ namespace FML
 
 		std::unique_ptr<GameObject> CreateCurrentScoreUI(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "CurrentScoreUI") const;
 
+		std::unique_ptr<GameObject> CreateFloatingScorePrefab(glm::vec2 spawnPosition, int score, const std::string tag = "FloatingScore") const;
+
 		std::unique_ptr<GameObject> CreateEnemyManager(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "EnemyManager") const;
 
 

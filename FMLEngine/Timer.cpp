@@ -1,4 +1,5 @@
 #include "Timer.h"
+#include <algorithm>
 
 namespace FML
 {
@@ -17,7 +18,7 @@ namespace FML
 
 	void Timer::Update() {
 		Uint32 currentTick = SDL_GetTicks();
-		deltaTime = (currentTick - lastTick) / 1000.0f;
+		deltaTime = std::min((currentTick - lastTick) / 1000.0f, maxDeltaTime);
 		lastTick = currentTick;
 		timeSinceStart += deltaTime;
 	}

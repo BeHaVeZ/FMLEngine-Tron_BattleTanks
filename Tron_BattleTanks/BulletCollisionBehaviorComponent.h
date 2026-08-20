@@ -2,8 +2,13 @@
 
 #include "Component.h"
 #include "Collider.h"
+#include "BoxCollider.h"
 #include "GameObject.h"
+#include "TransformComponent.h"
+#include "HealthComponent.h"
+#include "BulletMoveComponent.h"
 #include <string>
+#include <cmath>
 #include "ServiceLocator.h"
 #include "SoundHelper.h"
 #include "glm.hpp"
@@ -19,24 +24,14 @@ namespace FML
 		float     depth;   
 	};
 
-	static Separation GetSeparation(const SDL_Rect& a, const SDL_Rect& b)
-	{
-		int dL = a.x + a.w - b.x;        
-		int dR = b.x + b.w - a.x;       
-		int dT = a.y + a.h - b.y;        
-		int dB = b.y + b.h - a.y;        
-
-		int minPen = std::min({ dL, dR, dT, dB });
-
-		if (minPen == dL) return { {-1, 0}, (float)dL };
-		if (minPen == dR) return { { 1, 0}, (float)dR };
-		if (minPen == dT) return { { 0,-1}, (float)dT };
-		return               { { 0, 1}, (float)dB };
-	}
-
 	class BulletCollisionBehaviorComponent : public Component
 	{
 	public:
+
+		void Update(float) override
+		{
+			resolvedWallHitThisFrame = false;
+		}
 
 		void OnTrigger(GameObject* self, Collider* other)
 		{
@@ -45,9 +40,10 @@ namespace FML
 
 			const std::string& tag = otherGO->GetTag();
 
-			self->GetSubject().Notify(BulletHitEvent(otherGO, self->GetComponent<TransformComponent>()->GetWorldPosition()));
 			if (Tags::IsEnemyTag(tag) || Tags::IsPlayerTag(tag))
 			{
+				self->GetSubject().Notify(BulletHitEvent(otherGO, self->GetComponent<TransformComponent>()->GetWorldPosition()));
+
 				auto healthComponent = otherGO->GetComponent<HealthComponent>();
 				if (healthComponent)
 				{
@@ -58,25 +54,97 @@ namespace FML
 			}
 			else if (tag == Tags::Wall)
 			{
-				auto* bulletCol = self->GetComponent<Collider>();
-				auto* wallCol = otherGO->GetComponent<Collider>();
-				if (!bulletCol || !wallCol) return;
-
-				Separation sep = GetSeparation(bulletCol->GetBoundingBox(),
-					wallCol->GetBoundingBox());
-
-				if (auto* move = self->GetComponent<BulletMoveComponent>())
-					move->Bounce(sep.normal);
-
-				auto* tr = self->GetComponent<TransformComponent>();
-				const float separationBias = 4.0f;
-				tr->SetPosition(tr->GetLocalPosition() + sep.normal * (sep.depth + separationBias));
+				ResolveWallHit(self, otherGO);
 			}
 			else if (tag == Tags::EnemyBullet || tag == Tags::Bullet)
 			{
+				self->GetSubject().Notify(BulletHitEvent(otherGO, self->GetComponent<TransformComponent>()->GetWorldPosition()));
 				self->Destroy();
 				otherGO->Destroy();
 			}
 		}
+
+	private:
+
+		void ResolveWallHit(GameObject* self, GameObject* wall)
+		{
+			if (resolvedWallHitThisFrame) return;
+
+			auto* bulletCollider = self->GetComponent<BoxCollider>();
+			auto* wallCollider = wall->GetComponent<Collider>();
+			auto* move = self->GetComponent<BulletMoveComponent>();
+			auto* transform = self->GetComponent<TransformComponent>();
+			if (!bulletCollider || !wallCollider || !move || !transform) return;
+
+			const glm::vec2 direction = move->GetMoveDirection();
+
+			Separation separation{};
+			if (!FindEntryFace(bulletCollider->GetBoundingBox(), wallCollider->GetBoundingBox(), direction, separation))
+				return;
+
+			if (glm::dot(direction, separation.normal) >= 0.f)
+				return;
+
+			resolvedWallHitThisFrame = true;
+
+			transform->SetPosition(transform->GetLocalPosition() + separation.normal * (separation.depth + separationBias));
+			bulletCollider->SyncToTransform();
+
+			self->GetSubject().Notify(BulletHitEvent(wall, transform->GetWorldPosition()));
+
+			move->Bounce(separation.normal);
+		}
+
+		static bool FindEntryFace(const SDL_Rect& bullet, const SDL_Rect& wall, const glm::vec2& moveDirection, Separation& outSeparation)
+		{
+			const float lengthSquared = glm::dot(moveDirection, moveDirection);
+			if (lengthSquared < directionEpsilon * directionEpsilon)
+				return false;
+
+			const glm::vec2 direction = moveDirection / std::sqrt(lengthSquared);
+
+			const glm::vec2 bulletMin{ static_cast<float>(bullet.x), static_cast<float>(bullet.y) };
+			const glm::vec2 bulletMax{ static_cast<float>(bullet.x + bullet.w), static_cast<float>(bullet.y + bullet.h) };
+			const glm::vec2 wallMin{ static_cast<float>(wall.x), static_cast<float>(wall.y) };
+			const glm::vec2 wallMax{ static_cast<float>(wall.x + wall.w), static_cast<float>(wall.y + wall.h) };
+
+			int   entryAxis = -1;
+			float shortestTravel = 0.f;
+			float entryDepth = 0.f;
+
+			for (int axis = 0; axis < 2; ++axis)
+			{
+				if (std::abs(direction[axis]) < directionEpsilon)
+					continue;
+
+				const float depth = direction[axis] > 0.f
+					? bulletMax[axis] - wallMin[axis]
+					: wallMax[axis] - bulletMin[axis];
+
+				if (depth <= 0.f)
+					continue;
+
+				const float travel = depth / std::abs(direction[axis]);
+				if (entryAxis < 0 || travel < shortestTravel)
+				{
+					entryAxis = axis;
+					shortestTravel = travel;
+					entryDepth = depth;
+				}
+			}
+
+			if (entryAxis < 0)
+				return false;
+
+			outSeparation.normal = { 0.f, 0.f };
+			outSeparation.normal[entryAxis] = direction[entryAxis] > 0.f ? -1.f : 1.f;
+			outSeparation.depth = entryDepth;
+			return true;
+		}
+
+		bool resolvedWallHitThisFrame = false;
+
+		static constexpr float separationBias = 1.0f;
+		static constexpr float directionEpsilon = 1e-4f;
 	};
 }

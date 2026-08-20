@@ -133,6 +133,9 @@
     <ClInclude Include="FileReader.h">
       <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
+    <ClInclude Include="FloatingScoreComponent.h">
+      <Filter>Header Files\GameComponents</Filter>
+    </ClInclude>
     <ClInclude Include="ShootComponent.h">
       <Filter>Header Files\GameComponents</Filter>
     </ClInclude>

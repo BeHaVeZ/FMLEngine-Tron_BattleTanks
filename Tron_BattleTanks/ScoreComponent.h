@@ -26,9 +26,9 @@ namespace FML
 			}
 		}
 
-		void AddScore()
+		void AddScore(int score)
 		{
-			gameObject->GetSubject().Notify(BlueTankKilledEvent());
+			gameObject->GetSubject().Notify(BlueTankKilledEvent(score));
 		}
 
 

@@ -16,6 +16,12 @@ namespace FML
 		std::string GetText() const { return text; }
 
 		void SetColor(SDL_Color newColor, SDL_Renderer* renderer);
+		void SetAlpha(Uint8 newAlpha);
+		Uint8 GetAlpha() const { return alpha; }
+
+		int GetWidth() const;
+		int GetHeight() const;
+
 		void Render(SDL_Renderer* renderer) override;
 
 	private:
@@ -23,6 +29,7 @@ namespace FML
 		TTF_Font* font;
 		SDL_Texture* texture;
 		SDL_Color color;
+		Uint8 alpha;
 	};
 
 }

@@ -10,6 +10,8 @@ namespace FML
 		SDL_Rect GetBoundingBox() const override { return box; }
 		void SetBoundingBox(const SDL_Rect& newBox) { box = newBox; }
 
+		void SyncToTransform();
+
 		void Update(float deltaTime) override;
 		void Render(SDL_Renderer* renderer) override;
 

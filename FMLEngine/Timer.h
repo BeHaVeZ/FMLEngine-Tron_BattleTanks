@@ -18,6 +18,8 @@ namespace FML
 		Uint32 lastTick;
 		float deltaTime;
 		float timeSinceStart;
+
+		static constexpr float maxDeltaTime = 0.033f;
 	};
 
 }

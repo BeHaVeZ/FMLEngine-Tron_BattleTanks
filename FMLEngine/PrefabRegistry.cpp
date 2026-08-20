@@ -27,6 +27,7 @@
 #include "../Tron_BattleTanks/NormalMovingState.h"
 #include "../Tron_BattleTanks/PlayerRespawnComponent.h"
 #include "../Tron_BattleTanks/LevelProgressionComponent.h"
+#include "../Tron_BattleTanks/FloatingScoreComponent.h"
 
 
 namespace FML
@@ -328,6 +329,8 @@ namespace FML
 
 		bullet->AddComponent(std::move(bulletCollider));
 
+		bullet->GetComponent<BoxCollider>()->SyncToTransform();
+
 		auto observer = std::make_unique<BulletObserver>();
 		bullet->GetSubject().AddObserver(observer.get());
 		bullet->AddComponent(std::move(observer));
@@ -365,6 +368,8 @@ namespace FML
 			};
 
 		bullet->AddComponent(std::move(bulletCollider));
+
+		bullet->GetComponent<BoxCollider>()->SyncToTransform();
 
 		auto observer = std::make_unique<BulletObserver>();
 		bullet->GetSubject().AddObserver(observer.get());
@@ -483,6 +488,22 @@ namespace FML
 		currentScoreUIText->AddChild(std::move(currentScoreUI));
 
 		return currentScoreUIText;
+	}
+
+	std::unique_ptr<GameObject> PrefabRegistry::CreateFloatingScorePrefab(glm::vec2 spawnPosition, int score, const std::string tag) const
+	{
+		auto floatingScore = std::make_unique<GameObject>(tag);
+
+		auto text = std::make_unique<TextComponent>(std::to_string(score), "data/fonts/tron-arcade.ttf", 16, SDL_Color{ 255, 255, 0, 255 }, SceneManager::Instance().GetRenderer());
+
+		const glm::vec2 origin{ spawnPosition.x - text->GetWidth() * .5f, spawnPosition.y - text->GetHeight() * .5f };
+
+		floatingScore->AddComponent(std::move(text));
+		floatingScore->AddComponent(std::make_unique<FloatingScoreComponent>(origin));
+		floatingScore->GetComponent<TransformComponent>()->SetPosition(origin);
+		floatingScore->Initialize();
+
+		return floatingScore;
 	}
 
 	std::unique_ptr<GameObject> PrefabRegistry::CreateEnemyManager(glm::vec2, const std::string) const

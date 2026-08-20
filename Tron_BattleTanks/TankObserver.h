@@ -20,20 +20,27 @@ namespace FML
 			GameObject* destroyed = destroyEvent->GetDestroyedObject();
 			if (Tags::IsEnemyTag(destroyed->GetTag()))
 			{
+				const int killScore = Tags::ScoreForTag(destroyed->GetTag());
+
 				auto player = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag(Tags::Player1.data());
 				if (player)
 				{
 					if (auto* score = player->GetComponent<ScoreComponent>())
 					{
-						score->AddScore();
+						score->AddScore(killScore);
 					}
 				}
-				gameObject->GetSubject().Notify(BlueTankKilledEvent());
+				gameObject->GetSubject().Notify(BlueTankKilledEvent(killScore));
 
 				Logger::Log(LogLevel::Info, "Enemy destroyed: spawning explosion at %.1f.", destroyed->GetComponent<TransformComponent>()->GetWorldPosition().x);
 
-				auto explosion = PrefabRegistry::Instance().CreateTankExplosionPrefab(destroyed->GetComponent<TransformComponent>()->GetWorldPosition());
+				const glm::vec2 deathPosition = destroyed->GetComponent<TransformComponent>()->GetWorldPosition();
+
+				auto explosion = PrefabRegistry::Instance().CreateTankExplosionPrefab(deathPosition);
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
+
+				auto floatingScore = PrefabRegistry::Instance().CreateFloatingScorePrefab(deathPosition, killScore);
+				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(floatingScore));
 			}
 			else if (Tags::IsPlayerTag(destroyed->GetTag()))
 			{

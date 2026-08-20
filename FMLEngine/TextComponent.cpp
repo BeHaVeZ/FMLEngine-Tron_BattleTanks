@@ -6,7 +6,7 @@
 namespace FML
 {
 	TextComponent::TextComponent(const std::string& text, const std::string& fontPath, int fontSize, SDL_Color color, SDL_Renderer* renderer)
-		: text(text), color(color), texture(nullptr), font(nullptr) {
+		: text(text), color(color), texture(nullptr), font(nullptr), alpha(255) {
 		font = TTF_OpenFont(fontPath.c_str(), fontSize);
 		if (!font) {
 			std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
@@ -38,6 +38,11 @@ namespace FML
 
 		texture = SDL_CreateTextureFromSurface(renderer, textSurface);
 		SDL_FreeSurface(textSurface);
+
+		if (texture) {
+			SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+			SDL_SetTextureAlphaMod(texture, alpha);
+		}
 	}
 
 	void TextComponent::SetColor(SDL_Color newColor, SDL_Renderer* renderer)
@@ -52,6 +57,32 @@ namespace FML
 
 		color = newColor;
 		SetText(text, renderer);
+	}
+
+	void TextComponent::SetAlpha(Uint8 newAlpha)
+	{
+		alpha = newAlpha;
+		if (texture) {
+			SDL_SetTextureAlphaMod(texture, alpha);
+		}
+	}
+
+	int TextComponent::GetWidth() const
+	{
+		int width = 0;
+		if (texture) {
+			SDL_QueryTexture(texture, nullptr, nullptr, &width, nullptr);
+		}
+		return width;
+	}
+
+	int TextComponent::GetHeight() const
+	{
+		int height = 0;
+		if (texture) {
+			SDL_QueryTexture(texture, nullptr, nullptr, nullptr, &height);
+		}
+		return height;
 	}
 
 	void TextComponent::Render(SDL_Renderer* renderer) {
