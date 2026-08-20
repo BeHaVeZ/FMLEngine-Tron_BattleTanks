@@ -63,6 +63,8 @@ namespace FML
 				return;
 			}
 
+			Mix_AllocateChannels(mixingChannelCount);
+
 			m_IsShutdown.store(false);
 			m_UpdateThread = std::jthread(&SDL_SoundSystemImpl::Update, this);
 		}
@@ -208,6 +210,8 @@ namespace FML
 		bool m_IsMuted{ false };
 		float m_CurrentVolume{ .5f };
 		float m_MusicVolumeScale{ 1.f };
+
+		static constexpr int mixingChannelCount{ 32 };
 
 		void ApplyMusicVolumeUnlocked()
 		{
