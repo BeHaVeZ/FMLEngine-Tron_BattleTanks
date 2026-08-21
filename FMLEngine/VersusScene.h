@@ -36,6 +36,10 @@ namespace FML
 		void Render(SDL_Renderer* renderer) override;
 
 		void OnExit() override;
+
+	private:
+		static constexpr int hudHeight = 100;
+		static constexpr int navCellSize = 8;
 	};
 
 }

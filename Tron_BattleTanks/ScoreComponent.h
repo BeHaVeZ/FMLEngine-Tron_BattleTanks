@@ -1,41 +1,42 @@
 #pragma once
 #include "Component.h"
-#include "BlueTankKilledEvent.h"
 #include "GameData.h"
+#include "GameObject.h"
+#include "GameTags.h"
+#include <string_view>
 
 namespace FML
 {
-	class ScoreComponent : public Component , public Observer
+	class ScoreComponent : public Component
 	{
 	public:
-		ScoreComponent() : currentScore(GameData::CurrentScore)
+		void Initialize() override
 		{
-		}
-
-		~ScoreComponent()
-		{
-		}
-
-		void HandleEvent(const Event& event) override
-		{
-			if (const BlueTankKilledEvent* blueTankKilledEvent = dynamic_cast<const BlueTankKilledEvent*>(&event))
+			if (gameObject)
 			{
-				GameData::CurrentScore += blueTankKilledEvent->GetScore();
-				currentScore = GameData::CurrentScore;
-				Logger::Log(LogLevel::Info, "ScoreComponent Score updated to %d", GameData::CurrentScore);
+				stats = GameData::StatsForPlayer(Tags::PlayerNumberForTag(gameObject->GetTag()));
 			}
 		}
 
-		void AddScore(int score)
+		void AddKill(const std::string_view enemyTag, int killScore)
 		{
-			gameObject->GetSubject().Notify(BlueTankKilledEvent(score));
+			if (!stats)
+				return;
+
+			if (enemyTag == Tags::BlueTank)
+				++stats->blueTankKills;
+			else if (enemyTag == Tags::PinkTank)
+				++stats->pinkTankKills;
+			else if (enemyTag == Tags::Recognizer)
+				++stats->recognizerKills;
+
+			stats->score += killScore;
 		}
 
-
-		int GetCurrentScore() const { return currentScore; }
+		int GetCurrentScore() const { return stats ? stats->score : 0; }
 
 	private:
-		int currentScore;
+		GameData::PlayerStats* stats{ nullptr };
 	};
 
 }

@@ -5,6 +5,7 @@
 #endif
 
 #include "Game.h"
+#include "DebugControls.h"
 
 int main(int, char* [])
 {
@@ -13,6 +14,8 @@ int main(int, char* [])
 	{
 		return -1;
 	}
+
+	FML::DebugControls::PrintControls();
 
 	game.Run();
 

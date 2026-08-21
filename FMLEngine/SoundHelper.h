@@ -39,6 +39,10 @@ namespace FML
 			soundSystem.AddSound("echosplosion_2.wav", SoundId::PlayerExplosion2);
 
 			soundSystem.AddSound("splash.wav", SoundId::Splash);
+
+			soundSystem.AddSound("blunk_1.wav", SoundId::UiBlunk1);
+			soundSystem.AddSound("blunk_2.wav", SoundId::UiBlunk2);
+			soundSystem.AddSound("blunk_3.wav", SoundId::UiBlunk3);
 		}
 	};
 }

@@ -9,24 +9,6 @@ namespace FML
 {
 	namespace
 	{
-		struct ChannelInfo
-		{
-			DebugChannel channel;
-			const char* key;
-			const char* name;
-		};
-
-		constexpr std::array<ChannelInfo, 8> channels{ {
-			{ DebugChannel::NavGrid,    "1", "Nav grid" },
-			{ DebugChannel::Clearance,  "2", "Clearance" },
-			{ DebugChannel::Paths,      "3", "Paths" },
-			{ DebugChannel::Avoidance,  "4", "Avoidance" },
-			{ DebugChannel::Perception, "5", "Perception" },
-			{ DebugChannel::AgentState, "6", "Agent state" },
-			{ DebugChannel::Colliders,  "7", "Colliders" },
-			{ DebugChannel::Stats,      "8", "Stats" },
-		} };
-
 		constexpr glm::vec4 panelBackground{ 0.f, 0.f, 0.f, .72f };
 		constexpr glm::vec4 enabledColor{ .35f, 1.f, .55f, 1.f };
 		constexpr glm::vec4 disabledColor{ .45f, .45f, .5f, 1.f };
@@ -76,6 +58,11 @@ namespace FML
 	bool DebugOverlay::IsEnabled(DebugChannel channel) const
 	{
 		return masterEnabled && (channelMask & static_cast<uint32_t>(channel)) != 0;
+	}
+
+	bool DebugOverlay::IsChannelSelected(DebugChannel channel) const
+	{
+		return (channelMask & static_cast<uint32_t>(channel)) != 0;
 	}
 
 	void DebugOverlay::WorldText(const glm::vec2& position, std::string text, const glm::vec4& color)
@@ -200,10 +187,10 @@ namespace FML
 		std::vector<PanelLine> lines;
 		lines.emplace_back("F3 DEBUG", headingColor);
 
-		for (const ChannelInfo& info : channels)
+		for (const DebugChannelInfo& info : DebugChannelInfos)
 		{
-			const bool on = (channelMask & static_cast<uint32_t>(info.channel)) != 0;
-			lines.emplace_back(std::string(info.key) + "  " + info.name + (on ? "  [on]" : ""), on ? enabledColor : disabledColor);
+			const bool on = IsChannelSelected(info.channel);
+			lines.emplace_back(std::string(info.keyLabel) + "  " + info.name + (on ? "  [on]" : ""), on ? enabledColor : disabledColor);
 		}
 
 		lines.emplace_back("F4  focus: " + DescribeFocus(), focusedAgent ? focusColor : disabledColor);

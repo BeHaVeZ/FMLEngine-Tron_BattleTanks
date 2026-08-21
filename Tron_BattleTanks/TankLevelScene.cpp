@@ -116,6 +116,7 @@ namespace FML
 	void TankLevelScene::InitializeInput()
 	{
 		InputBindingHelper::BindGlobalCommands();
+		InputBindingHelper::BindPauseControls();
 		if (auto* player = FindGameObjectByTag("Player1"))
 		{
 			InputBindingHelper::BindSoloModeControls(player);

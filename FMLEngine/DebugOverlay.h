@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <glm.hpp>
+#include <array>
 #include <cstdint>
 #include <string>
 #include <unordered_map>
@@ -20,7 +21,28 @@ namespace FML
 		AgentState = 1 << 5,
 		Colliders = 1 << 6,
 		Stats = 1 << 7,
+		Prediction = 1 << 8,
 	};
+
+	struct DebugChannelInfo
+	{
+		DebugChannel channel;
+		SDL_Keycode key;
+		const char* keyLabel;
+		const char* name;
+	};
+
+	inline constexpr std::array<DebugChannelInfo, 9> DebugChannelInfos{ {
+		{ DebugChannel::NavGrid,    SDLK_1, "1", "Nav grid"    },
+		{ DebugChannel::Clearance,  SDLK_2, "2", "Clearance"   },
+		{ DebugChannel::Paths,      SDLK_3, "3", "Paths"       },
+		{ DebugChannel::Avoidance,  SDLK_4, "4", "Avoidance"   },
+		{ DebugChannel::Perception, SDLK_5, "5", "Perception"  },
+		{ DebugChannel::AgentState, SDLK_6, "6", "Agent state" },
+		{ DebugChannel::Colliders,  SDLK_7, "7", "Colliders"   },
+		{ DebugChannel::Stats,      SDLK_8, "8", "Stats"       },
+		{ DebugChannel::Prediction, SDLK_9, "9", "Prediction"  },
+	} };
 
 	class DebugOverlay
 	{
@@ -37,6 +59,7 @@ namespace FML
 		void ToggleMaster() { masterEnabled = !masterEnabled; }
 		void ToggleChannel(DebugChannel channel);
 		bool IsEnabled(DebugChannel channel) const;
+		bool IsChannelSelected(DebugChannel channel) const;
 
 		void WorldText(const glm::vec2& position, std::string text, const glm::vec4& color = { 1.f, 1.f, 1.f, 1.f });
 		void Stat(std::string line);

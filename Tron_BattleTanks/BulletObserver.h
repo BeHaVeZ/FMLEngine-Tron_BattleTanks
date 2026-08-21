@@ -4,7 +4,6 @@
 #include "BulletHitEvent.h"
 #include "PrefabRegistry.h"
 #include "SceneManager.h"
-#include "Logger.h"
 #include "SoundHelper.h"
 
 namespace FML
@@ -19,7 +18,6 @@ namespace FML
                 GameObject* target = hit->GetTarget();
                 glm::vec2 position = hit->GetHitPosition();
 
-                Logger::Log(LogLevel::Debug, "Bullet hit object with tag %s", target ? target->GetTag().c_str() : "None");
                 if (target && target->GetTag() == "Wall")
                 {
                     auto sparks = PrefabRegistry::Instance().CreateHitExplosionPrefab(position);
@@ -37,8 +35,6 @@ namespace FML
 
                 auto poof = PrefabRegistry::Instance().CreateBulletExplosionPrefab(position);
                 SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(poof));
-
-                Logger::Log(LogLevel::Debug, "Bullet destroyed. Playing exit effect at position %.1f, %.1f", position.x, position.y);
             }
         }
     };

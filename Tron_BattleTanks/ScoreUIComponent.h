@@ -2,20 +2,22 @@
 #include "Component.h"
 #include "TextComponent.h"
 #include "SceneManager.h"
-#include "BlueTankKilledEvent.h"
+#include <string>
 
 namespace FML
 {
-	class ScoreUIComponent : public Component, public Observer
+	class ScoreUIComponent : public Component
 	{
 	public:
-		ScoreUIComponent(int score = 0) : text(nullptr), currentScore(score)
+		explicit ScoreUIComponent(int score = 0) : displayedScore(score)
 		{
-			textComponent = std::make_unique<TextComponent>(std::to_string(currentScore), "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,255,0,255 }, SceneManager::Instance().GetRenderer());
+			textComponent = std::make_unique<TextComponent>(std::to_string(displayedScore), "data/fonts/tron-arcade.ttf", 20, SDL_Color{ 255,255,0,255 }, SceneManager::Instance().GetRenderer());
 		}
 
-		~ScoreUIComponent()
+		ScoreUIComponent(const int* source, SDL_Color color)
+			: source(source), displayedScore(source ? *source : 0)
 		{
+			textComponent = std::make_unique<TextComponent>(std::to_string(displayedScore), "data/fonts/tron-arcade.ttf", 20, color, SceneManager::Instance().GetRenderer());
 		}
 
 		void Initialize() override 
@@ -24,22 +26,22 @@ namespace FML
 			text = gameObject->GetComponent<TextComponent>();
 		}
 
-		void HandleEvent(const Event& event) override 
+		void Update(float) override
 		{
-			if (const BlueTankKilledEvent* enemyKilledEvent = dynamic_cast<const BlueTankKilledEvent*>(&event))
+			if (!source || *source == displayedScore)
+				return;
+
+			displayedScore = *source;
+			if (text)
 			{
-				currentScore += enemyKilledEvent->GetScore();
-				if (text) 
-				{
-					text->SetText(std::to_string(currentScore), SceneManager::Instance().GetRenderer());
-					Logger::Log(LogLevel::Info, "HealthUIComponent Health updated to %d", currentScore);
-				}
+				text->SetText(std::to_string(displayedScore), SceneManager::Instance().GetRenderer());
 			}
 		}
 
 	private:
 		std::unique_ptr<TextComponent> textComponent;
-		TextComponent* text;
-		int currentScore;
+		TextComponent* text{ nullptr };
+		const int* source{ nullptr };
+		int displayedScore;
 	};
 }

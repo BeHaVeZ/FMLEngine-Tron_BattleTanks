@@ -42,6 +42,7 @@ namespace FML
 		virtual void ClearSounds() = 0;
 		virtual float GetCurrentVolume() const = 0;
 		virtual void SetVolume(float newVolume) = 0;
+		virtual void SetMusicVolumeScale(float scale) = 0;
 		virtual void ClearQueue() = 0;
 	};
 
@@ -59,6 +60,7 @@ namespace FML
 		virtual void ClearSounds() override {};
 		virtual float GetCurrentVolume() const override { return 0.0f; }
 		virtual void SetVolume(float) override {};
+		virtual void SetMusicVolumeScale(float) override {};
 		virtual void ClearQueue() override {};
 	};
 
@@ -79,6 +81,7 @@ namespace FML
 		virtual void ClearSounds() override;
 		virtual float GetCurrentVolume() const override;
 		virtual void SetVolume(float volume) override;
+		virtual void SetMusicVolumeScale(float scale) override;
 		virtual void ClearQueue() override;
 
 	private:

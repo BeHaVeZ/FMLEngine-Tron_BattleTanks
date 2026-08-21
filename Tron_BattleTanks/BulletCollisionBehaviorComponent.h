@@ -33,6 +33,8 @@ namespace FML
 			resolvedWallHitThisFrame = false;
 		}
 
+		void SetOwnerPlayer(int playerNumber) { ownerPlayer = playerNumber; }
+
 		void OnTrigger(GameObject* self, Collider* other)
 		{
 			GameObject* otherGO = other->GetOwner();
@@ -52,6 +54,7 @@ namespace FML
 				if (healthComponent)
 				{
 					SoundHelper::PlayRandomSound({ SoundId::Hit1, SoundId::Hit2, SoundId::Hit3 }, .3f);
+					healthComponent->SetLastAttacker(ownerPlayer);
 					healthComponent->Damage(1);
 				}
 				self->Destroy();
@@ -146,6 +149,7 @@ namespace FML
 			return true;
 		}
 
+		int ownerPlayer = 0;
 		bool resolvedWallHitThisFrame = false;
 
 		static constexpr float separationBias = 1.0f;

@@ -218,12 +218,15 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="GameAdmin.cpp" />
     <ClCompile Include="HighscoreManager.cpp" />
     <ClCompile Include="InputBindingHelper.cpp" />
+    <ClCompile Include="DebugControls.cpp" />
     <ClCompile Include="NameEntryScene.cpp" />
+    <ClCompile Include="AITankControllerComponent.cpp" />
     <ClCompile Include="EnemyPerception.cpp" />
     <ClCompile Include="GodMode.cpp" />
     <ClCompile Include="GridMovement.cpp" />
     <ClCompile Include="NormalMovingState.cpp" />
     <ClCompile Include="SoloHighscoreScene.cpp" />
+    <ClCompile Include="CoopResultScene.cpp" />
     <ClCompile Include="VersusResultScene.cpp" />
     <ClCompile Include="TankLevelScene.cpp" />
     <ClCompile Include="TeleportManager.cpp" />
@@ -243,7 +246,6 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="..\FMLEngine\RotateTurretCommand.h" />
     <ClInclude Include="..\FMLEngine\SoundHelper.h" />
     <ClInclude Include="..\FMLEngine\VersusScene.h" />
-    <ClInclude Include="BlueTankKilledEvent.h" />
     <ClInclude Include="BulletCollisionBehaviorComponent.h" />
     <ClInclude Include="BulletHitEvent.h" />
     <ClInclude Include="BulletMoveComponent.h" />
@@ -264,10 +266,13 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="TankLevelScene.h" />
     <ClInclude Include="HighscoreManager.h" />
     <ClInclude Include="InputBindingHelper.h" />
+    <ClInclude Include="DebugControls.h" />
     <ClInclude Include="Level404.h" />
     <ClInclude Include="NameEntryScene.h" />
     <ClInclude Include="NormalMovingState.h" />
     <ClInclude Include="RecognizerCollisionBehaviorComponent.h" />
+    <ClInclude Include="AIDifficultyProfile.h" />
+    <ClInclude Include="AITankControllerComponent.h" />
     <ClInclude Include="EnemyPerception.h" />
     <ClInclude Include="GodMode.h" />
     <ClInclude Include="GridMovement.h" />
@@ -280,6 +285,7 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="ShootComponent.h" />
     <ClInclude Include="SkipLevelCommand.h" />
     <ClInclude Include="SoloHighscoreScene.h" />
+    <ClInclude Include="CoopResultScene.h" />
     <ClInclude Include="VersusResultScene.h" />
     <ClInclude Include="SoloLevel2.h" />
     <ClInclude Include="SoloLevel3.h" />

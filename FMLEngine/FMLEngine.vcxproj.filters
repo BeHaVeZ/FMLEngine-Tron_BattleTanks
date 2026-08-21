@@ -58,6 +58,9 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Engine\Components</Filter>
     </ClCompile>
+    <ClCompile Include="PauseMenu.cpp">
+      <Filter>Engine\Managers</Filter>
+    </ClCompile>
     <ClCompile Include="ScreenShake.cpp">
       <Filter>Engine\Rendering</Filter>
     </ClCompile>
@@ -149,6 +152,9 @@
     </ClInclude>
     <ClInclude Include="TurretAimComponent.h">
       <Filter>Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="PauseMenu.h">
+      <Filter>Engine\Managers</Filter>
     </ClInclude>
     <ClInclude Include="ScreenShake.h">
       <Filter>Engine\Rendering</Filter>

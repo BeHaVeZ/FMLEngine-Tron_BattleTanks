@@ -82,21 +82,31 @@ namespace FML
 
 	void InputHandler::Update()
 	{
-		for (auto& [key, isPressed] : keyStates)
+		if (!commandsSuspended)
 		{
-			if (isPressed) {
-				auto it = keyDownCommands.find(key);
-				if (it != keyDownCommands.end() && it->second)
-				{
-					it->second->Execute();
+			for (auto& [key, isPressed] : keyStates)
+			{
+				if (isPressed) {
+					auto it = keyDownCommands.find(key);
+					if (it != keyDownCommands.end() && it->second)
+					{
+						it->second->Execute();
+					}
 				}
 			}
 		}
 		gamepadHandler->UpdateGamepadStates();
 	}
 
+	void InputHandler::SetCommandsSuspended(bool suspended)
+	{
+		commandsSuspended = suspended;
+		gamepadHandler->SetCommandsSuspended(suspended);
+	}
+
 	void InputHandler::ClearBindings()
 	{
+		commandsSuspended = false;
 		keyDownCommands.clear();
 		keyUpCommands.clear();
 		keyDownFunctions.clear();
@@ -119,9 +129,13 @@ namespace FML
 		else if (event.type == SDL_KEYUP)
 		{
 			keyStates[event.key.keysym.sym] = false;
-			auto it = keyUpCommands.find(event.key.keysym.sym);
-			if (it != keyUpCommands.end() && it->second)
-				it->second->Execute();
+
+			if (!commandsSuspended)
+			{
+				auto it = keyUpCommands.find(event.key.keysym.sym);
+				if (it != keyUpCommands.end() && it->second)
+					it->second->Execute();
+			}
 
 			if (auto ite = keyUpFunctions.find(event.key.keysym.sym); ite != keyUpFunctions.end())
 				ite->second();

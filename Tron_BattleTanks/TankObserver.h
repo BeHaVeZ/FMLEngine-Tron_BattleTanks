@@ -3,9 +3,12 @@
 #include "Component.h"
 #include "GameObjectDestroyedEvent.h"
 #include "GameAdmin.h"
-#include "Logger.h"
+#include "GameData.h"
 #include "GameTags.h"
+#include "HealthComponent.h"
+#include "ScoreComponent.h"
 #include "ScreenShake.h"
+#include <string>
 
 namespace FML
 {
@@ -23,17 +26,8 @@ namespace FML
 			{
 				const int killScore = Tags::ScoreForTag(destroyed->GetTag());
 
-				auto player = SceneManager::Instance().GetCurrentScene()->FindGameObjectByTag(Tags::Player1.data());
-				if (player)
-				{
-					if (auto* score = player->GetComponent<ScoreComponent>())
-					{
-						score->AddScore(killScore);
-					}
-				}
-				gameObject->GetSubject().Notify(BlueTankKilledEvent(killScore));
-
-				Logger::Log(LogLevel::Info, "Enemy destroyed: spawning explosion at %.1f.", destroyed->GetComponent<TransformComponent>()->GetWorldPosition().x);
+				GameData::CurrentScore += killScore;
+				CreditKiller(destroyed, killScore);
 
 				const glm::vec2 deathPosition = destroyed->GetComponent<TransformComponent>()->GetWorldPosition();
 
@@ -55,9 +49,32 @@ namespace FML
 				SceneManager::Instance().GetCurrentScene()->AddGameObject(std::move(explosion));
 
 				SoundHelper::PlayRandomSound({ SoundId::PlayerExplosion1, SoundId::PlayerExplosion2 }, .3f);
-
-				Logger::Log(LogLevel::Error, "Player destroyed: Spawning explosion.");
 			}
 		};
+
+	private:
+		static void CreditKiller(GameObject* destroyed, int killScore)
+		{
+			const auto* health = destroyed->GetComponent<HealthComponent>();
+			if (!health)
+				return;
+
+			const std::string_view killerTag = Tags::TagForPlayerNumber(health->GetLastAttacker());
+			if (killerTag.empty())
+				return;
+
+			Scene* scene = SceneManager::Instance().GetCurrentScene();
+			if (!scene)
+				return;
+
+			GameObject* killer = scene->FindGameObjectByTag(std::string(killerTag));
+			if (!killer)
+				return;
+
+			if (auto* score = killer->GetComponent<ScoreComponent>())
+			{
+				score->AddKill(destroyed->GetTag(), killScore);
+			}
+		}
 	};
 }
