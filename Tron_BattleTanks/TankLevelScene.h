@@ -28,19 +28,21 @@ namespace FML
 		void Render(SDL_Renderer* renderer) override;
 		void OnExit() override;
 
-	private:
-		void InitializeBackground(SDL_Renderer* renderer);
+	protected:
+		virtual void InitializeBackground(SDL_Renderer* renderer);
 		void InitializeFPSCounter(SDL_Renderer* renderer);
-		void InitializePlayer();
-		void InitializeUI();
+		virtual void InitializePlayer();
+		virtual void InitializeUI();
 		void InitializeWalls();
-		void InitializeManagers();
-		void InitializeSounds();
-		void ReportDebugStats();
+		virtual void InitializeManagers();
+		virtual void InitializeSounds();
 
 		LevelConfig config;
 
 		static constexpr int hudHeight = 100;
 		static constexpr int navCellSize = 8;
+
+	private:
+		void ReportDebugStats();
 	};
 }

@@ -48,8 +48,14 @@ namespace FML
 
 		void SetSpawnCooldown(float newCooldown) { spawnCooldownTime = newCooldown; }
 
+		void SetSpawningEnabled(bool enabled) { spawningEnabled = enabled; }
+		bool IsSpawningEnabled() const { return spawningEnabled; }
+
 		void Update(float dt) override
 		{
+			if (!spawningEnabled)
+				return;
+
 			spawnCooldown -= dt;
 			if (spawnCooldown <= 0.f)
 			{
@@ -178,6 +184,8 @@ namespace FML
 
 		float spawnCooldown;
 		float spawnCooldownTime;
+
+		bool spawningEnabled{ true };
 
 		float visibilityTolerance;
 		std::mt19937 rng;

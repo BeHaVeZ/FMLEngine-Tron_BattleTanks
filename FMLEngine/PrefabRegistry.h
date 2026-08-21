@@ -18,6 +18,7 @@ namespace FML
 		std::unique_ptr<GameObject> CreatePinkTankPrefab(glm::vec2 spawnPosition = {0,0}, const std::string tag = "PinkTank") const;
 		std::unique_ptr<GameObject> CreateBlueTankPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "BlueTank") const;
 		std::unique_ptr<GameObject> CreateRecognizerPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "Recognizer") const;
+		std::unique_ptr<GameObject> CreateTargetDummyPrefab(glm::vec2 spawnPosition = { 0,0 }, const std::string tag = "BlueTank") const;
 		std::unique_ptr<GameObject> CreateBulletPrefab(glm::vec2 spawnPosition = { 0,0 }, glm::vec2 moveDirection = { 0,-1 }, const std::string tag = "", int ownerPlayer = 0) const;
 		std::unique_ptr<GameObject> CreateEnemyBulletPrefab(glm::vec2 spawnPosition = { 0,0 }, glm::vec2 moveDirection = { 0,-1 },float bulletSpeed = 250.f, const std::string tag = "EnemyBullet") const;
 

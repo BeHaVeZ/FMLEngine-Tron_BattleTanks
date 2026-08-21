@@ -27,6 +27,8 @@
 #include "../Tron_BattleTanks/CoopResultScene.h"
 #include "CollisionManager.h"
 #include "../Tron_BattleTanks/Level404.h"
+#include "../Tron_BattleTanks/AIShowcaseScene.h"
+#include "../Tron_BattleTanks/SandboxScene.h"
 #include <filesystem>
 
 namespace
@@ -134,6 +136,8 @@ namespace FML
 		SceneManager::Instance().AddScene(std::make_unique<TestingScene>());
 		SceneManager::Instance().AddScene(std::make_unique<VersusResultScene>());
 		SceneManager::Instance().AddScene(std::make_unique<CoopResultScene>());
+		SceneManager::Instance().AddScene(std::make_unique<AIShowcaseScene>());
+		SceneManager::Instance().AddScene(std::make_unique<SandboxScene>());
 
 		SceneManager::Instance().QueueSceneChange("MainMenu");
 

@@ -128,6 +128,30 @@ namespace FML
 		return tank;
 	}
 
+	std::unique_ptr<GameObject> PrefabRegistry::CreateTargetDummyPrefab(glm::vec2 spawnPosition, const std::string tag) const
+	{
+		auto dummy = std::make_unique<GameObject>(tag);
+
+		auto observer = std::make_unique<TankObserver>();
+		dummy->GetSubject().AddObserver(observer.get());
+		dummy->AddComponent(std::move(observer));
+
+		auto dummyTexture = std::make_unique<TextureComponent>("data/artassets/GreenTank.png", SceneManager::Instance().GetRenderer());
+		dummy->GetComponent<TransformComponent>()->CentralizePivotOnTexture(dummyTexture.get());
+		dummy->GetComponent<TransformComponent>()->SetPosition({ spawnPosition.x, spawnPosition.y });
+		dummy->AddComponent(std::move(dummyTexture));
+
+		auto dummyHealth = std::make_unique<HealthComponent>(1);
+		dummy->GetSubject().AddObserver(dummyHealth.get());
+		dummy->AddComponent(std::move(dummyHealth));
+
+		SDL_Rect dummyBox = { 0,0,dummy->GetComponent<TextureComponent>()->GetDefaultWidth() - 2,dummy->GetComponent<TextureComponent>()->GetDefaultHeight() };
+		auto dummyCollider = std::make_unique<BoxCollider>(dummyBox);
+		dummy->AddComponent(std::move(dummyCollider));
+
+		return dummy;
+	}
+
 	std::unique_ptr<GameObject> PrefabRegistry::CreateRecognizerPrefab(glm::vec2 spawnPosition, const std::string tag) const
 	{
 		auto recognizer = std::make_unique<GameObject>(tag);
