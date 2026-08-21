@@ -45,6 +45,11 @@ namespace FML
 
 	void TankLevelScene::InitializeBackground(SDL_Renderer* renderer)
 	{
+		if (config.backgroundPath.empty())
+		{
+			return;
+		}
+
 		auto background = std::make_unique<GameObject>("Background");
 		background->AddComponent(std::make_unique<TextureComponent>(config.backgroundPath, renderer));
 		auto* transform = background->GetComponent<TransformComponent>();
@@ -126,8 +131,14 @@ namespace FML
 	void TankLevelScene::InitializeSounds()
 	{
 		auto& soundSystem = ServiceLocator::GetSoundSystem();
-		soundSystem.AddSound(config.musicPath, SoundId::Music, true);
 		SoundHelper::LoadSharedSounds();
+
+		if (config.musicPath.empty())
+		{
+			return;
+		}
+
+		soundSystem.AddSound(config.musicPath, SoundId::Music, true);
 		soundSystem.PlaySound(SoundId::Music, soundSystem.GetCurrentVolume());
 	}
 

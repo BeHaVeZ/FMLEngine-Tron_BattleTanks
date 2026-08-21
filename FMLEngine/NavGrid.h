@@ -32,6 +32,8 @@ namespace FML
 
 		bool IsWalkable(const glm::vec2& worldPosition) const;
 
+		bool FindNearestWalkable(const glm::vec2& worldPosition, float agentRadius, glm::vec2& outPosition) const;
+
 		int GetLastSearchedCellCount() const { return lastSearchedCells; }
 		int GetSearchCount() const { return searchCount; }
 		int ConsumeSearchedCellsSinceLastFrame();

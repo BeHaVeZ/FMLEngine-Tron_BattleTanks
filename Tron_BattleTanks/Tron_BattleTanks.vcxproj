@@ -228,6 +228,8 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="SoloHighscoreScene.cpp" />
     <ClCompile Include="CoopResultScene.cpp" />
     <ClCompile Include="VersusResultScene.cpp" />
+    <ClCompile Include="AIShowcaseScene.cpp" />
+    <ClCompile Include="SandboxScene.cpp" />
     <ClCompile Include="TankLevelScene.cpp" />
     <ClCompile Include="TeleportManager.cpp" />
     <ClCompile Include="Tron_BattleTanks.cpp" />
@@ -263,6 +265,8 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="LevelProgressionComponent.h" />
     <ClInclude Include="InvulnerabilityFlickerComponent.h" />
     <ClInclude Include="PlayerRespawnComponent.h" />
+    <ClInclude Include="AIShowcaseScene.h" />
+    <ClInclude Include="SandboxScene.h" />
     <ClInclude Include="TankLevelScene.h" />
     <ClInclude Include="HighscoreManager.h" />
     <ClInclude Include="InputBindingHelper.h" />

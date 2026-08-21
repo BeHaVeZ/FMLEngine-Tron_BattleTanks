@@ -23,6 +23,8 @@ namespace FML
 		InputHandler::Instance().BindFunction(SDLK_F3, [] { DebugOverlay::Instance().ToggleMaster(); }, InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindFunction(SDLK_F4, [] { DebugOverlay::Instance().CycleFocus(); }, InputHandler::KeyAction::KeyUp);
 		InputHandler::Instance().BindFunction(SDLK_F6, [] { GodMode::Toggle(); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_F7, [] { SceneManager::Instance().QueueSceneChange("AIShowcase"); }, InputHandler::KeyAction::KeyUp);
+		InputHandler::Instance().BindFunction(SDLK_F8, [] { SceneManager::Instance().QueueSceneChange("Sandbox"); }, InputHandler::KeyAction::KeyUp);
 
 		for (const DebugChannelInfo& info : DebugChannelInfos)
 		{

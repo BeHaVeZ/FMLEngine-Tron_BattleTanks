@@ -241,6 +241,28 @@ namespace FML
 		return cell;
 	}
 
+	bool NavGrid::FindNearestWalkable(const glm::vec2& worldPosition, float agentRadius, glm::vec2& outPosition) const
+	{
+		if (!IsBuilt())
+			return false;
+
+		const Cell from = ToCell(worldPosition);
+		const int requiredClearance = ClearanceForRadius(agentRadius);
+
+		if (InBounds(from) && !blocked[Index(from)] && clearance[Index(from)] >= requiredClearance)
+		{
+			outPosition = worldPosition;
+			return true;
+		}
+
+		Cell nearest{};
+		if (!FindNearestUsableCell(from, requiredClearance, nearest))
+			return false;
+
+		outPosition = ToWorldCenter(nearest);
+		return true;
+	}
+
 	bool NavGrid::FindNearestUsableCell(Cell from, int requiredClearance, Cell& outCell) const
 	{
 		const auto usable = [&](Cell cell)

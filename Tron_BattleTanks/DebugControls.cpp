@@ -68,6 +68,19 @@ namespace FML
 		Entry("F4", "Cycle focused agent");
 		Entry("F5", "Reload current scene");
 		Entry("F6", GodMode::IsEnabled() ? "Toggle god mode (currently ON)" : "Toggle god mode (currently OFF)");
+		Entry("F7", "AI showcase scene (hard AI ally vs enemies)");
+		Entry("F8", "Sandbox scene (spawn anything by hand)");
+
+		Heading("=== SANDBOX SCENE (F8) ===");
+		Entry("Left / Right", "Cycle spawn type (tanks, ally, dummy, bullet, FX)");
+		Entry("U", "Cycle AI ally difficulty");
+		Entry("Right click", "Spawn selected at cursor (snaps to walkable)");
+		Entry("Left click", "Teleport player to cursor");
+		Entry("Tab", "Cycle map (level00 / 01 / 02)");
+		Entry("T", "Spawn an enemy wave");
+		Entry("G", "Toggle enemy auto-spawning");
+		Entry("C", "Clear spawned NPCs");
+		Entry("X", "Clear bullets");
 
 		Heading("=== OVERLAY CHANNELS (enable F3 first) ===");
 		for (const DebugChannelInfo& info : DebugChannelInfos)
