@@ -35,6 +35,7 @@ namespace FML
 			}
 
 			chasing = chaseTimer > 0.f;
+			holding = player && glm::distance(position, lastKnownPlayerPosition) <= standoffDistance;
 
 			auto& avoidance = AgentAvoidance::Instance();
 			avoidance.Register(gameObject, position, agentRadius,
@@ -54,7 +55,7 @@ namespace FML
 			follower.Update(gameObject, position, deltaTime);
 
 			const AgentAvoidance::Verdict traffic = avoidance.Query(gameObject, follower.GetHeading(position));
-			movement.FollowPath(gameObject, follower, deltaTime, traffic.speedScale);
+			movement.FollowPath(gameObject, follower, deltaTime, holding ? 0.f : traffic.speedScale);
 
 			ResolveDeadlock(traffic, deltaTime);
 		}
@@ -75,7 +76,7 @@ namespace FML
 
 			NavGrid::Instance().DebugRenderPath(follower.GetPath(), follower.GetNextWaypoint());
 
-			const char* label = chasing ? "CHASE" : (follower.HasPath() ? "PATROL" : "IDLE");
+			const char* label = chasing ? (holding ? "HOLD" : "CHASE") : (follower.HasPath() ? "PATROL" : "IDLE");
 
 			if (DebugEnabled(DebugChannel::AgentState))
 			{
@@ -118,9 +119,11 @@ namespace FML
 		float chaseTimer{ 0.f };
 		float giveWayTimer{ 0.f };
 		bool chasing{ false };
+		bool holding{ false };
 
 		static constexpr float sightRange = 600.f;
 		static constexpr float chaseDuration = 3.f;
+		static constexpr float standoffDistance = 100.f;
 		static constexpr float minPatrolDistance = 160.f;
 		static constexpr float giveWayPatience = 1.f;
 		static constexpr glm::vec2 labelOffset{ -22.f, -34.f };

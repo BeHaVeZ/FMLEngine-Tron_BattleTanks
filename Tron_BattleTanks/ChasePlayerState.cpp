@@ -29,11 +29,12 @@ namespace FML
 	{
 		const glm::vec2 position = recognizer->GetComponent<TransformComponent>()->GetWorldPosition();
 
-		auto& avoidance = AgentAvoidance::Instance();
-		avoidance.Register(recognizer, position, agentRadius, AgentAvoidance::Priority::Chasing);
-
 		GameObject* player = EnemyPerception::SeePlayerAhead(recognizer, sightRange);
 		hasVisualContact = player != nullptr;
+
+		auto& avoidance = AgentAvoidance::Instance();
+		avoidance.Register(recognizer, position, agentRadius, AgentAvoidance::Priority::Chasing, player);
+
 		if (player)
 		{
 			lastKnownPosition = player->GetComponent<TransformComponent>()->GetWorldPosition();

@@ -27,7 +27,7 @@ namespace FML
 			bool giveWay{ false };
 		};
 
-		void Register(const void* agent, const glm::vec2& position, float radius, Priority priority);
+		void Register(const void* agent, const glm::vec2& position, float radius, Priority priority, const void* target = nullptr);
 
 		Verdict Query(const void* agent, const glm::vec2& heading) const;
 
@@ -43,6 +43,7 @@ namespace FML
 		struct Entry
 		{
 			const void* agent{ nullptr };
+			const void* target{ nullptr };
 			glm::vec2 position{ 0.f, 0.f };
 			float radius{ 0.f };
 			Priority priority{ Priority::Patrolling };

@@ -14,7 +14,7 @@ namespace FML
 		return instance;
 	}
 
-	void AgentAvoidance::Register(const void* agent, const glm::vec2& position, float radius, Priority priority)
+	void AgentAvoidance::Register(const void* agent, const glm::vec2& position, float radius, Priority priority, const void* target)
 	{
 		if (!agent)
 			return;
@@ -31,6 +31,7 @@ namespace FML
 
 		Entry& entry = (existing != agents.end()) ? *existing : agents.emplace_back();
 		entry.agent = agent;
+		entry.target = target;
 		entry.position = position;
 		entry.radius = radius;
 		entry.priority = priority;
@@ -54,7 +55,7 @@ namespace FML
 
 		for (const Entry& other : agents)
 		{
-			if (other.agent == agent)
+			if (other.agent == agent || other.agent == self->target)
 				continue;
 
 			const glm::vec2 delta = other.position - self->position;
@@ -91,9 +92,12 @@ namespace FML
 	{
 		out.clear();
 
+		const Entry* self = Find(agent);
+		const void* target = self ? self->target : nullptr;
+
 		for (const Entry& entry : agents)
 		{
-			if (entry.agent != agent)
+			if (entry.agent != agent && entry.agent != target)
 				out.push_back(entry.position);
 		}
 	}

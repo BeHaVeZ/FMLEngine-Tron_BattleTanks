@@ -23,6 +23,15 @@ namespace FML
 		}
 	}
 
+	void TransformComponent::CorrectPosition(glm::vec2 newPosition)
+	{
+		if (newPosition != localPosition)
+		{
+			localPosition = newPosition;
+			MarkDirty();
+		}
+	}
+
 	void TransformComponent::SetRotation(float newRotation)
 	{
 		if (newRotation != localRotation) 

@@ -3,6 +3,7 @@
 #include "DebugOverlay.h"
 #include "GameTags.h"
 #include "GameObject.h"
+#include "HealthComponent.h"
 #include "TransformComponent.h"
 #include "TextureComponent.h"
 #include "CollisionManager.h"
@@ -18,7 +19,14 @@ namespace FML
 			if (!hit || !hit->hitObject)
 				return nullptr;
 
-			return Tags::IsPlayerTag(hit->hitObject->GetTag()) ? hit->hitObject : nullptr;
+			if (!Tags::IsPlayerTag(hit->hitObject->GetTag()))
+				return nullptr;
+
+			const auto* health = hit->hitObject->GetComponent<HealthComponent>();
+			if (health && health->IsInInvulnerabilityWindow())
+				return nullptr;
+
+			return hit->hitObject;
 		}
 
 		GameObject* BlockerFromHit(const std::optional<CollisionManager::RaycastHit>& hit, EnemyPerception::TagPredicate isBlocker)

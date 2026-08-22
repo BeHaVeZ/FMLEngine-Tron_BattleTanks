@@ -771,11 +771,13 @@ namespace FML
 
 		const AgentAvoidance::Verdict traffic = AgentAvoidance::Instance().Query(gameObject, glm::normalize(delta));
 
-		const float step = moveSpeed * traffic.speedScale * deltaTime;
+		const float intendedStep = moveSpeed * deltaTime;
+		intendedTravel += intendedStep;
+
+		const float step = intendedStep * traffic.speedScale;
 		if (step <= 0.f)
 			return;
 
-		intendedTravel += step;
 		axisHoldTimer -= deltaTime;
 
 		glm::vec2 axis{ 0.f, 0.f };
