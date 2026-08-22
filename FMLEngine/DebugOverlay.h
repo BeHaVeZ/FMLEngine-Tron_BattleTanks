@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 #include <string>
+#include <string_view>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -64,7 +65,7 @@ namespace FML
 		void WorldText(const glm::vec2& position, std::string text, const glm::vec4& color = { 1.f, 1.f, 1.f, 1.f });
 		void Stat(std::string line);
 
-		void SubmitFocusCandidate(const void* agent, const glm::vec2& position, std::string name);
+		void SubmitFocusCandidate(const void* agent, const glm::vec2& position, std::string_view name);
 		bool IsFocused(const void* agent) const;
 		bool HasFocus() const { return focusedAgent != nullptr; }
 		void CycleFocus();

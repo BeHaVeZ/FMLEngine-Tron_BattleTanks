@@ -81,17 +81,17 @@ namespace FML
 		stats.push_back(std::move(line));
 	}
 
-	void DebugOverlay::SubmitFocusCandidate(const void* agent, const glm::vec2& position, std::string name)
+	void DebugOverlay::SubmitFocusCandidate(const void* agent, const glm::vec2& position, std::string_view name)
 	{
 		if (!masterEnabled || !agent)
 			return;
 
-		candidates.push_back({ agent, position, std::move(name) });
+		candidates.push_back({ agent, position, std::string(name) });
 	}
 
 	bool DebugOverlay::IsFocused(const void* agent) const
 	{
-		return focusedAgent == nullptr || focusedAgent == agent;
+		return masterEnabled && (focusedAgent == nullptr || focusedAgent == agent);
 	}
 
 	void DebugOverlay::CycleFocus()

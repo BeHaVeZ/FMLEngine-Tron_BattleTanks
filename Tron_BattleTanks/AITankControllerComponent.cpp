@@ -161,6 +161,8 @@ namespace FML
 		if (!wallCacheBuilt)
 			BuildWallCache();
 
+		GatherSceneObjects();
+
 		const glm::vec2 position = transform->GetWorldPosition();
 
 		if (glm::distance(position, lastPosition) > teleportThreshold)
@@ -344,36 +346,51 @@ namespace FML
 		TryFire();
 	}
 
-	GameObject* AITankControllerComponent::AcquireTarget() const
+	void AITankControllerComponent::GatherSceneObjects()
 	{
+		scenePlayer1 = nullptr;
+		sceneTeleport = nullptr;
+		sceneEnemies.clear();
+		sceneBullets.clear();
+
 		Scene* scene = SceneManager::Instance().GetCurrentScene();
 		if (!scene)
-			return nullptr;
+			return;
 
+		scene->ForEachGameObject([this](GameObject& object)
+			{
+				const std::string& tag = object.GetTag();
+				if (tag == Tags::Player1)
+					scenePlayer1 = &object;
+				else if (Tags::IsEnemyTag(tag))
+					sceneEnemies.push_back(&object);
+				else if (tag == Tags::Bullet || tag == Tags::EnemyBullet)
+					sceneBullets.push_back(&object);
+				else if (tag == teleportTag)
+					sceneTeleport = &object;
+			});
+	}
+
+	GameObject* AITankControllerComponent::AcquireTarget() const
+	{
 		if (GameData::CurrentGameMode == GameData::GameMode::Versus)
-		{
-			GameObject* human = scene->FindGameObjectByTag(std::string(Tags::Player1));
-			return (human && !human->IsMarkedForDestruction()) ? human : nullptr;
-		}
+			return scenePlayer1;
 
 		const glm::vec2 position = transform->GetWorldPosition();
 		GameObject* closest = nullptr;
 		float closestDistance = 0.f;
 
-		for (std::string_view tag : { Tags::BlueTank, Tags::PinkTank, Tags::Recognizer })
+		for (GameObject* enemy : sceneEnemies)
 		{
-			for (GameObject* enemy : scene->FindGameObjectsByTag(tag))
-			{
-				auto* enemyTransform = enemy->GetComponent<TransformComponent>();
-				if (!enemyTransform)
-					continue;
+			auto* enemyTransform = enemy->GetComponent<TransformComponent>();
+			if (!enemyTransform)
+				continue;
 
-				const float distance = glm::distance(position, enemyTransform->GetWorldPosition());
-				if (!closest || distance < closestDistance)
-				{
-					closest = enemy;
-					closestDistance = distance;
-				}
+			const float distance = glm::distance(position, enemyTransform->GetWorldPosition());
+			if (!closest || distance < closestDistance)
+			{
+				closest = enemy;
+				closestDistance = distance;
 			}
 		}
 
@@ -382,35 +399,28 @@ namespace FML
 
 	bool AITankControllerComponent::ScanForThreats(const glm::vec2& position, Threat& outThreat)
 	{
-		Scene* scene = SceneManager::Instance().GetCurrentScene();
-		if (!scene)
-			return false;
-
 		bool found = false;
 		Threat nearest{};
 		int seen = 0;
 
-		for (std::string_view tag : { Tags::Bullet, Tags::EnemyBullet })
+		for (GameObject* bullet : sceneBullets)
 		{
-			for (GameObject* bullet : scene->FindGameObjectsByTag(tag))
+			auto* bulletTransform = bullet->GetComponent<TransformComponent>();
+			auto* move = bullet->GetComponent<BulletMoveComponent>();
+			if (!bulletTransform || !move)
+				continue;
+
+			++seen;
+
+			Threat candidate{};
+			if (!PredictBullet(bulletTransform->GetWorldPosition(), move->GetMoveDirection(), move->GetSpeed(),
+				move->GetBouncesLeft(), position, candidate))
+				continue;
+
+			if (!found || candidate.timeToImpact < nearest.timeToImpact)
 			{
-				auto* bulletTransform = bullet->GetComponent<TransformComponent>();
-				auto* move = bullet->GetComponent<BulletMoveComponent>();
-				if (!bulletTransform || !move)
-					continue;
-
-				++seen;
-
-				Threat candidate{};
-				if (!PredictBullet(bulletTransform->GetWorldPosition(), move->GetMoveDirection(), move->GetSpeed(),
-					move->GetBouncesLeft(), position, candidate))
-					continue;
-
-				if (!found || candidate.timeToImpact < nearest.timeToImpact)
-				{
-					nearest = candidate;
-					found = true;
-				}
+				nearest = candidate;
+				found = true;
 			}
 		}
 
@@ -536,16 +546,15 @@ namespace FML
 		if (GameData::CurrentGameMode != GameData::GameMode::Coop)
 			return false;
 
-		Scene* scene = SceneManager::Instance().GetCurrentScene();
-		if (!scene)
-			return false;
-
 		glm::vec2 nearest{ 0.f, 0.f };
 		float nearestDistance = kiteRadius;
 		bool found = false;
 
-		for (GameObject* recognizer : scene->FindGameObjectsByTag(Tags::Recognizer))
+		for (GameObject* recognizer : sceneEnemies)
 		{
+			if (recognizer->GetTag() != Tags::Recognizer)
+				continue;
+
 			auto* recognizerTransform = recognizer->GetComponent<TransformComponent>();
 			if (!recognizerTransform)
 				continue;
@@ -646,12 +655,8 @@ namespace FML
 			lastRangeToTarget = range;
 		}
 
-		Scene* scene = SceneManager::Instance().GetCurrentScene();
-		if (scene)
 		{
-			size_t bullets = 0;
-			for (std::string_view tag : { Tags::Bullet, Tags::EnemyBullet })
-				bullets += scene->FindGameObjectsByTag(tag).size();
+			const size_t bullets = sceneBullets.size();
 
 			if (bullets > lastSeenBulletCount)
 			{
@@ -918,10 +923,6 @@ namespace FML
 		shotSelfValid = false;
 		shotTeleportValid = false;
 
-		Scene* scene = SceneManager::Instance().GetCurrentScene();
-		if (!scene)
-			return;
-
 		const auto boxOf = [](GameObject* object, SDL_Rect& out)
 			{
 				auto* collider = object ? object->GetComponent<Collider>() : nullptr;
@@ -933,35 +934,28 @@ namespace FML
 			};
 
 		shotSelfValid = boxOf(gameObject, shotSelfBox);
-		shotTeleportValid = boxOf(scene->FindGameObjectByTag(std::string(teleportTag)), shotTeleportBox);
+		shotTeleportValid = boxOf(sceneTeleport, shotTeleportBox);
 
 		if (GameData::CurrentGameMode == GameData::GameMode::Versus)
 		{
-			if (GameObject* human = scene->FindGameObjectByTag(std::string(Tags::Player1)))
-			{
-				SDL_Rect box{};
-				if (boxOf(human, box))
-					shotTanks.push_back({ box, ShotOutcome::HitTarget });
-			}
+			SDL_Rect box{};
+			if (boxOf(scenePlayer1, box))
+				shotTanks.push_back({ box, ShotOutcome::HitTarget });
 
 			return;
 		}
 
-		if (GameObject* ally = scene->FindGameObjectByTag(std::string(Tags::Player1)))
 		{
 			SDL_Rect box{};
-			if (boxOf(ally, box))
+			if (boxOf(scenePlayer1, box))
 				shotTanks.push_back({ box, ShotOutcome::HitAlly });
 		}
 
-		for (std::string_view tag : { Tags::BlueTank, Tags::PinkTank, Tags::Recognizer })
+		for (GameObject* enemy : sceneEnemies)
 		{
-			for (GameObject* enemy : scene->FindGameObjectsByTag(tag))
-			{
-				SDL_Rect box{};
-				if (boxOf(enemy, box))
-					shotTanks.push_back({ box, ShotOutcome::HitTarget });
-			}
+			SDL_Rect box{};
+			if (boxOf(enemy, box))
+				shotTanks.push_back({ box, ShotOutcome::HitTarget });
 		}
 	}
 
@@ -1115,30 +1109,36 @@ namespace FML
 				return;
 		}
 
-		if (solutionTimer > 0.f)
-			return;
-
-		solutionTimer = profile.bankInterval;
-
-		FiringSolution best{};
-		float bestPath = 0.f;
-
-		for (float angle = -180.f; angle < 180.f; angle += profile.bankSearchStep)
+		if (!bankScanActive)
 		{
-			const glm::vec2 heading = DirectionForAim(angle);
-			const ShotResult shot = SimulateShot(MuzzlePoint(heading), heading, profile.bankBounces);
+			if (solutionTimer > 0.f)
+				return;
 
-			if (shot.outcome != ShotOutcome::HitTarget)
-				continue;
-
-			if (!best.valid || shot.pathLength < bestPath)
-			{
-				best = { angle, shot.bounces, true };
-				bestPath = shot.pathLength;
-			}
+			solutionTimer = profile.bankInterval;
+			bankScanActive = true;
+			bankScanAngle = -180.f;
+			bankBest = {};
+			bankBestPath = 0.f;
 		}
 
-		solution = best;
+		for (int processed = 0; bankScanActive && processed < bankAnglesPerFrame; ++processed)
+		{
+			const glm::vec2 heading = DirectionForAim(bankScanAngle);
+			const ShotResult shot = SimulateShot(MuzzlePoint(heading), heading, profile.bankBounces);
+
+			if (shot.outcome == ShotOutcome::HitTarget && (!bankBest.valid || shot.pathLength < bankBestPath))
+			{
+				bankBest = { bankScanAngle, shot.bounces, true };
+				bankBestPath = shot.pathLength;
+			}
+
+			bankScanAngle += profile.bankSearchStep;
+			if (bankScanAngle >= 180.f)
+			{
+				bankScanActive = false;
+				solution = bankBest;
+			}
+		}
 	}
 
 	void AITankControllerComponent::UpdateAim(const glm::vec2& position, float deltaTime)
@@ -1230,7 +1230,7 @@ namespace FML
 
 	void AITankControllerComponent::Render(SDL_Renderer*)
 	{
-		if (!transform)
+		if (!transform || !DebugOverlay::Instance().IsMasterEnabled())
 			return;
 
 		if (DebugEnabled(DebugChannel::Prediction))

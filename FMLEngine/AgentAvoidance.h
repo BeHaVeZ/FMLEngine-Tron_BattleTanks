@@ -55,6 +55,7 @@ namespace FML
 		static bool HasRightOfWay(const Entry& other, const Entry& self);
 
 		std::vector<Entry> agents;
+		float lastStaleSweep{ -1.f };
 
 		static constexpr float divertDistance = 96.f;
 

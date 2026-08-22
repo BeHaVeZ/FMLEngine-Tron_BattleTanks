@@ -20,7 +20,11 @@ namespace FML
 			return;
 
 		const float now = Timer::Instance().GetTimeSinceStart();
-		DropStale(now);
+		if (now != lastStaleSweep)
+		{
+			DropStale(now);
+			lastStaleSweep = now;
+		}
 
 		const auto existing = std::find_if(agents.begin(), agents.end(),
 			[agent](const Entry& entry) { return entry.agent == agent; });
@@ -119,6 +123,7 @@ namespace FML
 	void AgentAvoidance::Clear()
 	{
 		agents.clear();
+		lastStaleSweep = -1.f;
 	}
 
 	const AgentAvoidance::Entry* AgentAvoidance::Find(const void* agent) const

@@ -66,6 +66,7 @@ namespace FML
 			ShotOutcome outcome{ ShotOutcome::Miss };
 		};
 
+		void GatherSceneObjects();
 		GameObject* AcquireTarget() const;
 
 		bool ScanForThreats(const glm::vec2& position, Threat& outThreat);
@@ -110,6 +111,11 @@ namespace FML
 		GameObject* turret{ nullptr };
 		TurretAimComponent* turretAim{ nullptr };
 		ShootComponent* shooting{ nullptr };
+
+		GameObject* scenePlayer1{ nullptr };
+		GameObject* sceneTeleport{ nullptr };
+		std::vector<GameObject*> sceneEnemies;
+		std::vector<GameObject*> sceneBullets;
 
 		std::vector<glm::vec2> path;
 		std::vector<glm::vec2> obstacles;
@@ -174,6 +180,10 @@ namespace FML
 		FiringSolution solution;
 		ShotOutcome lastDirectOutcome{ ShotOutcome::Miss };
 		float solutionTimer{ 0.f };
+		bool bankScanActive{ false };
+		float bankScanAngle{ 0.f };
+		FiringSolution bankBest;
+		float bankBestPath{ 0.f };
 		std::vector<glm::vec2> debugPath;
 		int selfBlockedCount{ 0 };
 		int dodgeCount{ 0 };
@@ -210,6 +220,7 @@ namespace FML
 		static constexpr float strafeProbe = 44.f;
 		static constexpr float bulletSpeed = 250.f;
 		static constexpr int bulletMaxBounces = 4;
+		static constexpr int bankAnglesPerFrame = 24;
 
 		static constexpr float kiteRadius = 150.f;
 		static constexpr float flankOffset = 140.f;

@@ -58,10 +58,13 @@ namespace FML
 
 		BuildClearanceField();
 
-		costFromStart.resize(blocked.size());
-		cameFrom.resize(blocked.size());
-		closed.resize(blocked.size());
+		costFromStart.assign(blocked.size(), std::numeric_limits<float>::max());
+		cameFrom.assign(blocked.size(), invalidIndex);
+		visitStamp.assign(blocked.size(), 0);
+		closedStamp.assign(blocked.size(), 0);
+		generation = 0;
 		occupancy.assign(blocked.size(), 0.f);
+		occupiedCells.clear();
 
 		Logger::Log(LogLevel::Info, "NavGrid built: %dx%d cells at %dpx from %zu blockers",
 			width, height, cellSize, blockers.size());
@@ -76,10 +79,23 @@ namespace FML
 		blocked.clear();
 		clearance.clear();
 		occupancy.clear();
+		occupiedCells.clear();
 		costFromStart.clear();
 		cameFrom.clear();
-		closed.clear();
+		visitStamp.clear();
+		closedStamp.clear();
+		generation = 0;
 		lastSearchedCells = 0;
+	}
+
+	void NavGrid::NextGeneration()
+	{
+		if (++generation == 0)
+		{
+			std::fill(visitStamp.begin(), visitStamp.end(), 0u);
+			std::fill(closedStamp.begin(), closedStamp.end(), 0u);
+			generation = 1;
+		}
 	}
 
 	void NavGrid::BuildClearanceField()
@@ -126,7 +142,14 @@ namespace FML
 
 	void NavGrid::BuildOccupancyField(const std::vector<glm::vec2>& occupied, float radius)
 	{
-		std::fill(occupancy.begin(), occupancy.end(), 0.f);
+		for (const int index : occupiedCells)
+		{
+			occupancy[index] = 0.f;
+		}
+		occupiedCells.clear();
+
+		if (occupied.empty())
+			return;
 
 		const int reach = static_cast<int>(std::ceil(radius / cellSize));
 		const float radiusSquared = radius * radius;
@@ -148,6 +171,7 @@ namespace FML
 						continue;
 
 					occupancy[Index(candidate)] += occupancyPenalty;
+					occupiedCells.push_back(Index(candidate));
 				}
 			}
 		}
@@ -304,14 +328,17 @@ namespace FML
 
 	bool NavGrid::Search(Cell start, Cell goal, int requiredClearance)
 	{
-		std::fill(costFromStart.begin(), costFromStart.end(), std::numeric_limits<float>::max());
-		std::fill(cameFrom.begin(), cameFrom.end(), invalidIndex);
-		std::fill(closed.begin(), closed.end(), uint8_t{ 0 });
+		NextGeneration();
 		open = {};
 		lastSearchedCells = 0;
 
 		const int startIndex = Index(start);
 		const int goalIndex = Index(goal);
+
+		const auto costOf = [&](int index)
+			{
+				return visitStamp[index] == generation ? costFromStart[index] : std::numeric_limits<float>::max();
+			};
 
 		const auto heuristic = [&](Cell cell)
 			{
@@ -324,7 +351,9 @@ namespace FML
 				return headroom >= preferredClearance ? 0.f : (preferredClearance - headroom) * centringWeight;
 			};
 
+		visitStamp[startIndex] = generation;
 		costFromStart[startIndex] = 0.f;
+		cameFrom[startIndex] = invalidIndex;
 		open.push({ heuristic(start), startIndex });
 
 		static constexpr std::array<Cell, 4> neighbourOffsets{
@@ -336,10 +365,10 @@ namespace FML
 			const int current = open.top().index;
 			open.pop();
 
-			if (closed[current])
+			if (closedStamp[current] == generation)
 				continue;
 
-			closed[current] = 1;
+			closedStamp[current] = generation;
 			++lastSearchedCells;
 			++searchedCellsAccumulator;
 
@@ -360,7 +389,7 @@ namespace FML
 					continue;
 
 				const int neighbourIndex = Index(neighbour);
-				if (blocked[neighbourIndex] || closed[neighbourIndex] || clearance[neighbourIndex] < requiredClearance)
+				if (blocked[neighbourIndex] || closedStamp[neighbourIndex] == generation || clearance[neighbourIndex] < requiredClearance)
 					continue;
 
 				const bool turning = parent != invalidIndex && (offset.x != incoming.x || offset.y != incoming.y);
@@ -370,9 +399,10 @@ namespace FML
 					+ (turning ? turnPenalty : 0.f)
 					+ centringCost(neighbourIndex)
 					+ occupancy[neighbourIndex];
-				if (tentativeCost >= costFromStart[neighbourIndex])
+				if (tentativeCost >= costOf(neighbourIndex))
 					continue;
 
+				visitStamp[neighbourIndex] = generation;
 				costFromStart[neighbourIndex] = tentativeCost;
 				cameFrom[neighbourIndex] = current;
 				open.push({ tentativeCost + heuristic(neighbour), neighbourIndex });

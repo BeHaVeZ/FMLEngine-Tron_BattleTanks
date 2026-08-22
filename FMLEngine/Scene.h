@@ -29,8 +29,22 @@ namespace FML
 		void AddGameObject(std::unique_ptr<GameObject> gameObject);
 		void AddGameObject(std::unique_ptr<GameObject> gameObject, const glm::vec2& position);
 
-        GameObject* FindGameObjectByTag(const std::string& tag);
+        GameObject* FindGameObjectByTag(std::string_view tag);
         std::vector<GameObject*> FindGameObjectsByTag(std::string_view tag) const;
+        void FindGameObjectsByTag(std::string_view tag, std::vector<GameObject*>& outFound) const;
+
+        template <typename Fn>
+        void ForEachGameObject(Fn&& fn) const
+        {
+            for (const auto& gameObject : gameObjects)
+            {
+                if (!gameObject->IsMarkedForDestruction())
+                {
+                    fn(*gameObject);
+                }
+            }
+        }
+
         void CleanupDestroyedGameObjects();
 
         virtual void OnEnter();

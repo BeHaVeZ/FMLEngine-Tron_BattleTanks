@@ -62,6 +62,9 @@ namespace FML
 		void Render(SDL_Renderer*) override
 		{
 			auto& overlay = DebugOverlay::Instance();
+			if (!overlay.IsMasterEnabled())
+				return;
+
 			const glm::vec2 position = gameObject->GetComponent<TransformComponent>()->GetWorldPosition();
 
 			AgentAvoidance::Instance().DebugRenderLane(gameObject, follower.GetHeading(position));

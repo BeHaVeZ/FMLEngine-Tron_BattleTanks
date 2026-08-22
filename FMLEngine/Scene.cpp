@@ -67,7 +67,7 @@ namespace FML
 		}
 	}
 
-	GameObject* Scene::FindGameObjectByTag(const std::string& tag)
+	GameObject* Scene::FindGameObjectByTag(std::string_view tag)
 	{
 		for (auto& gameObject : gameObjects)
 		{
@@ -82,14 +82,20 @@ namespace FML
 	std::vector<GameObject*> Scene::FindGameObjectsByTag(std::string_view tag) const
 	{
 		std::vector<GameObject*> found;
+		FindGameObjectsByTag(tag, found);
+		return found;
+	}
+
+	void Scene::FindGameObjectsByTag(std::string_view tag, std::vector<GameObject*>& outFound) const
+	{
+		outFound.clear();
 		for (const auto& gameObject : gameObjects)
 		{
 			if (gameObject->GetTag() == tag && !gameObject->IsMarkedForDestruction())
 			{
-				found.push_back(gameObject.get());
+				outFound.push_back(gameObject.get());
 			}
 		}
-		return found;
 	}
 
 	void Scene::CleanupDestroyedGameObjects()

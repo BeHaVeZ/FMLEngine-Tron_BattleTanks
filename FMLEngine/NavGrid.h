@@ -56,6 +56,7 @@ namespace FML
 		glm::vec2 ToWorldCenter(Cell cell) const;
 
 		void BuildClearanceField();
+		void NextGeneration();
 		Cell SpineOfCorridor(Cell cell) const;
 		void BuildOccupancyField(const std::vector<glm::vec2>& occupied, float radius);
 		int ClearanceForRadius(float agentRadius) const;
@@ -72,6 +73,7 @@ namespace FML
 		std::vector<uint8_t> clearance;
 
 		std::vector<float> occupancy;
+		std::vector<int> occupiedCells;
 
 		struct OpenNode
 		{
@@ -82,7 +84,9 @@ namespace FML
 
 		std::vector<float> costFromStart;
 		std::vector<int> cameFrom;
-		std::vector<uint8_t> closed;
+		std::vector<uint32_t> visitStamp;
+		std::vector<uint32_t> closedStamp;
+		uint32_t generation{ 0 };
 		std::priority_queue<OpenNode, std::vector<OpenNode>, std::greater<OpenNode>> open;
 		int lastSearchedCells{ 0 };
 		int searchCount{ 0 };

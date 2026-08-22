@@ -39,6 +39,9 @@ namespace FML
 				return;
 
 			auto& overlay = DebugOverlay::Instance();
+			if (!overlay.IsMasterEnabled())
+				return;
+
 			const glm::vec2 position = gameObject->GetComponent<TransformComponent>()->GetWorldPosition();
 
 			const glm::vec2 heading = currentState->GetDebugHeading(position);
