@@ -185,7 +185,7 @@ namespace FML
 			if (GameObject* target = AcquireTarget())
 			{
 				const glm::vec2 seenAt = target->GetComponent<TransformComponent>()->GetWorldPosition();
-				if (hasTarget && target == targetObject && glm::distance(seenAt, lastTargetPosition) <= teleportThreshold)
+				if (target == targetObject.Get() && glm::distance(seenAt, lastTargetPosition) <= teleportThreshold)
 					targetVelocity = (seenAt - lastTargetPosition) / std::max(profile.reactionDelay, .016f);
 				else
 					targetVelocity = { 0.f, 0.f };
@@ -193,22 +193,20 @@ namespace FML
 				lastTargetPosition = seenAt;
 				targetPosition = seenAt;
 				targetObject = target;
-				hasTarget = true;
 
 				auto* targetHealth = target->GetComponent<HealthComponent>();
 				targetInvulnerable = targetHealth && targetHealth->IsInInvulnerabilityWindow();
 			}
 			else
 			{
-				hasTarget = false;
 				targetInvulnerable = false;
-				targetObject = nullptr;
+				targetObject = {};
 				targetVelocity = { 0.f, 0.f };
 			}
 		}
-		else if (hasTarget)
+		else if (HasTarget())
 		{
-			targetPosition += targetVelocity * deltaTime;
+			targetPosition += LeadVelocity() * deltaTime;
 		}
 
 		SampleTargetBehaviour(position, deltaTime);
@@ -615,7 +613,7 @@ namespace FML
 
 	bool AITankControllerComponent::TryStrafe(const glm::vec2& position, float deltaTime)
 	{
-		if (profile.strafeAmount <= 0.f || !hasTarget || !solution.valid)
+		if (profile.strafeAmount <= 0.f || !HasTarget() || !solution.valid)
 			return false;
 
 		const float range = glm::distance(position, targetPosition);
@@ -650,7 +648,7 @@ namespace FML
 		if (deltaTime <= 0.f)
 			return;
 
-		if (hasTarget)
+		if (HasTarget())
 		{
 			const float range = glm::distance(position, targetPosition);
 			if (lastRangeToTarget > 0.f)
@@ -698,7 +696,7 @@ namespace FML
 
 		const float pressure = damageMemory + targetFireRate * .4f;
 		const float tolerance = 2.f - profile.adaptationRate;
-		const float range = hasTarget ? glm::distance(position, targetPosition) : 0.f;
+		const float range = HasTarget() ? glm::distance(position, targetPosition) : 0.f;
 
 		if (pressure > tolerance)
 			stance = Stance::Hold;
@@ -710,7 +708,7 @@ namespace FML
 
 	glm::vec2 AITankControllerComponent::ChooseGoal(const glm::vec2& position) const
 	{
-		if (!hasTarget)
+		if (!HasTarget())
 			return position;
 
 		const glm::vec2 away = position - targetPosition;
@@ -813,6 +811,7 @@ namespace FML
 		}
 
 		transform->SetPosition(transform->GetLocalPosition() + axis * step);
+		transform->MarkMoving(true);
 		transform->SetRotation(glm::degrees(std::atan2(-axis.y, axis.x)) - 90.f);
 	}
 
@@ -948,7 +947,7 @@ namespace FML
 					return;
 
 				TankBox tank{ box, outcome };
-				auto* objectTransform = hasTarget && object == targetObject ? object->GetComponent<TransformComponent>() : nullptr;
+				auto* objectTransform = object == targetObject.Get() ? object->GetComponent<TransformComponent>() : nullptr;
 				if (objectTransform)
 				{
 					tank.offset = targetPosition - objectTransform->GetWorldPosition();
@@ -1135,7 +1134,7 @@ namespace FML
 	{
 		solutionTimer -= deltaTime;
 
-		if (!hasTarget || !turretAim)
+		if (!HasTarget() || !turretAim)
 		{
 			solution.valid = false;
 			return;
@@ -1192,7 +1191,7 @@ namespace FML
 
 	void AITankControllerComponent::UpdateAim(const glm::vec2& position, float deltaTime)
 	{
-		if (!turretAim || !hasTarget)
+		if (!turretAim || !HasTarget())
 			return;
 
 		const float desired = solution.valid
@@ -1219,7 +1218,7 @@ namespace FML
 
 	void AITankControllerComponent::TryFire()
 	{
-		if (!shooting || !turretAim || !turret || !hasTarget || !solution.valid)
+		if (!shooting || !turretAim || !turret || !HasTarget() || !solution.valid)
 			return;
 
 		if (fireDelayTimer > 0.f || targetInvulnerable)
@@ -1249,7 +1248,7 @@ namespace FML
 
 	void AITankControllerComponent::RenderPrediction()
 	{
-		if (hasTarget && transform)
+		if (HasTarget() && transform)
 		{
 			const glm::vec2 aimPoint = PredictedTargetPosition(InterceptTime(transform->GetWorldPosition()));
 			const glm::vec4 leadColor{ 1.f, .9f, .3f, .9f };

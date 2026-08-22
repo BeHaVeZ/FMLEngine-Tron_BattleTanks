@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "AIDifficultyProfile.h"
+#include "GameObject.h"
 #include <glm.hpp>
 #include <random>
 #include <string>
@@ -9,7 +10,6 @@
 
 namespace FML
 {
-	class GameObject;
 	class TransformComponent;
 	class TurretAimComponent;
 	class ShootComponent;
@@ -109,6 +109,7 @@ namespace FML
 		void RenderPrediction();
 
 		void SampleTargetBehaviour(const glm::vec2& position, float deltaTime);
+		bool HasTarget() const { return targetObject.Get() != nullptr; }
 
 		const AIDifficultyProfile& profile;
 
@@ -132,8 +133,7 @@ namespace FML
 		glm::vec2 targetPosition{ 0.f, 0.f };
 		glm::vec2 targetVelocity{ 0.f, 0.f };
 		glm::vec2 lastTargetPosition{ 0.f, 0.f };
-		GameObject* targetObject{ nullptr };
-		bool hasTarget{ false };
+		GameObjectRef targetObject;
 		bool targetInvulnerable{ false };
 
 		std::vector<TankBox> shotTanks;

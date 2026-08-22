@@ -24,7 +24,11 @@ namespace FML
 		if (!follower.Advance(world, GetSpeed() * speedScale * deltaTime, nextWorld, heading))
 			return false;
 
-		transform->SetPosition(transform->GetLocalPosition() + (nextWorld - world));
+		if (nextWorld != world)
+		{
+			transform->SetPosition(transform->GetLocalPosition() + (nextWorld - world));
+			transform->MarkMoving(true);
+		}
 		FaceDirection(agent, heading);
 		return true;
 	}

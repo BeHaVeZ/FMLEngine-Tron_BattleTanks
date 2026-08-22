@@ -13,7 +13,6 @@ namespace FML
 		TransformComponent(glm::vec2 position = {}, float rotation = 0.0f, glm::vec2 pivot = { .5f, .5f });
 
 		void SetPosition(glm::vec2 newPosition);
-		void CorrectPosition(glm::vec2 newPosition);
 		void SetRotation(float newRotation);
 		void SetPivot(glm::vec2 newPivot);
 		void OffsetPivotPoint(glm::vec2 offset);

@@ -168,10 +168,10 @@ namespace FML
 		}
 
 		if (!a->isStatic)
-			tA->CorrectPosition(tA->GetLocalPosition() + push);
+			tA->SetPosition(tA->GetLocalPosition() + push);
 
 		if (!b->isStatic)
-			tB->CorrectPosition(tB->GetLocalPosition() - push);
+			tB->SetPosition(tB->GetLocalPosition() - push);
 	}
 
 	bool CollisionManager::Raycast(const glm::vec2& start, const glm::vec2& direction, float maxDistance, GameObject* exclude, GameObject* excludeParent)

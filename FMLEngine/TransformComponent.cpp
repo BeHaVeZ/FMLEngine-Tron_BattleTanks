@@ -19,16 +19,6 @@ namespace FML
 		{
 			localPosition = newPosition;
 			MarkDirty();
-			MarkMoving(true);
-		}
-	}
-
-	void TransformComponent::CorrectPosition(glm::vec2 newPosition)
-	{
-		if (newPosition != localPosition)
-		{
-			localPosition = newPosition;
-			MarkDirty();
 		}
 	}
 

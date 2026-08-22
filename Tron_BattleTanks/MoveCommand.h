@@ -25,6 +25,7 @@ namespace FML
 				{
 					glm::vec2 newPosition = transform->GetLocalPosition() + direction * moveDistance * Timer::Instance().GetDeltaTime();
 					transform->SetPosition(newPosition);
+					transform->MarkMoving(true);
 
 					if (glm::length(direction) > 0.0f)
 					{
