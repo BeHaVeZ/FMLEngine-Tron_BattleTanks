@@ -79,9 +79,6 @@
     <ClCompile Include="TransformComponent.cpp">
       <Filter>Engine\Components</Filter>
     </ClCompile>
-    <ClCompile Include="TestingScene.cpp">
-      <Filter>Engine\Scenes\TestScene</Filter>
-    </ClCompile>
     <ClCompile Include="SoundSystem.cpp">
       <Filter>Engine\Sound</Filter>
     </ClCompile>
@@ -174,13 +171,13 @@
     <ClInclude Include="TextComponent.h">
       <Filter>Engine\Components</Filter>
     </ClInclude>
-    <ClInclude Include="TestingScene.h">
-      <Filter>Engine\Scenes\TestScene</Filter>
-    </ClInclude>
     <ClInclude Include="ServiceLocator.h">
       <Filter>Engine\Managers</Filter>
     </ClInclude>
     <ClInclude Include="SoundSystem.h">
+      <Filter>Engine\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundHelper.h">
       <Filter>Engine\Sound</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
@@ -209,9 +206,6 @@
     </ClInclude>
     <ClInclude Include="FPSComponent.h">
       <Filter>Engine\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="TestCommand.h">
-      <Filter>Engine\Command</Filter>
     </ClInclude>
     <ClInclude Include="Collider.h">
       <Filter>Engine\Collision</Filter>

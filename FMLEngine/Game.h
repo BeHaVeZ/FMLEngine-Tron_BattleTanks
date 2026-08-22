@@ -10,7 +10,7 @@ namespace FML
 		Game();
 		~Game();
 
-		bool Initialize();
+		bool Initialize(const char* windowTitle);
 
 		void Run();
 

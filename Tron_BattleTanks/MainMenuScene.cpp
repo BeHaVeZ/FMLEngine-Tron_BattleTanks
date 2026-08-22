@@ -9,8 +9,8 @@
 #include <memory>
 #include "ConfigManager.h"
 #include "ServiceLocator.h"
-#include "../Tron_BattleTanks/InputBindingHelper.h"
-#include "../Tron_BattleTanks/GameData.h"
+#include "InputBindingHelper.h"
+#include "GameData.h"
 #include "SoundHelper.h"
 
 namespace

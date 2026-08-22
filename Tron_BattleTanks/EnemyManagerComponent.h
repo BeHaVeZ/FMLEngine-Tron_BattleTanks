@@ -8,7 +8,7 @@
 #include "PrefabRegistry.h"
 #include "SceneManager.h"
 #include "Logger.h"
-#include <GameObjectDestroyedEvent.h>
+#include "GameObjectDestroyedEvent.h"
 #include "GameTags.h"
 #include "LevelProgressionComponent.h"
 

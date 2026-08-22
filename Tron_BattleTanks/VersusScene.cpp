@@ -1,4 +1,4 @@
-#include "CoopScene.h"
+#include "VersusScene.h"
 #include "TextureComponent.h"
 #include "TransformComponent.h"
 #include "InputHandler.h"
@@ -9,19 +9,18 @@
 #include "MoveCommand.h"
 #include <iostream>
 #include "PrefabRegistry.h"
+#include "RotateTurretCommand.h"
 #include "BoxCollider.h"
 #include "RotateCommand.h"
-#include "RotateTurretCommand.h"
 #include "DamageCommand.h"
 #include "MuteSoundCommand.h"
-#include "../Tron_BattleTanks/FileReader.h"
-#include "../Tron_BattleTanks/ShootCommand.h"
-#include "../Tron_BattleTanks/SkipLevelCommand.h"
-#include "../Tron_BattleTanks/InputBindingHelper.h"
-#include "../Tron_BattleTanks/GameData.h"
-#include "../Tron_BattleTanks/EnemyManagerComponent.h"
-#include "../Tron_BattleTanks/AITankControllerComponent.h"
-#include "../Tron_BattleTanks/GodMode.h"
+#include "FileReader.h"
+#include "ShootCommand.h"
+#include "SkipLevelCommand.h"
+#include "InputBindingHelper.h"
+#include "GameData.h"
+#include "AITankControllerComponent.h"
+#include "GodMode.h"
 #include "AgentAvoidance.h"
 #include "NavGrid.h"
 #include "CollisionManager.h"
@@ -29,9 +28,10 @@
 
 namespace FML
 {
+
 	const std::string backgroundImagePath = "data/levels/level00.png";
 
-	bool CoopScene::Initialize(SDL_Renderer* renderer) 
+	bool VersusScene::Initialize(SDL_Renderer* renderer)
 	{
 		InitializeBackground(renderer);
 		InitializeFPSCounter(renderer);
@@ -42,7 +42,6 @@ namespace FML
 		InitializeUI();
 
 		InitializeWalls();
-		InitializeManagers();
 		InitializeCenterTP();
 
 		InitializeInput();
@@ -51,16 +50,16 @@ namespace FML
 		return true;
 	}
 
-	void CoopScene::InitializeBackground(SDL_Renderer* renderer) {
+	void VersusScene::InitializeBackground(SDL_Renderer* renderer)
+	{
 		auto background = std::make_unique<GameObject>("Background");
 		auto backgroundTexture = std::make_unique<TextureComponent>(backgroundImagePath, renderer);
 		background->AddComponent(std::move(backgroundTexture));
 
 		auto backgroundTransform = background->GetComponent<TransformComponent>();
 		if (backgroundTransform) {
-			backgroundTransform->SetPosition({ ConfigManager::Instance().GetWindowWidth() / 2, ConfigManager::Instance().GetWindowHeight() / 2 });
+			backgroundTransform->SetPosition({ ConfigManager::Instance().GetWindowWidth() , ConfigManager::Instance().GetWindowHeight() });
 			backgroundTransform->SetPivot({ 0.f, 0.f });
-
 			backgroundTransform->SetSize(
 				static_cast<float>(ConfigManager::Instance().GetWindowWidth()),
 				static_cast<float>(ConfigManager::Instance().GetWindowHeight())
@@ -73,29 +72,9 @@ namespace FML
 		auto bg = FindGameObjectByTag("Background");
 		bg->GetComponent<TransformComponent>()->SetSize((float)ConfigManager::Instance().GetWindowWidth(), (float)ConfigManager::Instance().GetWindowHeight() - offset);
 		bg->GetComponent<TransformComponent>()->SetPosition({ 0,offset });
-
 	}
 
-	void CoopScene::InitializeTitle(SDL_Renderer* renderer)
-	{
-		auto title = std::make_unique<GameObject>("title");
-
-		SDL_Color color = { 0, 255, 0, 255 };
-
-		auto titleTextComponent = std::make_unique<TextComponent>(
-			"TRON Battle Tanks",
-			"data/fonts/tron-arcade.ttf",
-			24,
-			color,
-			renderer);
-
-		title->AddComponent(std::move(titleTextComponent));
-		title->GetComponent<TransformComponent>()->SetPosition({ 300, 300 });
-
-		gameObjects.push_back(std::move(title));
-	}
-
-	void CoopScene::InitializeFPSCounter(SDL_Renderer* renderer)
+	void VersusScene::InitializeFPSCounter(SDL_Renderer* renderer)
 	{
 		auto fpsGameObject = std::make_unique<GameObject>("FPSCounter");
 
@@ -112,15 +91,15 @@ namespace FML
 		gameObjects.push_back(std::move(fpsGameObject));
 	}
 
-	void CoopScene::InitializeFirstTank()
+	void VersusScene::InitializeFirstTank()
 	{
-		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 71,722 }, "Player1");
+		auto tank = PrefabRegistry::Instance().CreateRedTankPrefab({ 57,118 }, "Player1");
 		gameObjects.push_back(std::move(tank));
 	}
 
-	void CoopScene::InitializeSecondTank()
+	void VersusScene::InitializeSecondTank()
 	{
-		auto tank = PrefabRegistry::Instance().CreateYellowTankPrefab({ 480,722 }, "Player2");
+		auto tank = PrefabRegistry::Instance().CreateYellowTankPrefab({ 938,705 }, "Player2");
 
 		if (GameData::Player2IsAI)
 		{
@@ -131,7 +110,7 @@ namespace FML
 		gameObjects.push_back(std::move(tank));
 	}
 
-	void CoopScene::InitializeInput()
+	void VersusScene::InitializeInput()
 	{
 		InputBindingHelper::BindGlobalCommands();
 		InputBindingHelper::BindPauseControls();
@@ -158,42 +137,32 @@ namespace FML
 		}
 	}
 
-	void CoopScene::InitializeUI()
+	void VersusScene::InitializeUI()
 	{
 		InitializeHealthUI();
 		InitializeScoreUI();
 	}
 
-	void CoopScene::InitializeHealthUI()
+	void VersusScene::InitializeHealthUI()
 	{
 		auto healthUIPlayer1 = PrefabRegistry::Instance().CreateHealthUIForPlayer1({ 10,30 }, "HealthUIPlayer1");
 		gameObjects.push_back(std::move(healthUIPlayer1));
-		auto healthUIPlayer2 = PrefabRegistry::Instance().CreateHealthUIForPlayer2({ 180,30 }, "HealthUIPlayer2");
+		auto healthUIPlayer2 = PrefabRegistry::Instance().CreateHealthUIForPlayer2({ 200,30 }, "HealthUIPlayer2");
 		gameObjects.push_back(std::move(healthUIPlayer2));
 	}
 
-	void CoopScene::InitializeScoreUI()
+	void VersusScene::InitializeScoreUI()
 	{
-		auto scoreUIPlayer1 = PrefabRegistry::Instance().CreateScoreUI(
-			{ 370,30 }, "Score P1", &GameData::Player1Stats.score, SDL_Color{ 0,0,255,255 }, "ScoreUIPlayer1");
-		gameObjects.push_back(std::move(scoreUIPlayer1));
-
-		auto scoreUIPlayer2 = PrefabRegistry::Instance().CreateScoreUI(
-			{ 580,30 }, GameData::Player2IsAI ? "Score AI" : "Score P2", &GameData::Player2Stats.score, SDL_Color{ 255,0,0,255 }, "ScoreUIPlayer2");
-		gameObjects.push_back(std::move(scoreUIPlayer2));
-
-		auto totalScoreUI = PrefabRegistry::Instance().CreateScoreUI(
-			{ 790,30 }, "Total", &GameData::CurrentScore, SDL_Color{ 255,255,0,255 }, "TotalScoreUI");
-		gameObjects.push_back(std::move(totalScoreUI));
+		//VERSUS TODO WHAT SHOULD THIS BE?
 	}
 
-	void CoopScene::InitializeCenterTP()
+	void VersusScene::InitializeCenterTP()
 	{
 		auto centerTP = PrefabRegistry::Instance().CreateTeleportCenterPrefab();
 		AddGameObject(std::move(centerTP));
 	}
 
-	void CoopScene::InitializeWalls()
+	void VersusScene::InitializeWalls()
 	{
 		FileReader reader("data/levels/level00C.txt");
 		auto walls = reader.ReadRectangles();
@@ -208,7 +177,8 @@ namespace FML
 			wall->AddComponent(std::move(wallCollider));
 
 			wall->GetComponent<TransformComponent>()->SetPosition({ rect.x, rect.y });
-			wall->GetComponent<TransformComponent>()->SetPivot({ 0,0 });
+			wall->GetComponent<TransformComponent>()->SetPivot({0,0});
+			
 
 			AddGameObject(std::move(wall));
 		}
@@ -222,34 +192,27 @@ namespace FML
 		NavGrid::Instance().Build(walls, playfield, navCellSize);
 	}
 
-	void CoopScene::InitializeSounds()
+	void VersusScene::InitializeSounds()
 	{
-		ServiceLocator::GetSoundSystem().AddSound("CoopTheme_2.wav", SoundId::Music, true);
+		ServiceLocator::GetSoundSystem().AddSound("VersusTheme_1.wav", SoundId::Music, true);
 
 		SoundHelper::LoadSharedSounds();
 
 		ServiceLocator::GetSoundSystem().PlaySound(SoundId::Music, ServiceLocator::GetSoundSystem().GetCurrentVolume());
 	}
 
-	void CoopScene::InitializeManagers()
-	{
-		auto enemyManager = PrefabRegistry::Instance().CreateEnemyManager();
-		enemyManager->GetComponent<EnemyManagerComponent>()->SetMaxBlueTanks(4);
-		enemyManager->GetComponent<EnemyManagerComponent>()->SetMaxPinkTanks(3);
-		enemyManager->GetComponent<EnemyManagerComponent>()->SetMaxRecognizers(2);
-		AddGameObject(std::move(enemyManager));
-	}
 
-	void CoopScene::HandleInput(SDL_Event& event) {
+	void VersusScene::HandleInput(SDL_Event& event)
+	{
 		InputHandler::Instance().HandleInput(event);
 	}
 
-	void CoopScene::Update(float deltaTime) 
+	void VersusScene::Update(float deltaTime) 
 	{
 		Scene::Update(deltaTime);
 	}
 
-	void CoopScene::Render(SDL_Renderer* renderer)
+	void VersusScene::Render(SDL_Renderer* renderer)
 	{
 		NavGrid::Instance().DebugRenderGrid();
 
@@ -257,7 +220,7 @@ namespace FML
 
 		CollisionManager::Instance().DebugRender();
 	}
-	void CoopScene::OnExit()
+	void VersusScene::OnExit()
 	{
 		GameAdmin::Instance().ResetPlayers();
 		AgentAvoidance::Instance().Clear();

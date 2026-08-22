@@ -236,7 +236,6 @@ if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     <ClCompile Include="XInputGamepadHandlerImpl.cpp" />
     <ClCompile Include="ServiceLocator.cpp" />
     <ClCompile Include="SoundSystem.cpp" />
-    <ClCompile Include="TestingScene.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="InputHandler.cpp" />
@@ -267,10 +266,9 @@ if exist "$(IntDir)" rd /s /q "$(IntDir)"</Command>
     <ClInclude Include="Observer.h" />
     <ClInclude Include="ServiceLocator.h" />
     <ClInclude Include="SoundSystem.h" />
+    <ClInclude Include="SoundHelper.h" />
     <ClInclude Include="SpriteAnimatorComponent.h" />
     <ClInclude Include="Subject.h" />
-    <ClInclude Include="TestCommand.h" />
-    <ClInclude Include="TestingScene.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="ConfigManager.h" />

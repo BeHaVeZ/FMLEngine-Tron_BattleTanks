@@ -16,11 +16,11 @@
 #include "DebugDraw.h"
 #include "TestCommand.h"
 #include "BoxCollider.h"
-#include "../Tron_BattleTanks/FileReader.h"
-#include "../Tron_BattleTanks/ShootComponent.h"
-#include "../Tron_BattleTanks/ShootCommand.h"
-#include "../Tron_BattleTanks/SkipLevelCommand.h"
-#include "../Tron_BattleTanks/InputBindingHelper.h"
+#include "FileReader.h"
+#include "ShootComponent.h"
+#include "ShootCommand.h"
+#include "SkipLevelCommand.h"
+#include "InputBindingHelper.h"
 #include "SoundHelper.h"
 
 namespace FML

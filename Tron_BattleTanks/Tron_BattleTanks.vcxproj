@@ -209,10 +209,10 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\FMLEngine\CoopScene.cpp" />
-    <ClCompile Include="..\FMLEngine\MainMenuScene.cpp" />
-    <ClCompile Include="..\FMLEngine\PrefabRegistry.cpp" />
-    <ClCompile Include="..\FMLEngine\VersusScene.cpp" />
+    <ClCompile Include="CoopScene.cpp" />
+    <ClCompile Include="MainMenuScene.cpp" />
+    <ClCompile Include="PrefabRegistry.cpp" />
+    <ClCompile Include="VersusScene.cpp" />
     <ClCompile Include="ChasePlayerState.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="GameAdmin.cpp" />
@@ -233,21 +233,22 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClCompile Include="TankLevelScene.cpp" />
     <ClCompile Include="TeleportManager.cpp" />
     <ClCompile Include="Tron_BattleTanks.cpp" />
+    <ClCompile Include="TestingScene.cpp" />
+    <ClCompile Include="GameScenes.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\FMLEngine\CoopScene.h" />
-    <ClInclude Include="..\FMLEngine\DamageCommand.h" />
-    <ClInclude Include="..\FMLEngine\DamageEvent.h" />
-    <ClInclude Include="..\FMLEngine\HealthComponent.h" />
-    <ClInclude Include="..\FMLEngine\HealthUIComponent.h" />
-    <ClInclude Include="..\FMLEngine\MainMenuScene.h" />
-    <ClInclude Include="..\FMLEngine\MoveCommand.h" />
-    <ClInclude Include="..\FMLEngine\MuteSoundCommand.h" />
-    <ClInclude Include="..\FMLEngine\PrefabRegistry.h" />
-    <ClInclude Include="..\FMLEngine\RotateCommand.h" />
-    <ClInclude Include="..\FMLEngine\RotateTurretCommand.h" />
-    <ClInclude Include="..\FMLEngine\SoundHelper.h" />
-    <ClInclude Include="..\FMLEngine\VersusScene.h" />
+    <ClInclude Include="CoopScene.h" />
+    <ClInclude Include="DamageCommand.h" />
+    <ClInclude Include="DamageEvent.h" />
+    <ClInclude Include="HealthComponent.h" />
+    <ClInclude Include="HealthUIComponent.h" />
+    <ClInclude Include="MainMenuScene.h" />
+    <ClInclude Include="MoveCommand.h" />
+    <ClInclude Include="MuteSoundCommand.h" />
+    <ClInclude Include="PrefabRegistry.h" />
+    <ClInclude Include="RotateCommand.h" />
+    <ClInclude Include="RotateTurretCommand.h" />
+    <ClInclude Include="VersusScene.h" />
     <ClInclude Include="BulletCollisionBehaviorComponent.h" />
     <ClInclude Include="BulletHitEvent.h" />
     <ClInclude Include="BulletMoveComponent.h" />
@@ -297,6 +298,9 @@ xcopy "$(SolutionDir)data" "$(OutputPath)\data\" /S</Command>
     <ClInclude Include="TankObserver.h" />
     <ClInclude Include="TeleportManager.h" />
     <ClInclude Include="TeleportTriggerComponent.h" />
+    <ClInclude Include="TestingScene.h" />
+    <ClInclude Include="TestCommand.h" />
+    <ClInclude Include="GameScenes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

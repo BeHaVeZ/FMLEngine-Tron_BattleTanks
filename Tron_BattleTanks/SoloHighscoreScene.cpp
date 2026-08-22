@@ -11,7 +11,7 @@
 #include "ServiceLocator.h"
 #include "RotateCommand.h"
 #include "MuteSoundCommand.h"
-#include "../Tron_BattleTanks/InputBindingHelper.h"
+#include "InputBindingHelper.h"
 #include "HighscoreManager.h"
 
 namespace FML

@@ -44,19 +44,25 @@
     <ClCompile Include="Tron_BattleTanks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameScenes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TestingScene.cpp">
+      <Filter>Header Files\Scenes</Filter>
+    </ClCompile>
     <ClCompile Include="AITankControllerComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\FMLEngine\PrefabRegistry.cpp">
+    <ClCompile Include="PrefabRegistry.cpp">
       <Filter>Header Files\GameManagers</Filter>
     </ClCompile>
-    <ClCompile Include="..\FMLEngine\CoopScene.cpp">
+    <ClCompile Include="CoopScene.cpp">
       <Filter>Header Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\FMLEngine\MainMenuScene.cpp">
+    <ClCompile Include="MainMenuScene.cpp">
       <Filter>Header Files\Scenes</Filter>
     </ClCompile>
-    <ClCompile Include="..\FMLEngine\VersusScene.cpp">
+    <ClCompile Include="VersusScene.cpp">
       <Filter>Header Files\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="FileReader.cpp">
@@ -106,40 +112,40 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\FMLEngine\DamageEvent.h">
+    <ClInclude Include="DamageEvent.h">
       <Filter>Header Files\GameEvents</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\HealthComponent.h">
+    <ClInclude Include="HealthComponent.h">
       <Filter>Header Files\GameComponents</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\HealthUIComponent.h">
+    <ClInclude Include="HealthUIComponent.h">
       <Filter>Header Files\GameComponents</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\RotateCommand.h">
+    <ClInclude Include="RotateCommand.h">
       <Filter>Header Files\GameCommands</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\MoveCommand.h">
+    <ClInclude Include="MoveCommand.h">
       <Filter>Header Files\GameCommands</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\DamageCommand.h">
+    <ClInclude Include="DamageCommand.h">
       <Filter>Header Files\GameCommands</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\RotateTurretCommand.h">
+    <ClInclude Include="RotateTurretCommand.h">
       <Filter>Header Files\GameCommands</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\MuteSoundCommand.h">
+    <ClInclude Include="MuteSoundCommand.h">
       <Filter>Header Files\GameCommands</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\PrefabRegistry.h">
+    <ClInclude Include="PrefabRegistry.h">
       <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\CoopScene.h">
+    <ClInclude Include="CoopScene.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\MainMenuScene.h">
+    <ClInclude Include="MainMenuScene.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
-    <ClInclude Include="..\FMLEngine\VersusScene.h">
+    <ClInclude Include="VersusScene.h">
       <Filter>Header Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="FileReader.h">
@@ -248,9 +254,6 @@
       <Filter>Header Files\Scenes\SoloModeScenes\Levels</Filter>
     </ClInclude>
     <ClInclude Include="GameAdmin.h">
-      <Filter>Header Files\GameManagers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\FMLEngine\SoundHelper.h">
       <Filter>Header Files\GameManagers</Filter>
     </ClInclude>
     <ClInclude Include="TeleportManager.h">

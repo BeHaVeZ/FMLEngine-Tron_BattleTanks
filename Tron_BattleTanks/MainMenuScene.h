@@ -1,6 +1,6 @@
 #pragma once
 #include "Scene.h"
-#include "../Tron_BattleTanks/GameData.h"
+#include "GameData.h"
 #include <functional>
 #include <memory>
 #include <string>

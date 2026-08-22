@@ -1,16 +1,12 @@
 ﻿#include "Game.h"
 #include "TextureManager.h"
 #include "SceneManager.h"
-#include "TestingScene.h"
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include "GameStateManager.h"
 #include "ConfigManager.h"
 #include "SoundSystem.h"
 #include "ServiceLocator.h"
-#include "MainMenuScene.h"
-#include "CoopScene.h"
-#include "VersusScene.h"
 #include "Timer.h"
 #include "InputHandler.h"
 #include "Logger.h"
@@ -18,17 +14,7 @@
 #include "DebugOverlay.h"
 #include "ScreenShake.h"
 #include "PauseMenu.h"
-#include "../Tron_BattleTanks/SoloScene.h" //This is caused because scenes are being loaded from game but it should not be (GameEngine does not know what scenes any game will have -> abstract
-#include "../Tron_BattleTanks/SoloLevel2.h"
-#include "../Tron_BattleTanks/SoloLevel3.h"
-#include "../Tron_BattleTanks/SoloHighscoreScene.h"
-#include "../Tron_BattleTanks/NameEntryScene.h"
-#include "../Tron_BattleTanks/VersusResultScene.h"
-#include "../Tron_BattleTanks/CoopResultScene.h"
 #include "CollisionManager.h"
-#include "../Tron_BattleTanks/Level404.h"
-#include "../Tron_BattleTanks/AIShowcaseScene.h"
-#include "../Tron_BattleTanks/SandboxScene.h"
 #include <filesystem>
 
 #define WIN32_LEAN_AND_MEAN
@@ -78,7 +64,7 @@ namespace FML
 		Cleanup();
 	}
 
-	bool Game::Initialize() 
+	bool Game::Initialize(const char* windowTitle) 
 	{
 		EnableAnsiColors();
 
@@ -108,7 +94,7 @@ namespace FML
 			windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 		}
 
-		window = SDL_CreateWindow("Tron Battle Tanks - Alexander Terentyev", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ConfigManager::Instance().GetDisplayWidth(), ConfigManager::Instance().GetDisplayHeight(), windowFlags);
+		window = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, ConfigManager::Instance().GetDisplayWidth(), ConfigManager::Instance().GetDisplayHeight(), windowFlags);
 		if (!window)
 		{
 			Logger::Log(LogLevel::Error, "Window could not be created! SDL_Error: %s", SDL_GetError());
@@ -138,23 +124,6 @@ namespace FML
 
 		ServiceLocator::GetSoundSystem().StartUp();
 		ConfigManager::Instance().ApplyVolume();
-
-		SceneManager::Instance().AddScene(std::make_unique<MainMenuScene>());
-		SceneManager::Instance().AddScene(std::make_unique<SoloScene>());
-		SceneManager::Instance().AddScene(std::make_unique<SoloLevel2>());
-		SceneManager::Instance().AddScene(std::make_unique<SoloLevel3>());
-		SceneManager::Instance().AddScene(std::make_unique<Level404>());
-		SceneManager::Instance().AddScene(std::make_unique<VersusScene>());
-		SceneManager::Instance().AddScene(std::make_unique<CoopScene>());
-		SceneManager::Instance().AddScene(std::make_unique<NameEntryScene>());
-		SceneManager::Instance().AddScene(std::make_unique<SoloHighscoreScene>());
-		SceneManager::Instance().AddScene(std::make_unique<TestingScene>());
-		SceneManager::Instance().AddScene(std::make_unique<VersusResultScene>());
-		SceneManager::Instance().AddScene(std::make_unique<CoopResultScene>());
-		SceneManager::Instance().AddScene(std::make_unique<AIShowcaseScene>());
-		SceneManager::Instance().AddScene(std::make_unique<SandboxScene>());
-
-		SceneManager::Instance().QueueSceneChange("MainMenu");
 
 		GameStateManager::Instance().SetRunning(true);
 		return true;
