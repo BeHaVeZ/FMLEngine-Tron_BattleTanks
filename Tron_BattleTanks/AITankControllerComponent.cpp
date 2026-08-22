@@ -185,13 +185,14 @@ namespace FML
 			if (GameObject* target = AcquireTarget())
 			{
 				const glm::vec2 seenAt = target->GetComponent<TransformComponent>()->GetWorldPosition();
-				if (hasTarget && glm::distance(seenAt, lastTargetPosition) <= teleportThreshold)
+				if (hasTarget && target == targetObject && glm::distance(seenAt, lastTargetPosition) <= teleportThreshold)
 					targetVelocity = (seenAt - lastTargetPosition) / std::max(profile.reactionDelay, .016f);
 				else
 					targetVelocity = { 0.f, 0.f };
 
 				lastTargetPosition = seenAt;
 				targetPosition = seenAt;
+				targetObject = target;
 				hasTarget = true;
 
 				auto* targetHealth = target->GetComponent<HealthComponent>();
@@ -201,8 +202,13 @@ namespace FML
 			{
 				hasTarget = false;
 				targetInvulnerable = false;
+				targetObject = nullptr;
 				targetVelocity = { 0.f, 0.f };
 			}
+		}
+		else if (hasTarget)
+		{
+			targetPosition += targetVelocity * deltaTime;
 		}
 
 		SampleTargetBehaviour(position, deltaTime);
@@ -935,30 +941,36 @@ namespace FML
 				return true;
 			};
 
+		const auto addTank = [&](GameObject* object, ShotOutcome outcome)
+			{
+				SDL_Rect box{};
+				if (!boxOf(object, box))
+					return;
+
+				TankBox tank{ box, outcome };
+				auto* objectTransform = hasTarget && object == targetObject ? object->GetComponent<TransformComponent>() : nullptr;
+				if (objectTransform)
+				{
+					tank.offset = targetPosition - objectTransform->GetWorldPosition();
+					tank.velocity = LeadVelocity();
+				}
+
+				shotTanks.push_back(tank);
+			};
+
 		shotSelfValid = boxOf(gameObject, shotSelfBox);
 		shotTeleportValid = boxOf(sceneTeleport, shotTeleportBox);
 
 		if (GameData::CurrentGameMode == GameData::GameMode::Versus)
 		{
-			SDL_Rect box{};
-			if (boxOf(scenePlayer1, box))
-				shotTanks.push_back({ box, ShotOutcome::HitTarget });
-
+			addTank(scenePlayer1, ShotOutcome::HitTarget);
 			return;
 		}
 
-		{
-			SDL_Rect box{};
-			if (boxOf(scenePlayer1, box))
-				shotTanks.push_back({ box, ShotOutcome::HitAlly });
-		}
+		addTank(scenePlayer1, ShotOutcome::HitAlly);
 
 		for (GameObject* enemy : sceneEnemies)
-		{
-			SDL_Rect box{};
-			if (boxOf(enemy, box))
-				shotTanks.push_back({ box, ShotOutcome::HitTarget });
-		}
+			addTank(enemy, ShotOutcome::HitTarget);
 	}
 
 	AITankControllerComponent::ShotResult AITankControllerComponent::SimulateShot(const glm::vec2& origin,
@@ -1029,10 +1041,19 @@ namespace FML
 				return result;
 			}
 
+			const float flightTime = travelled / bulletSpeed;
 			bool struckTank = false;
 			for (const TankBox& tank : shotTanks)
 			{
-				if (!BoxesOverlap(bulletBox, tank.box))
+				const glm::vec2 shift = tank.offset + tank.velocity * flightTime;
+				const SDL_Rect shifted{
+					tank.box.x + static_cast<int>(shift.x),
+					tank.box.y + static_cast<int>(shift.y),
+					tank.box.w,
+					tank.box.h
+				};
+
+				if (!BoxesOverlap(bulletBox, shifted))
 					continue;
 
 				result.outcome = tank.outcome;
@@ -1061,9 +1082,33 @@ namespace FML
 		return result;
 	}
 
-	float AITankControllerComponent::DirectAimAngle(const glm::vec2& position, float flightTime) const
+	glm::vec2 AITankControllerComponent::LeadVelocity() const
 	{
-		const glm::vec2 aimPoint = targetPosition + targetVelocity * flightTime * profile.leadPrediction;
+		return targetVelocity * profile.leadPrediction * leadBias;
+	}
+
+	glm::vec2 AITankControllerComponent::PredictedTargetPosition(float time) const
+	{
+		return targetPosition + LeadVelocity() * time;
+	}
+
+	float AITankControllerComponent::InterceptTime(const glm::vec2& position) const
+	{
+		const auto flightTime = [&](const glm::vec2& point)
+			{
+				return std::max(0.f, glm::distance(position, point) - muzzleOffset) / bulletSpeed;
+			};
+
+		float time = flightTime(targetPosition);
+		for (int i = 0; i < interceptIterations; ++i)
+			time = flightTime(PredictedTargetPosition(time));
+
+		return time;
+	}
+
+	float AITankControllerComponent::DirectAimAngle(const glm::vec2& position) const
+	{
+		const glm::vec2 aimPoint = PredictedTargetPosition(InterceptTime(position));
 		const glm::vec2 toAim = aimPoint - position;
 
 		if (glm::dot(toAim, toAim) <= 0.f)
@@ -1081,6 +1126,9 @@ namespace FML
 	{
 		std::uniform_real_distribution<float> spread(-profile.aimError, profile.aimError);
 		aimBias = spread(rng);
+
+		std::uniform_real_distribution<float> lead(std::max(0.f, 1.f - profile.leadError), 1.f + profile.leadError);
+		leadBias = lead(rng);
 	}
 
 	void AITankControllerComponent::UpdateFiringSolution(const glm::vec2& position, float deltaTime)
@@ -1093,8 +1141,7 @@ namespace FML
 			return;
 		}
 
-		const float range = glm::distance(position, targetPosition);
-		const float directAngle = DirectAimAngle(position, range / bulletSpeed);
+		const float directAngle = DirectAimAngle(position);
 
 		const glm::vec2 directHeading = DirectionForAim(directAngle);
 		lastDirectOutcome = SimulateShot(MuzzlePoint(directHeading), directHeading, bulletMaxBounces).outcome;
@@ -1150,7 +1197,7 @@ namespace FML
 
 		const float desired = solution.valid
 			? AimTargetAngle()
-			: NormalizeAngle(DirectAimAngle(position, glm::distance(position, targetPosition) / bulletSpeed) + aimBias);
+			: NormalizeAngle(DirectAimAngle(position) + aimBias);
 
 		const float difference = NormalizeAngle(desired - turretAim->GetAim());
 		const float maxStep = profile.turretTurnRate * deltaTime;
@@ -1202,6 +1249,15 @@ namespace FML
 
 	void AITankControllerComponent::RenderPrediction()
 	{
+		if (hasTarget && transform)
+		{
+			const glm::vec2 aimPoint = PredictedTargetPosition(InterceptTime(transform->GetWorldPosition()));
+			const glm::vec4 leadColor{ 1.f, .9f, .3f, .9f };
+			DebugDraw::DrawLine(targetPosition, aimPoint, leadColor);
+			DebugDraw::DrawCircle(targetPosition, 4.f, leadColor);
+			DebugDraw::DrawCircle(aimPoint, 6.f, leadColor);
+		}
+
 		glm::vec2 muzzle{};
 		glm::vec2 forward{};
 		if (!BarrelShot(muzzle, forward))
@@ -1276,6 +1332,9 @@ namespace FML
 			+ " rev " + std::to_string(dodgeReversalCount)
 			+ " flips " + std::to_string(axisFlipCount)
 			+ " kites " + std::to_string(kiteCount));
+
+		DebugOverlay::Instance().FocusStat(gameObject, "lead " + std::to_string(static_cast<int>(profile.leadPrediction * leadBias * 100.f))
+			+ "% vel " + std::to_string(static_cast<int>(glm::length(targetVelocity))));
 
 		if (!solution.valid)
 			DebugOverlay::Instance().FocusStat(gameObject, "shot none");

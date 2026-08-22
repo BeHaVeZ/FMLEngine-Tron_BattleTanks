@@ -9,6 +9,7 @@ namespace FML
 		float turretTurnRate;
 		float aimError;
 		float leadPrediction;
+		float leadError;
 		float fireTolerance;
 		float threatHorizon;
 		float dodgeCommitment;
@@ -28,7 +29,8 @@ namespace FML
 		.reactionDelay = .55f,
 		.turretTurnRate = 70.f,
 		.aimError = 22.f,
-		.leadPrediction = .1f,
+		.leadPrediction = .4f,
+		.leadError = .6f,
 		.fireTolerance = 10.f,
 		.threatHorizon = 1.4f,
 		.dodgeCommitment = 1.f,
@@ -48,7 +50,8 @@ namespace FML
 		.reactionDelay = .25f,
 		.turretTurnRate = 110.f,
 		.aimError = 6.f,
-		.leadPrediction = .6f,
+		.leadPrediction = .85f,
+		.leadError = .25f,
 		.fireTolerance = 7.f,
 		.threatHorizon = 1.5f,
 		.dodgeCommitment = 1.f,
@@ -69,6 +72,7 @@ namespace FML
 		.turretTurnRate = 150.f,
 		.aimError = 2.f,
 		.leadPrediction = 1.f,
+		.leadError = .05f,
 		.fireTolerance = 4.f,
 		.threatHorizon = 1.6f,
 		.dodgeCommitment = 1.f,

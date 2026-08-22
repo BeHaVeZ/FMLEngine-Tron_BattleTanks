@@ -64,6 +64,8 @@ namespace FML
 		{
 			SDL_Rect box{ 0, 0, 0, 0 };
 			ShotOutcome outcome{ ShotOutcome::Miss };
+			glm::vec2 offset{ 0.f, 0.f };
+			glm::vec2 velocity{ 0.f, 0.f };
 		};
 
 		void GatherSceneObjects();
@@ -94,7 +96,10 @@ namespace FML
 		glm::vec2 MuzzlePoint(const glm::vec2& forward) const;
 
 		void UpdateFiringSolution(const glm::vec2& position, float deltaTime);
-		float DirectAimAngle(const glm::vec2& position, float flightTime) const;
+		glm::vec2 LeadVelocity() const;
+		glm::vec2 PredictedTargetPosition(float time) const;
+		float InterceptTime(const glm::vec2& position) const;
+		float DirectAimAngle(const glm::vec2& position) const;
 		float AimTargetAngle() const;
 		void RollAimBias();
 
@@ -127,6 +132,7 @@ namespace FML
 		glm::vec2 targetPosition{ 0.f, 0.f };
 		glm::vec2 targetVelocity{ 0.f, 0.f };
 		glm::vec2 lastTargetPosition{ 0.f, 0.f };
+		GameObject* targetObject{ nullptr };
 		bool hasTarget{ false };
 		bool targetInvulnerable{ false };
 
@@ -158,6 +164,7 @@ namespace FML
 		float replanTimer{ 0.f };
 		float decisionTimer{ 0.f };
 		float aimBias{ 0.f };
+		float leadBias{ 1.f };
 		float fireDelayTimer{ 0.f };
 		float strafeTimer{ 0.f };
 		float strafeSign{ 1.f };
@@ -221,6 +228,7 @@ namespace FML
 		static constexpr float bulletSpeed = 250.f;
 		static constexpr int bulletMaxBounces = 4;
 		static constexpr int bankAnglesPerFrame = 24;
+		static constexpr int interceptIterations = 3;
 
 		static constexpr float kiteRadius = 150.f;
 		static constexpr float flankOffset = 140.f;
