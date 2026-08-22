@@ -31,8 +31,21 @@
 #include "../Tron_BattleTanks/SandboxScene.h"
 #include <filesystem>
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 namespace
 {
+	void EnableAnsiColors()
+	{
+		HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		DWORD mode = 0;
+		if (hOut != INVALID_HANDLE_VALUE && GetConsoleMode(hOut, &mode))
+		{
+			SetConsoleMode(hOut, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+		}
+	}
+
 	bool SetWorkingDirectoryToExecutable()
 	{
 		char* executableDirectory = SDL_GetBasePath();
@@ -67,6 +80,8 @@ namespace FML
 
 	bool Game::Initialize() 
 	{
+		EnableAnsiColors();
+
 		std::srand(static_cast<unsigned>(std::time(nullptr)));
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		{
