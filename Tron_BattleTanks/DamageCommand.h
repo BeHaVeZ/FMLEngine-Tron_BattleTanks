@@ -1,7 +1,6 @@
 #pragma once
 #include "Command.h"
 #include "GameObject.h"
-#include "TransformComponent.h"
 #include "Event.h"
 #include "HealthComponent.h"
 #include <iostream>
@@ -14,9 +13,10 @@ namespace FML
 		DamageCommand(GameObject* gameObject, int damage) : gameObject(gameObject), damage(damage) {}
 
 		void Execute() override {
-			if (gameObject)
+			GameObject* object = gameObject.Get();
+			if (object && !object->IsMarkedForDestruction())
 			{
-				HealthComponent* hc = gameObject->GetComponent<HealthComponent>();
+				HealthComponent* hc = object->GetComponent<HealthComponent>();
 				if (hc)
 				{
 					hc->Damage(damage);
@@ -25,7 +25,7 @@ namespace FML
 		}
 
 	private:
-		GameObject* gameObject;
+		GameObjectRef gameObject;
 		int damage;
 	};
 }

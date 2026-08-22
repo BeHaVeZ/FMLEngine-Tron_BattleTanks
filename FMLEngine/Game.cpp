@@ -15,6 +15,8 @@
 #include "ScreenShake.h"
 #include "PauseMenu.h"
 #include "CollisionManager.h"
+#include "AgentAvoidance.h"
+#include "NavGrid.h"
 #include <filesystem>
 
 #define WIN32_LEAN_AND_MEAN
@@ -57,7 +59,7 @@ namespace
 
 namespace FML
 {
-	Game::Game() : window(nullptr), renderer(nullptr), isRunning(false) {}
+	Game::Game() : window(nullptr), renderer(nullptr), cleanedUp(false) {}
 
 	Game::~Game()
 	{
@@ -198,11 +200,23 @@ namespace FML
 
 	void Game::Cleanup()
 	{
+		if (cleanedUp)
+		{
+			return;
+		}
+		cleanedUp = true;
+
 		ConfigManager::Instance().Save();
 		PauseMenu::Instance().Close();
 
+		SceneManager::Instance().Shutdown();
+		AgentAvoidance::Instance().Clear();
+		NavGrid::Instance().Clear();
+		CollisionManager::Instance().ClearColliders();
+
 		TextureManager::Instance().Clear();
 		DebugOverlay::Instance().Shutdown();
+		TTF_Quit();
 
 		if (renderer)
 		{

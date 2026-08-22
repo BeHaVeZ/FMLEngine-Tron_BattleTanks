@@ -9,11 +9,35 @@
 
 namespace FML
 {
-	class GameObject final 
+	class GameObject;
+
+	class GameObjectRef
+	{
+	public:
+		GameObjectRef() = default;
+		GameObjectRef(GameObject* object);
+
+		GameObject* Get() const
+		{
+			const auto locked = token.lock();
+			return locked ? *locked : nullptr;
+		}
+		GameObject* operator->() const { return Get(); }
+		explicit operator bool() const { return Get() != nullptr; }
+
+	private:
+		std::weak_ptr<GameObject*> token;
+	};
+
+	class GameObject final
 	{
 	public:
 		GameObject(const std::string& tag = "");
-		~GameObject() = default;
+		~GameObject();
+		GameObject(const GameObject&) = delete;
+		GameObject& operator=(const GameObject&) = delete;
+
+		GameObjectRef GetRef() { return GameObjectRef(this); }
 
 		template <typename T>
 		T* GetComponent() const {
@@ -56,5 +80,8 @@ namespace FML
 		GameObject* parent = nullptr;
 		Subject subject;
 		bool isMarkedForDestruction = false;
+		std::shared_ptr<GameObject*> selfToken;
+
+		friend class GameObjectRef;
 	};
 }

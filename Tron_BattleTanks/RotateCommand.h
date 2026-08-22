@@ -11,8 +11,8 @@ namespace FML
 		RotateCommand(GameObject* gameObject, float angle = 0) : gameObject(gameObject), angle(angle) {}
 
 		void Execute() override {
-			if (gameObject) {
-				auto transform = gameObject->GetComponent<TransformComponent>();
+			if (GameObject* object = gameObject.Get()) {
+				auto transform = object->GetComponent<TransformComponent>();
 				if (transform) {
 					transform->SetRotation(angle);
 				}
@@ -20,7 +20,7 @@ namespace FML
 		}
 
 	private:
-		GameObject* gameObject;
+		GameObjectRef gameObject;
 		float angle;
 	};
 }

@@ -68,6 +68,7 @@ namespace FML
 		bool IsFocused(const void* agent) const;
 		bool HasFocus() const { return focusedAgent != nullptr; }
 		void CycleFocus();
+		void ResetFocus();
 		void FocusStat(const void* agent, std::string line);
 
 		void Render(SDL_Renderer* renderer);

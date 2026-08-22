@@ -12,16 +12,17 @@ namespace FML
 	public:
 		ShootCommand(GameObject* gameObject) : gameObject(gameObject) {}
 
-		void Execute() override 
+		void Execute() override
 		{
-			if (gameObject && !gameObject->IsMarkedForDestruction())
+			GameObject* object = gameObject.Get();
+			if (object && !object->IsMarkedForDestruction())
 			{
-				if (auto shoot = gameObject->GetComponent<ShootComponent>())
+				if (auto shoot = object->GetComponent<ShootComponent>())
 					shoot->Shoot();
 			}
 		}
 
 	private:
-		GameObject* gameObject;
+		GameObjectRef gameObject;
 	};
 }

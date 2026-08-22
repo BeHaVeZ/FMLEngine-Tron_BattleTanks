@@ -24,6 +24,7 @@ namespace FML
 		Scene* GetNextScene() const;
 		void GoToNextScene();
 		void ReloadScene();
+		void Shutdown();
 
 		void Update(float deltaTime);
 		void Render();

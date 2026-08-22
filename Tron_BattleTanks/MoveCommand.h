@@ -17,9 +17,10 @@ namespace FML
 
 		void Execute() override
 		{
-			if (gameObject)
+			GameObject* object = gameObject.Get();
+			if (object && !object->IsMarkedForDestruction())
 			{
-				auto transform = gameObject->GetComponent<TransformComponent>();
+				auto transform = object->GetComponent<TransformComponent>();
 				if (transform && !transform->IsMoving())
 				{
 					glm::vec2 newPosition = transform->GetLocalPosition() + direction * moveDistance * Timer::Instance().GetDeltaTime();
@@ -27,7 +28,7 @@ namespace FML
 
 					if (glm::length(direction) > 0.0f)
 					{
-						float angleRadians = atan2(-direction.y, direction.x); 
+						float angleRadians = atan2(-direction.y, direction.x);
 						float angleDegrees = glm::degrees(angleRadians);
 						transform->SetRotation(angleDegrees - 90.0f);
 					}
@@ -36,7 +37,7 @@ namespace FML
 		}
 
 	private:
-		GameObject* gameObject;
+		GameObjectRef gameObject;
 		glm::vec2 direction;
 		float moveDistance;
 	};

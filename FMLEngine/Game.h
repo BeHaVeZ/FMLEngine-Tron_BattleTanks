@@ -22,13 +22,14 @@ namespace FML
 
 		void Cleanup();
 
-		bool IsRunning() const { return isRunning; }
+		Game(const Game&) = delete;
+		Game& operator=(const Game&) = delete;
 
 	private:
 		SDL_Window* window;
 		SDL_Renderer* renderer;
 
-		bool isRunning;
+		bool cleanedUp;
 	};
 }
 

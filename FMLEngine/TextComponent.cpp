@@ -28,6 +28,11 @@ namespace FML
 		text = newText;
 		if (texture) {
 			SDL_DestroyTexture(texture);
+			texture = nullptr;
+		}
+
+		if (!font || !renderer) {
+			return;
 		}
 
 		SDL_Surface* textSurface = TTF_RenderText_Solid(font, text.c_str(), color);

@@ -115,6 +115,16 @@ namespace FML
 		focusedAgent = (next == previousCandidates.end()) ? nullptr : next->agent;
 	}
 
+	void DebugOverlay::ResetFocus()
+	{
+		focusedAgent = nullptr;
+		candidates.clear();
+		previousCandidates.clear();
+		labels.clear();
+		stats.clear();
+		focusStats.clear();
+	}
+
 	void DebugOverlay::FocusStat(const void* agent, std::string line)
 	{
 		if (!masterEnabled || focusedAgent == nullptr || focusedAgent != agent)

@@ -16,17 +16,18 @@ namespace FML
 
 		void Execute() override
 		{
-			if (!gameObject) return;
+			GameObject* object = gameObject.Get();
+			if (!object || object->IsMarkedForDestruction()) return;
 
 			const float delta = rotationSpeed * Timer::Instance().GetDeltaTime();
 
-			if (auto* aim = gameObject->GetComponent<TurretAimComponent>())
+			if (auto* aim = object->GetComponent<TurretAimComponent>())
 			{
 				aim->Rotate(delta);
 				return;
 			}
 
-			auto transform = gameObject->GetComponent<TransformComponent>();
+			auto transform = object->GetComponent<TransformComponent>();
 			if (transform)
 			{
 				transform->SetRotation(transform->GetLocalRotation() + delta);
@@ -34,7 +35,7 @@ namespace FML
 		}
 
 	private:
-		GameObject* gameObject;
+		GameObjectRef gameObject;
 		float rotationSpeed;
 	};
 }

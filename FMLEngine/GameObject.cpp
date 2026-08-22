@@ -6,10 +6,21 @@
 
 namespace FML
 {
-	GameObject::GameObject(const std::string& tag) : tag(tag), parent(nullptr), isMarkedForDestruction(false)
+	GameObjectRef::GameObjectRef(GameObject* object)
+		: token(object ? std::weak_ptr<GameObject*>(object->selfToken) : std::weak_ptr<GameObject*>())
+	{
+	}
+
+	GameObject::GameObject(const std::string& tag)
+		: tag(tag), parent(nullptr), isMarkedForDestruction(false), selfToken(std::make_shared<GameObject*>(this))
 	{
 		auto transform = std::make_unique<TransformComponent>();
 		AddComponent(std::move(transform));
+	}
+
+	GameObject::~GameObject()
+	{
+		*selfToken = nullptr;
 	}
 
 

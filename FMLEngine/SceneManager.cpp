@@ -2,6 +2,12 @@
 #include "InputHandler.h"
 #include "ServiceLocator.h"
 #include "ScreenShake.h"
+#include "AgentAvoidance.h"
+#include "NavGrid.h"
+#include "DebugOverlay.h"
+#include <algorithm>
+#include <cassert>
+#include <iostream>
 
 namespace FML
 {
@@ -28,11 +34,15 @@ namespace FML
 			ServiceLocator::GetSoundSystem().ClearQueue();
 			ScreenShake::Instance().Clear();
 
-			if (currentScene) 
+			if (currentScene)
 			{
 				currentScene->OnExit();
 				currentScene->Cleanup();
 			}
+
+			AgentAvoidance::Instance().Clear();
+			NavGrid::Instance().Clear();
+			DebugOverlay::Instance().ResetFocus();
 
 			currentScene = it->second.get();
 			currentScene->Initialize(localRenderer);
@@ -97,6 +107,22 @@ namespace FML
 
 		std::cout << "Restarting scene: " << currentScene->GetName() << std::endl;
 		QueueSceneChange(currentScene->GetName());
+	}
+
+	void SceneManager::Shutdown()
+	{
+		if (currentScene)
+		{
+			InputHandler::Instance().ClearBindings();
+			currentScene->OnExit();
+			currentScene->Cleanup();
+			currentScene = nullptr;
+		}
+
+		queuedSceneChange.clear();
+		sceneChangeDelay = 0.f;
+		sceneOrder.clear();
+		scenes.clear();
 	}
 
 	void SceneManager::GoToNextScene()

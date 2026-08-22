@@ -11,6 +11,8 @@ namespace FML
 	public:
 		TextComponent(const std::string& text, const std::string& fontPath, int fontSize, SDL_Color color, SDL_Renderer* renderer);
 		~TextComponent();
+		TextComponent(const TextComponent&) = delete;
+		TextComponent& operator=(const TextComponent&) = delete;
 
 		void SetText(const std::string& newText, SDL_Renderer* renderer);
 		std::string GetText() const { return text; }
